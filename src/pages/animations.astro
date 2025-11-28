@@ -1,0 +1,749 @@
+---
+// Animation comparison page - Extended version
+---
+
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation Comparison — Nomusicians</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Manrope:wght@300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --font-logo: 'Cormorant Garamond', serif;
+      --font-body: 'Manrope', sans-serif;
+    }
+    
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: var(--font-body);
+      font-weight: 300;
+    }
+    
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem 2rem;
+      background: #0a0a0a;
+      border-bottom: 1px solid #222;
+      z-index: 100;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    .nav a {
+      color: #888;
+      text-decoration: none;
+      font-size: 0.75rem;
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #333;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    
+    .nav a:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+    
+    .nav a.highlight {
+      border-color: #4a9;
+      color: #4a9;
+    }
+    
+    .nav .back {
+      margin-left: auto;
+    }
+    
+    /* Sections - MUCH TALLER now */
+    .section {
+      min-height: 150vh; /* Much taller to see scroll effects */
+      padding: 8rem 2rem 6rem;
+      border-bottom: 1px solid #222;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .label {
+      position: absolute;
+      top: 5rem;
+      left: 2rem;
+      background: #1a1a1a;
+      padding: 0.5rem 1rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #666;
+    }
+    
+    .label.recommended {
+      background: #1a2a1a;
+      color: #4a9;
+    }
+    
+    .content {
+      max-width: 800px;
+      margin: 6rem auto 0;
+      text-align: center;
+    }
+    
+    h1 {
+      font-family: var(--font-logo);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      color: rgba(255,255,255,0.7);
+    }
+    
+    p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 1.5rem;
+    }
+    
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    
+    .card {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+    
+    .card p {
+      font-size: 0.85rem;
+      margin: 0;
+    }
+    
+    .links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .links a {
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    
+    .links a:hover {
+      color: #fff;
+    }
+    
+    /* ================================
+       ANIMATION STYLES
+       ================================ */
+    
+    /* Hidden state for all animated elements */
+    .animate {
+      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .animate.visible {
+      opacity: 1;
+    }
+    
+    /* 1. Fade In + Slide Up */
+    .fade-up {
+      transform: translateY(60px);
+    }
+    .fade-up.visible {
+      transform: translateY(0);
+    }
+    
+    /* 2. Fade In + Slide Left */
+    .fade-left {
+      transform: translateX(60px);
+    }
+    .fade-left.visible {
+      transform: translateX(0);
+    }
+    
+    /* 3. Scale + Fade */
+    .scale-fade {
+      transform: scale(0.85);
+    }
+    .scale-fade.visible {
+      transform: scale(1);
+    }
+    
+    /* 4. Blur Reveal */
+    .blur-reveal {
+      filter: blur(15px);
+      transform: translateY(30px);
+    }
+    .blur-reveal.visible {
+      filter: blur(0);
+      transform: translateY(0);
+    }
+    
+    /* 5. Stagger delays */
+    .stagger-1 { transition-delay: 0ms; }
+    .stagger-2 { transition-delay: 150ms; }
+    .stagger-3 { transition-delay: 300ms; }
+    .stagger-4 { transition-delay: 450ms; }
+    .stagger-5 { transition-delay: 600ms; }
+    .stagger-6 { transition-delay: 750ms; }
+    .stagger-7 { transition-delay: 900ms; }
+    .stagger-8 { transition-delay: 1050ms; }
+    
+    /* 6. Clip Reveal (text appears from bottom) */
+    .clip-reveal {
+      clip-path: inset(100% 0 0 0);
+    }
+    .clip-reveal.visible {
+      clip-path: inset(0 0 0 0);
+    }
+    
+    /* 7. Rotate + Fade */
+    .rotate-fade {
+      transform: rotate(-5deg) translateY(30px);
+    }
+    .rotate-fade.visible {
+      transform: rotate(0) translateY(0);
+    }
+    
+    /* Line animation */
+    .line-animate {
+      width: 0;
+      height: 1px;
+      background: rgba(255,255,255,0.3);
+      margin: 2rem auto;
+      transition: width 1.2s ease-out;
+    }
+    .line-animate.visible {
+      width: 150px;
+    }
+    
+    /* Parallax hero with REAL PHOTO */
+    .parallax-section {
+      min-height: 200vh; /* Extra tall for parallax effect */
+      padding: 0;
+      position: relative;
+    }
+    
+    .parallax-hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .parallax-bg {
+      position: absolute;
+      inset: -30%;
+      background-image: url('/hero.jpg');
+      background-size: cover;
+      background-position: center;
+      will-change: transform;
+    }
+    
+    .parallax-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%);
+    }
+    
+    .parallax-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .parallax-after {
+      padding: 6rem 2rem;
+      background: #0a0a0a;
+      position: relative;
+    }
+    
+    /* Video cards for Watch section demo */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    
+    .video-card {
+      aspect-ratio: 16/9;
+      background: #1a1a1a;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .video-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition: filter 0.5s, transform 0.5s;
+    }
+    
+    .video-card:hover img {
+      filter: grayscale(0%);
+      transform: scale(1.05);
+    }
+    
+    .video-card .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .video-card .title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      font-size: 0.9rem;
+    }
+    
+    /* Extra content blocks for height */
+    .extra-content {
+      margin-top: 4rem;
+      padding-top: 4rem;
+      border-top: 1px solid #222;
+    }
+    
+    .quote {
+      font-size: 1.5rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.4);
+      max-width: 600px;
+      margin: 3rem auto;
+      line-height: 1.6;
+    }
+    
+    /* Merch image */
+    .merch-img {
+      max-width: 300px;
+      margin: 2rem auto;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .merch-img img {
+      width: 100%;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav">
+    <a href="#anim-1">1. Fade Up</a>
+    <a href="#anim-2">2. Stagger</a>
+    <a href="#anim-3" class="highlight">3. Blur ⭐</a>
+    <a href="#anim-4">4. Scale</a>
+    <a href="#anim-5">5. Parallax</a>
+    <a href="#anim-6" class="highlight">6. Комбо ⭐</a>
+    <a href="/" class="back">← Сайт</a>
+  </nav>
+
+  <!-- 1. Fade In + Slide Up -->
+  <section id="anim-1" class="section">
+    <div class="label">1. Fade In + Slide Up — Классика, подходит для всего</div>
+    <div class="content">
+      <h1 class="animate fade-up">Nomusicians</h1>
+      <h2 class="animate fade-up stagger-2">Электроника и неоклассика</h2>
+      <div class="line-animate animate stagger-3"></div>
+      <p class="animate fade-up stagger-3">
+        Элементы плавно появляются снизу. Универсальная анимация, 
+        которая работает везде и не отвлекает от контента.
+      </p>
+      <p class="animate fade-up stagger-4">
+        <strong style="color: #fff;">Nomusicians</strong> — это музыка, в которой академическое образование 
+        не препятствует свободе, а технологии не заслоняют человека.
+      </p>
+      <p class="animate fade-up stagger-5">
+        Проект объединяет музыкантов с разным бэкграундом: классическое образование, 
+        джаз, электронная музыка. На сцене — фортепиано, скрипка, флюгельгорн.
+      </p>
+      
+      <div class="extra-content">
+        <h2 class="animate fade-up">Слушать</h2>
+        <div class="cards">
+          <div class="card animate fade-up stagger-2">
+            <h3>Spotify</h3>
+            <p>Слушать</p>
+          </div>
+          <div class="card animate fade-up stagger-3">
+            <h3>Apple Music</h3>
+            <p>Слушать</p>
+          </div>
+          <div class="card animate fade-up stagger-4">
+            <h3>YouTube</h3>
+            <p>Смотреть</p>
+          </div>
+          <div class="card animate fade-up stagger-5">
+            <h3>SoundCloud</h3>
+            <p>Слушать</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="extra-content">
+        <p class="quote animate fade-up">
+          «Атмосферная электроника, тяготеющая к камерной музыке и кинематографической выразительности»
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Stagger -->
+  <section id="anim-2" class="section">
+    <div class="label">2. Stagger — Каскадное появление элементов</div>
+    <div class="content">
+      <h1 class="animate fade-up">Слушать</h1>
+      <div class="line-animate animate stagger-2"></div>
+      <p class="animate fade-up stagger-2">
+        Каждый элемент появляется с задержкой после предыдущего.
+        Отлично для списков и сеток.
+      </p>
+      
+      <div class="links" style="margin-top: 3rem;">
+        <a href="#" class="animate fade-up stagger-1">Spotify</a>
+        <a href="#" class="animate fade-up stagger-2">Apple Music</a>
+        <a href="#" class="animate fade-up stagger-3">Яндекс.Музыка</a>
+        <a href="#" class="animate fade-up stagger-4">SoundCloud</a>
+        <a href="#" class="animate fade-up stagger-5">YouTube</a>
+        <a href="#" class="animate fade-up stagger-6">Bandcamp</a>
+      </div>
+      
+      <div class="extra-content">
+        <h2 class="animate fade-up">Треки</h2>
+        <div class="cards">
+          <div class="card animate scale-fade stagger-1">
+            <h3>01</h3>
+            <p>Marcia Moderato</p>
+          </div>
+          <div class="card animate scale-fade stagger-2">
+            <h3>02</h3>
+            <p>5 Minutes Before End</p>
+          </div>
+          <div class="card animate scale-fade stagger-3">
+            <h3>03</h3>
+            <p>Intro Went Wrong</p>
+          </div>
+          <div class="card animate scale-fade stagger-4">
+            <h3>04</h3>
+            <p>Sequences</p>
+          </div>
+          <div class="card animate scale-fade stagger-5">
+            <h3>05</h3>
+            <p>Dub & Triols</p>
+          </div>
+          <div class="card animate scale-fade stagger-6">
+            <h3>06</h3>
+            <p>Melodica</p>
+          </div>
+          <div class="card animate scale-fade stagger-7">
+            <h3>07</h3>
+            <p>Dark Remix</p>
+          </div>
+          <div class="card animate scale-fade stagger-8">
+            <h3>08</h3>
+            <p>Betelgeize Remix</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Blur Reveal -->
+  <section id="anim-3" class="section">
+    <div class="label recommended">⭐ 3. Blur Reveal — Кинематографично, атмосферно</div>
+    <div class="content">
+      <h1 class="animate blur-reveal">Nomusicians</h1>
+      <h2 class="animate blur-reveal stagger-2">classitronics</h2>
+      <div class="line-animate animate stagger-3"></div>
+      
+      <p class="animate blur-reveal stagger-3">
+        Элементы проявляются из размытия, как фокусировка камеры.
+        Создаёт кинематографический эффект, идеально для музыкального проекта.
+      </p>
+      <p class="animate blur-reveal stagger-4">
+        <strong style="color: #fff;">Nomusicians</strong> — это музыка, в которой академическое образование 
+        не препятствует свободе, а технологии не заслоняют человека.
+      </p>
+      <p class="animate blur-reveal stagger-5">
+        Атмосферная электроника, тяготеющая к камерной музыке 
+        и кинематографической выразительности.
+      </p>
+      
+      <div class="extra-content">
+        <p class="quote animate blur-reveal">
+          «Мы называем это classitronics — подход, где звуковая палитра развивается как пейзаж за окном поезда»
+        </p>
+        
+        <p class="animate blur-reveal stagger-2">
+          Проект объединяет музыкантов с разным бэкграундом: классическое образование, 
+          джаз, электронная музыка. На сцене — фортепиано, скрипка, флюгельгорн, барабаны, 
+          аналоговые синтезаторы и драм-машины.
+        </p>
+        <p class="animate blur-reveal stagger-3">
+          Всё это сплетается в живую импровизацию, где каждое выступление — уникальное путешествие.
+        </p>
+        <p class="animate blur-reveal stagger-4">
+          Концерты часто проходят в иммерсивных пространствах — планетариях, куполах — 
+          в сопровождении визуального искусства и медиаарта.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Scale + Fade -->
+  <section id="anim-4" class="section">
+    <div class="label">4. Scale + Fade — Мягкое появление с увеличением</div>
+    <div class="content">
+      <h1 class="animate scale-fade">Мерч</h1>
+      <div class="line-animate animate stagger-2"></div>
+      <p class="animate scale-fade stagger-2">
+        Элементы появляются с лёгким увеличением масштаба.
+        Хорошо для изображений и карточек товаров.
+      </p>
+      
+      <div class="merch-img animate scale-fade stagger-3">
+        <img src="/merch-tshirt.png" alt="Nomusicians T-shirt" onerror="this.parentElement.innerHTML='<div style=\'padding:3rem;background:#1a1a1a;text-align:center;\'>T-shirt Image</div>'">
+      </div>
+      
+      <div class="cards" style="margin-top: 3rem;">
+        <div class="card animate scale-fade stagger-3" style="padding: 3rem;">
+          <h3 style="font-size: 1.5rem;">T-shirt</h3>
+          <p>Скоро в продаже</p>
+        </div>
+        <div class="card animate scale-fade stagger-4" style="padding: 3rem;">
+          <h3 style="font-size: 1.5rem;">Vinyl</h3>
+          <p>Limited Edition</p>
+        </div>
+        <div class="card animate scale-fade stagger-5" style="padding: 3rem;">
+          <h3 style="font-size: 1.5rem;">Poster</h3>
+          <p>A2 Format</p>
+        </div>
+      </div>
+      
+      <div class="extra-content">
+        <p class="animate scale-fade">
+          Хочешь получить уведомление о поступлении мерча?
+        </p>
+        <p class="animate scale-fade stagger-2" style="color: #fff; font-size: 1.2rem;">
+          mail@nomusicians.com
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Parallax with REAL PHOTO -->
+  <section id="anim-5" class="parallax-section">
+    <div class="label">5. Parallax — Глубина и движение на Hero (с реальным фото)</div>
+    
+    <div class="parallax-hero" id="parallax-hero">
+      <div class="parallax-bg" id="parallax-bg"></div>
+      <div class="parallax-overlay"></div>
+      <div class="parallax-content">
+        <h1 class="animate blur-reveal" style="font-size: clamp(3rem, 10vw, 7rem); text-shadow: 0 4px 30px rgba(0,0,0,0.5);">Nomusicians</h1>
+        <h2 class="animate blur-reveal stagger-2" style="text-shadow: 0 2px 20px rgba(0,0,0,0.5);">Электроника и неоклассика</h2>
+        <p class="animate blur-reveal stagger-3" style="max-width: 500px; margin: 2rem auto 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+          Фон двигается медленнее контента, создавая ощущение глубины.
+          Скролль вниз чтобы увидеть эффект параллакса.
+        </p>
+      </div>
+    </div>
+    
+    <div class="parallax-after">
+      <div class="content" style="margin-top: 0;">
+        <h2 class="animate fade-up">О проекте</h2>
+        <div class="line-animate animate stagger-2"></div>
+        <p class="animate fade-up stagger-2">
+          Контент после Hero секции с параллаксом. Фото плавно уходит наверх, 
+          создавая ощущение погружения в содержимое сайта.
+        </p>
+        <p class="animate fade-up stagger-3">
+          <strong style="color: #fff;">Nomusicians</strong> — это музыка, в которой академическое образование 
+          не препятствует свободе, а технологии не заслоняют человека.
+        </p>
+        <p class="animate fade-up stagger-4">
+          Проект объединяет музыкантов с разным бэкграундом: классическое образование, 
+          джаз, электронная музыка.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Combo (Recommended) -->
+  <section id="anim-6" class="section" style="min-height: 250vh;">
+    <div class="label recommended">⭐ 6. Рекомендованный комбо для Nomusicians</div>
+    <div class="content">
+      <h1 class="animate blur-reveal">О проекте</h1>
+      <div class="line-animate animate stagger-2"></div>
+      
+      <p class="animate fade-up stagger-3">
+        <strong style="color: #fff;">Nomusicians</strong> — это музыка, в которой академическое образование 
+        не препятствует свободе, а технологии не заслоняют человека.
+      </p>
+      <p class="animate fade-up stagger-4">
+        Проект объединяет музыкантов с разным бэкграундом: классическое образование, 
+        джаз, электронная музыка. На сцене — фортепиано, скрипка, флюгельгорн.
+      </p>
+      <p class="animate fade-up stagger-5">
+        Мы называем это <em style="color: #fff;">classitronics</em> — подход, где звуковая палитра 
+        развивается как пейзаж за окном поезда.
+      </p>
+      
+      <div class="extra-content">
+        <h2 class="animate blur-reveal">Видео</h2>
+        <div class="line-animate animate stagger-2"></div>
+        <div class="video-grid">
+          <div class="video-card animate scale-fade stagger-1">
+            <img src="https://img.youtube.com/vi/PzFOKI7Ezl0/maxresdefault.jpg" alt="Video">
+            <div class="play-btn">▶</div>
+            <div class="title">Marcia Moderato (Live)</div>
+          </div>
+          <div class="video-card animate scale-fade stagger-2">
+            <img src="https://img.youtube.com/vi/MkBzeE7Wye4/maxresdefault.jpg" alt="Video">
+            <div class="play-btn">▶</div>
+            <div class="title">Besedka Live</div>
+          </div>
+          <div class="video-card animate scale-fade stagger-3">
+            <img src="https://img.youtube.com/vi/Tt64lxUyiPw/maxresdefault.jpg" alt="Video">
+            <div class="play-btn">▶</div>
+            <div class="title">Fast No Fast / Blanc</div>
+          </div>
+          <div class="video-card animate scale-fade stagger-4">
+            <img src="https://img.youtube.com/vi/D0fvoGoUxxI/maxresdefault.jpg" alt="Video">
+            <div class="play-btn">▶</div>
+            <div class="title">MiR / Lampu, Bali</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="extra-content">
+        <h2 class="animate blur-reveal">Слушать</h2>
+        <div class="line-animate animate stagger-2"></div>
+        <div class="links" style="margin-top: 2rem;">
+          <a href="#" class="animate fade-up stagger-1">Spotify</a>
+          <a href="#" class="animate fade-up stagger-2">Apple Music</a>
+          <a href="#" class="animate fade-up stagger-3">Яндекс.Музыка</a>
+          <a href="#" class="animate fade-up stagger-4">SoundCloud</a>
+        </div>
+      </div>
+      
+      <div class="extra-content">
+        <h2 class="animate blur-reveal">Контакты</h2>
+        <div class="line-animate animate stagger-2"></div>
+        <p class="animate fade-up stagger-2" style="font-size: 1.5rem; color: #fff;">
+          mail@nomusicians.com
+        </p>
+        <div class="links" style="margin-top: 1.5rem;">
+          <a href="#" class="animate fade-up stagger-2">Instagram</a>
+          <a href="#" class="animate fade-up stagger-3">YouTube</a>
+          <a href="#" class="animate fade-up stagger-4">Telegram</a>
+          <a href="#" class="animate fade-up stagger-5">VK</a>
+          <a href="#" class="animate fade-up stagger-6">Facebook</a>
+        </div>
+      </div>
+      
+      <div class="extra-content">
+        <p class="quote animate blur-reveal">
+          «Концерты часто проходят в иммерсивных пространствах — планетариях, куполах — в сопровождении визуального искусства и медиаарта»
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+    
+    // Observe all animated elements
+    document.querySelectorAll('.animate').forEach(el => {
+      observer.observe(el);
+    });
+    
+    // Parallax effect with real photo
+    const parallaxBg = document.getElementById('parallax-bg');
+    const parallaxHero = document.getElementById('parallax-hero');
+    
+    if (parallaxBg && parallaxHero) {
+      window.addEventListener('scroll', () => {
+        const rect = parallaxHero.getBoundingClientRect();
+        const scrolled = -rect.top;
+        const rate = scrolled * 0.4; // Parallax speed
+        
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          parallaxBg.style.transform = `translateY(${rate}px)`;
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

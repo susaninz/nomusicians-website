@@ -1,32 +1,43 @@
 ---
 import type { Lang } from '../i18n/translations';
 import { t } from '../i18n/translations';
+import Logo3D from './Logo3D.astro';
 
 interface Props {
   lang: Lang;
   imageUrl?: string;
+  use3DLogo?: boolean;
 }
 
-const { lang, imageUrl = '/hero.jpg' } = Astro.props;
+const { lang, imageUrl = '/hero.jpg', use3DLogo = true } = Astro.props;
 ---
 
 <section id="hero" class="relative h-screen w-full overflow-hidden">
-  <!-- Background Image -->
-  <div class="absolute inset-0">
-    <img 
-      src={imageUrl} 
-      alt="Nomusicians live performance" 
-      class="h-full w-full object-cover"
-    />
-    <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80"></div>
+  <!-- Parallax Background Image -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div 
+      class="parallax-bg absolute inset-[-20%] bg-cover bg-center"
+      id="hero-parallax-bg"
+      style={`background-image: url('${imageUrl}')`}
+    ></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/80"></div>
   </div>
   
   <!-- Content -->
   <div class="relative z-10 flex h-full flex-col items-center justify-center px-6">
-    <h1 class="text-5xl md:text-7xl lg:text-8xl font-light tracking-[0.2em] uppercase text-white">
-      Nomusicians
-    </h1>
-    <p class="mt-4 text-sm md:text-base tracking-[0.3em] uppercase text-white/70">
+    {use3DLogo ? (
+      <!-- 3D Logo -->
+      <div class="relative w-full max-w-4xl h-48 md:h-64 lg:h-80">
+        <Logo3D />
+      </div>
+    ) : (
+      <!-- Fallback text logo -->
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-light tracking-[0.15em] uppercase text-white" style="font-family: var(--font-logo);">
+        Nomusicians
+      </h1>
+    )}
+    
+    <p class="mt-8 text-sm md:text-base tracking-[0.3em] uppercase text-white/70">
       {t(lang, 'hero.tagline')}
     </p>
   </div>
@@ -38,3 +49,20 @@ const { lang, imageUrl = '/hero.jpg' } = Astro.props;
     </svg>
   </div>
 </section>
+
+<script>
+  // Parallax effect for hero background
+  const parallaxBg = document.getElementById('hero-parallax-bg');
+  const hero = document.getElementById('hero');
+  
+  if (parallaxBg && hero) {
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const rate = scrolled * 0.4;
+      
+      if (scrolled < window.innerHeight) {
+        parallaxBg.style.transform = `translateY(${rate}px)`;
+      }
+    });
+  }
+</script>
