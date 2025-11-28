@@ -1,0 +1,95 @@
+---
+import type { Lang } from '../i18n/translations';
+import { t } from '../i18n/translations';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const musicians = [
+  {
+    id: 'rakitin',
+    photo: '/musicians/rakitin-1.jpg',
+    photo2: '/musicians/rakitin-2.jpg',
+    align: 'left' as const,
+  },
+  {
+    id: 'kotnov',
+    photo: '/musicians/kotnov-1.jpg',
+    photo2: '/musicians/kotnov-2.jpg',
+    align: 'right' as const,
+  },
+  {
+    id: 'slezkin',
+    photo: '/musicians/slezkin.jpg',
+    align: 'left' as const,
+  },
+  {
+    id: 'shchedrin',
+    photo: '/musicians/shchedrin.jpg',
+    align: 'right' as const,
+  },
+];
+---
+
+<section class="py-24 px-6 bg-surface/30">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-light tracking-wide text-center mb-16">
+      {t(lang, 'musicians.title')}
+    </h2>
+    
+    <div class="space-y-24">
+      {musicians.map((musician, index) => (
+        <div class:list={[
+          "flex flex-col gap-8",
+          musician.align === 'right' ? 'md:flex-row-reverse' : 'md:flex-row',
+          "items-center"
+        ]}>
+          <!-- Photo -->
+          <div class="w-full md:w-1/2 relative group">
+            <div class="aspect-[4/3] overflow-hidden">
+              <img 
+                src={musician.photo} 
+                alt={t(lang, `musicians.${musician.id}.name` as any)}
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+            {musician.photo2 && (
+              <div class="absolute bottom-4 right-4 w-1/3 aspect-square overflow-hidden border-2 border-background shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <img 
+                  src={musician.photo2} 
+                  alt={t(lang, `musicians.${musician.id}.name` as any)}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            )}
+          </div>
+          
+          <!-- Info -->
+          <div class:list={[
+            "w-full md:w-1/2",
+            musician.align === 'right' ? 'md:text-right md:pr-8' : 'md:text-left md:pl-8'
+          ]}>
+            <h3 class="text-2xl md:text-3xl font-light tracking-wide mb-2">
+              {t(lang, `musicians.${musician.id}.name` as any)}
+            </h3>
+            <p class="text-muted text-sm tracking-wider uppercase mb-4">
+              {t(lang, `musicians.${musician.id}.role` as any)}
+            </p>
+            <p class="text-white/60 text-sm tracking-wide mb-6">
+              {t(lang, `musicians.${musician.id}.instruments` as any)}
+            </p>
+            <p class="text-text/70 leading-relaxed">
+              {t(lang, `musicians.${musician.id}.bio` as any)}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+

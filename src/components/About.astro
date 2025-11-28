@@ -21,5 +21,18 @@ const { lang } = Astro.props;
       <p set:html={t(lang, 'about.p3').replace('<em>', '<em class="text-white not-italic">')} />
       <p>{t(lang, 'about.p4')}</p>
     </div>
+    
+    <!-- History Section -->
+    <div class="mt-16 pt-16 border-t border-white/10">
+      <h3 class="text-2xl md:text-3xl font-light tracking-wide text-center mb-10">
+        {t(lang, 'history.title')}
+      </h3>
+      
+      <div class="space-y-6 text-lg leading-relaxed text-text/80">
+        <p>{t(lang, 'history.p1')}</p>
+        <p>{t(lang, 'history.p2')}</p>
+        <p set:html={t(lang, 'history.p3').replace('<em>', '<em class="text-white not-italic">')} />
+      </div>
+    </div>
   </div>
 </section>

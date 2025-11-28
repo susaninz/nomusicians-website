@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../i18n/translations';
+import { t } from '../i18n/translations';
 
 interface Props {
   currentLang: Lang;
@@ -12,51 +13,117 @@ const langLinks = {
   en: '/en/',
   cn: '/cn/',
 };
+
+const navItems = [
+  { key: 'nav.about' as const, href: '#about' },
+  { key: 'nav.releases' as const, href: '#releases' },
+  { key: 'nav.projects' as const, href: '#projects' },
+  { key: 'nav.watch' as const, href: '#watch' },
+  { key: 'nav.contact' as const, href: '#contact' },
+];
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300" id="main-header">
   <nav class="max-w-7xl mx-auto flex items-center justify-between">
     <!-- Logo (hidden on hero, visible on scroll) -->
-    <a href={langLinks[currentLang]} class="text-white text-lg tracking-[0.12em] uppercase opacity-0 transition-opacity duration-300" id="header-logo" style="font-family: var(--font-logo);">
+    <a 
+      href={langLinks[currentLang]} 
+      class="text-white text-lg tracking-[0.12em] uppercase opacity-0 transition-opacity duration-300" 
+      id="header-logo" 
+      style="font-family: var(--font-logo);"
+    >
       Nomusicians
     </a>
     
-    <!-- Language Switcher -->
-    <div class="flex items-center gap-3 text-sm tracking-wider">
-      <a 
-        href="/"
-        data-lang-link
-        class:list={[
-          "uppercase transition-opacity px-1",
-          currentLang === 'ru' ? 'text-white' : 'text-muted hover:text-white'
-        ]}
+    <!-- Navigation + Language Switcher -->
+    <div class="flex items-center gap-6 text-sm tracking-wider">
+      <!-- Main Navigation -->
+      <nav class="hidden md:flex items-center gap-4">
+        {navItems.map((item) => (
+          <a 
+            href={item.href}
+            class="text-muted hover:text-white transition-colors duration-200"
+          >
+            {t(currentLang, item.key)}
+          </a>
+        ))}
+      </nav>
+      
+      <!-- Separator -->
+      <span class="hidden md:block text-muted/30">|</span>
+      
+      <!-- Language Switcher -->
+      <div class="flex items-center gap-2">
+        <a 
+          href="/"
+          data-lang-link
+          class:list={[
+            "uppercase transition-opacity px-1",
+            currentLang === 'ru' ? 'text-white' : 'text-muted hover:text-white'
+          ]}
+        >
+          RU
+        </a>
+        <span class="text-muted/50">|</span>
+        <a 
+          href="/en/"
+          data-lang-link
+          class:list={[
+            "uppercase transition-opacity px-1",
+            currentLang === 'en' ? 'text-white' : 'text-muted hover:text-white'
+          ]}
+        >
+          EN
+        </a>
+        <span class="text-muted/50">|</span>
+        <a 
+          href="/cn/"
+          data-lang-link
+          class:list={[
+            "uppercase transition-opacity px-1",
+            currentLang === 'cn' ? 'text-white' : 'text-muted hover:text-white'
+          ]}
+        >
+          中文
+        </a>
+      </div>
+      
+      <!-- Mobile Menu Button -->
+      <button 
+        class="md:hidden text-white p-2"
+        id="mobile-menu-btn"
+        aria-label="Menu"
       >
-        RU
-      </a>
-      <span class="text-muted/50">|</span>
-      <a 
-        href="/en/"
-        data-lang-link
-        class:list={[
-          "uppercase transition-opacity px-1",
-          currentLang === 'en' ? 'text-white' : 'text-muted hover:text-white'
-        ]}
-      >
-        EN
-      </a>
-      <span class="text-muted/50">|</span>
-      <a 
-        href="/cn/"
-        data-lang-link
-        class:list={[
-          "uppercase transition-opacity px-1",
-          currentLang === 'cn' ? 'text-white' : 'text-muted hover:text-white'
-        ]}
-      >
-        中文
-      </a>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
     </div>
   </nav>
+  
+  <!-- Mobile Menu -->
+  <div class="md:hidden hidden fixed inset-0 bg-background/95 backdrop-blur-md z-50" id="mobile-menu">
+    <div class="flex flex-col items-center justify-center h-full gap-8">
+      <button 
+        class="absolute top-4 right-6 text-white p-2"
+        id="mobile-menu-close"
+        aria-label="Close menu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+      
+      {navItems.map((item) => (
+        <a 
+          href={item.href}
+          class="text-2xl text-white hover:text-muted transition-colors duration-200 mobile-menu-link"
+        >
+          {t(currentLang, item.key)}
+        </a>
+      ))}
+    </div>
+  </div>
 </header>
 
 <script>
@@ -102,6 +169,29 @@ const langLinks = {
         url.hash = closestSection;
       }
       window.location.href = url.toString();
+    });
+  });
+  
+  // Mobile menu
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenuClose = document.getElementById('mobile-menu-close');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+  
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  });
+  
+  mobileMenuClose?.addEventListener('click', () => {
+    mobileMenu?.classList.add('hidden');
+    document.body.style.overflow = '';
+  });
+  
+  mobileMenuLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.add('hidden');
+      document.body.style.overflow = '';
     });
   });
 </script>
