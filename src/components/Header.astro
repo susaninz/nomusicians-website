@@ -1,0 +1,107 @@
+---
+import type { Lang } from '../i18n/translations';
+
+interface Props {
+  currentLang: Lang;
+}
+
+const { currentLang } = Astro.props;
+
+const langLinks = {
+  ru: '/',
+  en: '/en/',
+  cn: '/cn/',
+};
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300" id="main-header">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between">
+    <!-- Logo (hidden on hero, visible on scroll) -->
+    <a href={langLinks[currentLang]} class="text-white text-lg tracking-[0.15em] uppercase opacity-0 transition-opacity duration-300" id="header-logo">
+      Nomusicians
+    </a>
+    
+    <!-- Language Switcher -->
+    <div class="flex items-center gap-3 text-sm tracking-wider">
+      <a 
+        href="/"
+        data-lang-link
+        class:list={[
+          "uppercase transition-opacity px-1",
+          currentLang === 'ru' ? 'text-white' : 'text-muted hover:text-white'
+        ]}
+      >
+        RU
+      </a>
+      <span class="text-muted/50">|</span>
+      <a 
+        href="/en/"
+        data-lang-link
+        class:list={[
+          "uppercase transition-opacity px-1",
+          currentLang === 'en' ? 'text-white' : 'text-muted hover:text-white'
+        ]}
+      >
+        EN
+      </a>
+      <span class="text-muted/50">|</span>
+      <a 
+        href="/cn/"
+        data-lang-link
+        class:list={[
+          "uppercase transition-opacity px-1",
+          currentLang === 'cn' ? 'text-white' : 'text-muted hover:text-white'
+        ]}
+      >
+        中文
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Show logo on scroll
+  const logo = document.getElementById('header-logo');
+  const header = document.getElementById('main-header');
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      logo?.classList.remove('opacity-0');
+      logo?.classList.add('opacity-100');
+      header?.classList.add('bg-background/80', 'backdrop-blur-sm');
+    } else {
+      logo?.classList.add('opacity-0');
+      logo?.classList.remove('opacity-100');
+      header?.classList.remove('bg-background/80', 'backdrop-blur-sm');
+    }
+  });
+
+  // Preserve scroll position when switching language
+  document.querySelectorAll('[data-lang-link]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = (e.currentTarget as HTMLAnchorElement).href;
+      
+      // Find closest section with id
+      const sections = document.querySelectorAll('section[id]');
+      let closestSection = '';
+      let minDistance = Infinity;
+      
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        const distance = Math.abs(rect.top);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestSection = section.id;
+        }
+      });
+      
+      // Navigate with hash
+      const url = new URL(href);
+      if (closestSection && minDistance < window.innerHeight / 2) {
+        url.hash = closestSection;
+      }
+      window.location.href = url.toString();
+    });
+  });
+</script>

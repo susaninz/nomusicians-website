@@ -1,0 +1,51 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Hero from '../../components/Hero.astro';
+import Concert from '../../components/Concert.astro';
+import About from '../../components/About.astro';
+import Listen from '../../components/Listen.astro';
+import Watch from '../../components/Watch.astro';
+import Merch from '../../components/Merch.astro';
+import Contact from '../../components/Contact.astro';
+
+const lang = 'en';
+
+// Concert data (will be from Sanity later)
+const concert = {
+  date: '15 November',
+  time: '18:30',
+  city: 'Lisbon, Portugal',
+  venue: 'Double Concert',
+  description: 'electronic, neoclassical & minimalism / Radiohead tribute',
+  isPast: true,
+};
+---
+
+<Layout title="Nomusicians — Electronic & Neoclassical Music">
+  <Header currentLang={lang} />
+  <main>
+    <Hero lang={lang} imageUrl="/hero.jpg" />
+    
+    <Concert 
+      lang={lang}
+      date={concert.date}
+      time={concert.time}
+      city={concert.city}
+      venue={concert.venue}
+      description={concert.description}
+      isPast={concert.isPast}
+    />
+    
+    <About lang={lang} />
+    
+    <Listen lang={lang} />
+    
+    <Watch lang={lang} />
+    
+    <Merch lang={lang} />
+    
+    <Contact lang={lang} />
+  </main>
+</Layout>
+

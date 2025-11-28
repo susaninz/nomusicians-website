@@ -1,0 +1,58 @@
+---
+import type { Lang } from '../i18n/translations';
+import { t } from '../i18n/translations';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+// Streaming links from Taplink
+const streamingLinks = [
+  { name: 'Spotify', url: 'https://open.spotify.com/artist/1J19SZiEwozidoHFsDBoi0' },
+  { name: 'Apple Music', url: 'https://music.apple.com/ru/album/schrodingers-wedding/1646192804' },
+  { name: 'Яндекс.Музыка', url: 'https://music.yandex.ru/artist/9220776' },
+  { name: 'SoundCloud', url: 'https://soundcloud.com/nomusicians' },
+  { name: 'YouTube', url: 'https://www.youtube.com/watch?v=PzFOKI7Ezl0' },
+];
+---
+
+<section id="listen" class="py-24 px-6 bg-surface">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-light tracking-wide text-center mb-12">
+      {t(lang, 'listen.title')}
+    </h2>
+    
+    <!-- Spotify Embed -->
+    <div class="mb-12">
+      <iframe 
+        style="border-radius:12px" 
+        src="https://open.spotify.com/embed/artist/1J19SZiEwozidoHFsDBoi0?utm_source=generator&theme=0" 
+        width="100%" 
+        height="352" 
+        frameBorder="0" 
+        allowfullscreen="" 
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+        loading="lazy"
+      ></iframe>
+    </div>
+    
+    <!-- Streaming Links -->
+    <div class="flex flex-wrap justify-center gap-6">
+      {streamingLinks.map(link => (
+        <a 
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 px-4 py-2 text-sm tracking-wider uppercase text-muted hover:text-white transition-colors"
+        >
+          <span>{link.name}</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+          </svg>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
