@@ -5,34 +5,14 @@ import Header from '../../../components/Header.astro';
 const lang = 'ru';
 
 const project = {
-  title: 'Camp Klassika',
+  title: 'Кэмп Классика',
   subtitle: 'Музыкальная программа для бёрнерских фестивалей',
-  years: '2019—2024',
+  years: '2022—2024',
   heroImage: '/projects/camp-klassika.jpg',
-  description: `
-    Классика — это музыкальная программа, созданная Nomusicians для фестивалей бёрнерского сообщества: 
-    Огонёк (летний) и Холодок (зимний). С 2019 года мы проводим концерты под открытым небом, 
-    создавая уникальную атмосферу на границе электроники и акустики.
-  `,
   stats: [
     { value: '10+', label: 'концертов' },
-    { value: '6', label: 'лет' },
+    { value: '3', label: 'года' },
     { value: '2', label: 'фестиваля' },
-  ],
-  videos: [
-    {
-      title: 'Огонёк 2024: Quartet',
-      embedId: 'PzFOKI7Ezl0', // placeholder - need real video ID
-    },
-    {
-      title: 'Огонёк 2023: Live Set',
-      embedId: 'MkBzeE7Wye4', // placeholder
-    },
-  ],
-  gallery: [
-    '/projects/camp-klassika.jpg',
-    '/releases/ogonek-23.jpg',
-    '/hero.jpg',
   ],
 };
 ---
@@ -56,14 +36,14 @@ const project = {
         <div class="max-w-4xl mx-auto w-full">
           <a 
             href="/#projects" 
-            class="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white mb-4 transition-colors"
+            class="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white mb-4 transition-colors no-underline"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
             </svg>
             Назад к проектам
           </a>
-          <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-4" style="font-family: var(--font-logo);">
+          <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-4 text-white" style="font-family: var(--font-logo);">
             {project.title}
           </h1>
           <p class="text-xl text-white/70 mb-2">{project.subtitle}</p>
@@ -78,7 +58,7 @@ const project = {
         <div class="grid grid-cols-3 gap-8 text-center">
           {project.stats.map((stat) => (
             <div>
-              <p class="text-3xl md:text-4xl font-light tracking-wide">{stat.value}</p>
+              <p class="text-3xl md:text-4xl font-light tracking-wide text-white">{stat.value}</p>
               <p class="text-sm text-muted mt-1">{stat.label}</p>
             </div>
           ))}
@@ -86,65 +66,156 @@ const project = {
       </div>
     </section>
     
-    <!-- Description -->
+    <!-- Идея и смыслы -->
     <section class="py-16 px-6">
       <div class="max-w-3xl mx-auto">
-        <p class="text-lg leading-relaxed text-text/80">
-          {project.description}
-        </p>
-      </div>
-    </section>
-    
-    <!-- Videos -->
-    <section class="py-16 px-6 bg-surface/30">
-      <div class="max-w-5xl mx-auto">
-        <h2 class="text-2xl md:text-3xl font-light tracking-wide text-center mb-12">
-          Видео
+        <h2 class="text-2xl md:text-3xl font-light tracking-wide mb-8 text-white">
+          Идея и смыслы
         </h2>
         
-        <div class="grid md:grid-cols-2 gap-8">
-          {project.videos.map((video) => (
-            <div class="group">
-              <div class="aspect-video bg-surface overflow-hidden relative">
-                <!-- Grayscale mask that reveals color on hover -->
-                <div class="absolute inset-0 z-10 bg-background/20 group-hover:bg-transparent transition-all duration-500"></div>
-                <iframe
-                  src={`https://www.youtube.com/embed/${video.embedId}`}
-                  title={video.title}
-                  class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500"
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
-                ></iframe>
-              </div>
-              <p class="text-sm text-muted mt-3 text-center">{video.title}</p>
-            </div>
-          ))}
+        <div class="space-y-6 text-lg leading-relaxed text-text/80">
+          <p>
+            Есть много аспектов музыки и эффектов, как она воздействует на людей. Она может развлекать, создавать фон, вызывать в человеке процессы, отзеркаливающие ее настроение, порождать эмоции. Музыка запускает воображение, рисует картины внутри, создает пространство для мыслей и воспоминаний, приводит в движение скрытые механизмы духовных сил человека, пробуждая в нем творческие импульсы.
+          </p>
+          <p>
+            Сейчас в мире преобладает развлекательный аспект музыки. Это неплохо... Но у нас, в Классике, мы предлагаем сконцентрироваться на другом. Мы создаем пространство для идеального погружения в звук. Классическая, неоклассическая, джазовая, электронная и другая музыка. Музыка, где основной является красота тембра каждого инструмента, глубина самой музыки и проникновения ее в человека.
+          </p>
+          <p class="text-white italic">
+            Совместное погружение в звук вместе с живыми концертами и визуальным искусством. Возможность побыть наедине с собой и музыкой. Добро пожаловать ДОМОЙ.
+          </p>
         </div>
       </div>
     </section>
     
-    <!-- Gallery -->
-    <section class="py-16 px-6">
-      <div class="max-w-6xl mx-auto">
-        <h2 class="text-2xl md:text-3xl font-light tracking-wide text-center mb-12">
-          Галерея
+    <!-- Концепция -->
+    <section class="py-16 px-6 bg-surface/30">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-light tracking-wide mb-8 text-white">
+          Концепция
         </h2>
         
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {project.gallery.map((image, index) => (
-            <div class:list={[
-              "overflow-hidden",
-              index === 0 && "col-span-2 row-span-2"
-            ]}>
-              <img 
-                src={image} 
-                alt={`${project.title} photo ${index + 1}`}
-                class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                loading="lazy"
-              />
+        <div class="space-y-6 text-lg leading-relaxed text-text/80">
+          <p>
+            Классика как проект родилась в ответ на потребность в концертной площадке на фестивалях и других мероприятиях. Целью стало создать подходящее пространство с визуальной составляющей для того, чтобы обеспечить полное погружение в музыку и приходящие вместе с ней глубинные переживания и рефлексию.
+          </p>
+          <p>
+            Обычно в наши задачи входит полное перевоплощение выбранного помещения, поиск визуальной концепции и ее реализация, а также формирование музыкальной программы. При поиске идей мы всегда руководствуемся базовым принципом – создать нечто, что будет вызывать в первую очередь эстетическое удовольствие, обеспечивать уют и возможности для совместного музыкального путешествия.
+          </p>
+          <p>
+            Сердцем музыкальной части обычно является творчество коллектива Nomusicians, которые взаимодействуют с пространством и слушателями через импровизационную музыку на стыке электроники и современной академической музыки. На их счету более 300 концертов с большой географией выступлений: от академических площадок до планетариев и фестивалей в разных точках мира.
+          </p>
+          <p>
+            Также в музыкальной программе Классики обычно принимают участие другие музыканты различных жанров – джазовые и авангардные коллективы, современные академические композиторы, струнные квартеты.
+          </p>
+          <p class="text-muted">
+            Датой рождения проекта можно считать февраль 2022 года.
+          </p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Холодок -->
+    <section class="py-16 px-6">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-light tracking-wide mb-4 text-white">
+          Холодок
+        </h2>
+        <p class="text-muted mb-12">Зимний фестиваль бёрнерского сообщества</p>
+        
+        <!-- 2022 -->
+        <div class="mb-16">
+          <h3 class="text-xl font-light tracking-wide mb-6 text-white/80">2022: Первое воплощение</h3>
+          <div class="grid md:grid-cols-3 gap-4 mb-8">
+            <div class="aspect-square overflow-hidden">
+              <img src="/projects/klassika/holodok-2022-1.jpg" alt="Холодок 2022 монтаж" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
             </div>
-          ))}
+            <div class="aspect-square overflow-hidden">
+              <img src="/projects/klassika/holodok-2022-2.jpg" alt="Холодок 2022 готовая локация" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
+            </div>
+            <div class="aspect-square overflow-hidden">
+              <img src="/projects/klassika/holodok-2022-3.jpg" alt="Холодок 2022 концерт" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
+            </div>
+          </div>
+        </div>
+        
+        <!-- 2024 -->
+        <div class="mb-16">
+          <h3 class="text-xl font-light tracking-wide mb-6 text-white/80">2024: Рост проекта</h3>
+          <div class="grid md:grid-cols-2 gap-8 items-center mb-8">
+            <div>
+              <p class="text-text/80 leading-relaxed mb-4">
+                В 2023 году концепция была реализована вновь без значительных изменений. Однако в 2024 году, почувствовав себя более уверенно в ее осуществлении, произошел рост, и мы решили занимать более крупные пространства.
+              </p>
+              <p class="text-text/80 leading-relaxed">
+                В 2024 году мы оборудовали под концертную площадку актовый зал пансионата. Вместе с расширением зала, мы расширили и свою музыкальную программу, включив в нее новых артистов, а также визуальную составляющую, пригласив медиахудожников.
+              </p>
+            </div>
+            <div class="aspect-video overflow-hidden">
+              <img src="/projects/klassika/holodok-2024-plan.jpg" alt="Холодок 2024 план зала" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="aspect-square overflow-hidden">
+              <img src="/projects/klassika/holodok-2024-1.jpg" alt="Холодок 2024 монтаж" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
+            </div>
+            <div class="aspect-square overflow-hidden">
+              <img src="/projects/klassika/holodok-2024-2.jpg" alt="Холодок 2024 готовая локация" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
+            </div>
+            <div class="aspect-square overflow-hidden">
+              <img src="/projects/klassika/holodok-2024-3.jpg" alt="Холодок 2024 концерт" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Video -->
+        <div class="aspect-video bg-surface overflow-hidden relative group">
+          <div class="absolute inset-0 z-10 bg-background/30 group-hover:bg-transparent transition-all duration-500"></div>
+          <iframe
+            src="https://www.youtube.com/embed/MkBzeE7Wye4"
+            title="Холодок 2024"
+            class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Огонёк -->
+    <section class="py-16 px-6 bg-surface/30">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-light tracking-wide mb-4 text-white">
+          Огонёк
+        </h2>
+        <p class="text-muted mb-12">Летний фестиваль бёрнерского сообщества</p>
+        
+        <!-- 2024 -->
+        <div class="mb-16">
+          <h3 class="text-xl font-light tracking-wide mb-6 text-white/80">2024: Концертная площадка под открытым небом</h3>
+          
+          <div class="grid md:grid-cols-2 gap-4 mb-8">
+            <div class="aspect-video overflow-hidden">
+              <img src="/projects/klassika/ogonek-2024-1.jpg" alt="Огонёк 2024 место" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
+            </div>
+            <div class="aspect-video overflow-hidden">
+              <img src="/projects/klassika/ogonek-2024-2.jpg" alt="Огонёк 2024 концерт" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" loading="lazy" />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Video -->
+        <div class="aspect-video bg-surface overflow-hidden relative group">
+          <div class="absolute inset-0 z-10 bg-background/30 group-hover:bg-transparent transition-all duration-500"></div>
+          <iframe
+            src="https://www.youtube.com/embed/PzFOKI7Ezl0"
+            title="Огонёк 2024: Quartet"
+            class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
         </div>
       </div>
     </section>
@@ -153,7 +224,7 @@ const project = {
     <section class="py-16 px-6 text-center">
       <a 
         href="/#projects" 
-        class="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+        class="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors no-underline"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
@@ -170,6 +241,13 @@ const project = {
 </Layout>
 
 <style>
-  @import '../../../styles/global.css';
+  /* Override default link colors */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    opacity: 0.7;
+  }
 </style>
-
