@@ -63,6 +63,7 @@ export const translations = {
         'releases.title': 'Релизы',
         'releases.live': 'Live',
         'releases.studio': 'Studio',
+        'releases.collabs': 'Коллабы',
 
         // Projects
         'projects.title': 'Проекты',
@@ -145,6 +146,7 @@ export const translations = {
         'releases.title': 'Releases',
         'releases.live': 'Live',
         'releases.studio': 'Studio',
+        'releases.collabs': 'Collabs',
 
         // Projects
         'projects.title': 'Projects',
@@ -227,6 +229,7 @@ export const translations = {
         'releases.title': '专辑',
         'releases.live': '现场',
         'releases.studio': '录音室',
+        'releases.collabs': '合作',
 
         // Projects
         'projects.title': '项目',

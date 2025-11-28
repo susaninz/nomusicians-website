@@ -1,0 +1,175 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+
+const lang = 'ru';
+
+const project = {
+  title: 'Camp Klassika',
+  subtitle: 'Музыкальная программа для бёрнерских фестивалей',
+  years: '2019—2024',
+  heroImage: '/projects/camp-klassika.jpg',
+  description: `
+    Классика — это музыкальная программа, созданная Nomusicians для фестивалей бёрнерского сообщества: 
+    Огонёк (летний) и Холодок (зимний). С 2019 года мы проводим концерты под открытым небом, 
+    создавая уникальную атмосферу на границе электроники и акустики.
+  `,
+  stats: [
+    { value: '10+', label: 'концертов' },
+    { value: '6', label: 'лет' },
+    { value: '2', label: 'фестиваля' },
+  ],
+  videos: [
+    {
+      title: 'Огонёк 2024: Quartet',
+      embedId: 'PzFOKI7Ezl0', // placeholder - need real video ID
+    },
+    {
+      title: 'Огонёк 2023: Live Set',
+      embedId: 'MkBzeE7Wye4', // placeholder
+    },
+  ],
+  gallery: [
+    '/projects/camp-klassika.jpg',
+    '/releases/ogonek-23.jpg',
+    '/hero.jpg',
+  ],
+};
+---
+
+<Layout title={`${project.title} — Nomusicians`}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-20">
+    <!-- Hero Section -->
+    <section class="relative h-[60vh] min-h-[400px] overflow-hidden">
+      <div class="absolute inset-0">
+        <img 
+          src={project.heroImage} 
+          alt={project.title}
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
+      </div>
+      
+      <div class="relative z-10 flex items-end h-full pb-12 px-6">
+        <div class="max-w-4xl mx-auto w-full">
+          <a 
+            href="/#projects" 
+            class="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white mb-4 transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+            </svg>
+            Назад к проектам
+          </a>
+          <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-4" style="font-family: var(--font-logo);">
+            {project.title}
+          </h1>
+          <p class="text-xl text-white/70 mb-2">{project.subtitle}</p>
+          <p class="text-sm text-white/50 tracking-wider uppercase">{project.years}</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Stats -->
+    <section class="py-12 px-6 border-b border-white/10">
+      <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-3 gap-8 text-center">
+          {project.stats.map((stat) => (
+            <div>
+              <p class="text-3xl md:text-4xl font-light tracking-wide">{stat.value}</p>
+              <p class="text-sm text-muted mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <!-- Description -->
+    <section class="py-16 px-6">
+      <div class="max-w-3xl mx-auto">
+        <p class="text-lg leading-relaxed text-text/80">
+          {project.description}
+        </p>
+      </div>
+    </section>
+    
+    <!-- Videos -->
+    <section class="py-16 px-6 bg-surface/30">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-light tracking-wide text-center mb-12">
+          Видео
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          {project.videos.map((video) => (
+            <div class="group">
+              <div class="aspect-video bg-surface overflow-hidden relative">
+                <!-- Grayscale mask that reveals color on hover -->
+                <div class="absolute inset-0 z-10 bg-background/20 group-hover:bg-transparent transition-all duration-500"></div>
+                <iframe
+                  src={`https://www.youtube.com/embed/${video.embedId}`}
+                  title={video.title}
+                  class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+              </div>
+              <p class="text-sm text-muted mt-3 text-center">{video.title}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <!-- Gallery -->
+    <section class="py-16 px-6">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-light tracking-wide text-center mb-12">
+          Галерея
+        </h2>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {project.gallery.map((image, index) => (
+            <div class:list={[
+              "overflow-hidden",
+              index === 0 && "col-span-2 row-span-2"
+            ]}>
+              <img 
+                src={image} 
+                alt={`${project.title} photo ${index + 1}`}
+                class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <!-- Back Link -->
+    <section class="py-16 px-6 text-center">
+      <a 
+        href="/#projects" 
+        class="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+        </svg>
+        Вернуться к проектам
+      </a>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 px-6 text-center text-muted text-sm border-t border-white/10">
+      <p>© 2025 Nomusicians. Все права защищены.</p>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  @import '../../../styles/global.css';
+</style>
+

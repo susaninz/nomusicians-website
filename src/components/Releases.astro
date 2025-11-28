@@ -14,36 +14,31 @@ const releases = {
     {
       title: 'Live at Ogonek \'23',
       year: '2023',
-      cover: 'https://i1.sndcdn.com/artworks-UfA1u4o6nC3lOHLP-UD1xhg-t500x500.jpg',
-      spotify: 'https://open.spotify.com/artist/1qLMx7d1hfZHkN5Z3oHjun',
+      cover: '/releases/ogonek-23.jpg',
       soundcloud: 'https://soundcloud.com/nomusicians/live-set-on-ogonek-23-burning-time-thursday',
     },
     {
       title: 'Jam Loft \'23',
       year: '2023',
-      cover: 'https://i1.sndcdn.com/artworks-h7O3ynC8tA2F9u0m-1v1Z1A-t500x500.jpg',
-      spotify: 'https://open.spotify.com/artist/1qLMx7d1hfZHkN5Z3oHjun',
+      cover: '/releases/jam-loft-23.jpg',
       soundcloud: 'https://soundcloud.com/nomusicians/sets/jam-loft',
     },
     {
       title: 'Qatar \'22',
       year: '2022',
-      cover: 'https://i1.sndcdn.com/artworks-cUOBBYwJffF4tq2v-AxKsjg-t500x500.jpg',
-      spotify: 'https://open.spotify.com/artist/1qLMx7d1hfZHkN5Z3oHjun',
+      cover: '/releases/qatar-22.jpg',
       soundcloud: 'https://soundcloud.com/nomusicians/meanwhile-at-heenat-salma-featdmitry-skvortsov',
     },
     {
       title: 'Boring Room \'20',
       year: '2020',
-      cover: 'https://i1.sndcdn.com/artworks-WxJuW5xVBuHdSJ7N-lVGzWA-t500x500.jpg',
-      spotify: 'https://open.spotify.com/artist/1qLMx7d1hfZHkN5Z3oHjun',
+      cover: '/releases/boring-room-20.jpg',
       soundcloud: 'https://soundcloud.com/nomusicians/sets/boring-room-live-stream-20',
     },
     {
       title: 'Blanc \'19',
       year: '2019',
-      cover: 'https://i1.sndcdn.com/artworks-000567167055-y5p4qt-t500x500.jpg',
-      spotify: 'https://open.spotify.com/artist/1qLMx7d1hfZHkN5Z3oHjun',
+      cover: '/releases/blanc-19.jpg',
       soundcloud: 'https://soundcloud.com/nomusicians/mammoth-firs-live',
     },
   ],
@@ -51,34 +46,39 @@ const releases = {
     {
       title: 'Noch 3.0',
       year: '2023',
-      cover: 'https://i1.sndcdn.com/artworks-8OaZwxwomCGKTBBt-Xkl3Gg-t500x500.jpg',
-      spotify: 'https://open.spotify.com/artist/1qLMx7d1hfZHkN5Z3oHjun',
+      cover: '/releases/noch-3.jpg',
       soundcloud: 'https://soundcloud.com/nomusicians/noch-3',
-    },
-    {
-      title: 'That Wedding',
-      year: '2022',
-      cover: 'https://i1.sndcdn.com/artworks-K6jJj4O4rq23xo7p-IiuGXA-t500x500.jpg',
-      spotify: 'https://open.spotify.com/album/0EjD6dBjVYsHMqU3QBRZNH',
-      soundcloud: 'https://soundcloud.com/itsgoodtobeatree/sets/dima-ustinov-nomusicians-that-wedding',
-      label: 'ItsGoodToBeATree',
     },
     {
       title: 'Paraphonic',
       year: '2025',
-      cover: 'https://i1.sndcdn.com/artworks-4pxyOWc0x6nYhv5f-cEQT7Q-t500x500.jpg',
-      spotify: 'https://open.spotify.com/artist/1qLMx7d1hfZHkN5Z3oHjun',
+      cover: '/releases/paraphonic.jpg',
       soundcloud: 'https://soundcloud.com/nomusicians/ajh-pads',
     },
     {
       title: '5pulse',
       year: '2024',
-      cover: 'https://i1.sndcdn.com/artworks-LpE3Aahmz3w0evQA-1GWqYw-t500x500.jpg',
-      spotify: 'https://open.spotify.com/artist/1qLMx7d1hfZHkN5Z3oHjun',
+      cover: '/releases/5pulse.jpg',
       soundcloud: 'https://soundcloud.com/nomusicians/5pulse',
     },
   ],
+  collabs: [
+    {
+      title: 'That Wedding',
+      year: '2022',
+      cover: '/releases/that-wedding.jpg',
+      soundcloud: 'https://soundcloud.com/itsgoodtobeatree/sets/dima-ustinov-nomusicians-that-wedding',
+      artist: 'w/ Dima Ustinov',
+      label: 'ItsGoodToBeATree',
+    },
+  ],
 };
+
+const tabs = [
+  { key: 'live', label: t(lang, 'releases.live') },
+  { key: 'studio', label: t(lang, 'releases.studio') },
+  { key: 'collabs', label: t(lang, 'releases.collabs') },
+];
 ---
 
 <section id="releases" class="py-24 px-6">
@@ -88,19 +88,20 @@ const releases = {
     </h2>
     
     <!-- Tabs -->
-    <div class="flex justify-center gap-8 mb-12">
-      <button 
-        class="release-tab text-lg tracking-wider uppercase text-white border-b-2 border-white pb-2 transition-all"
-        data-tab="live"
-      >
-        {t(lang, 'releases.live')}
-      </button>
-      <button 
-        class="release-tab text-lg tracking-wider uppercase text-muted border-b-2 border-transparent pb-2 hover:text-white transition-all"
-        data-tab="studio"
-      >
-        {t(lang, 'releases.studio')}
-      </button>
+    <div class="flex justify-center gap-2 md:gap-4 mb-12">
+      {tabs.map((tab, index) => (
+        <button 
+          class:list={[
+            "release-tab px-4 py-2 text-sm md:text-base tracking-wider uppercase transition-all duration-300 border rounded-full",
+            index === 0 
+              ? "text-background bg-white border-white" 
+              : "text-white/70 bg-transparent border-white/30 hover:border-white hover:text-white"
+          ]}
+          data-tab={tab.key}
+        >
+          {tab.label}
+        </button>
+      ))}
     </div>
     
     <!-- Live Releases Grid -->
@@ -112,7 +113,7 @@ const releases = {
           rel="noopener noreferrer"
           class="group"
         >
-          <div class="aspect-square overflow-hidden mb-3">
+          <div class="aspect-square overflow-hidden mb-3 bg-surface">
             <img 
               src={release.cover} 
               alt={release.title}
@@ -139,7 +140,7 @@ const releases = {
           rel="noopener noreferrer"
           class="group"
         >
-          <div class="aspect-square overflow-hidden mb-3">
+          <div class="aspect-square overflow-hidden mb-3 bg-surface">
             <img 
               src={release.cover} 
               alt={release.title}
@@ -152,8 +153,40 @@ const releases = {
           </h3>
           <p class="text-xs text-muted text-center mt-1">
             {release.year}
-            {release.label && <span class="ml-2 text-white/50">· {release.label}</span>}
           </p>
+        </a>
+      ))}
+    </div>
+    
+    <!-- Collabs Releases Grid -->
+    <div id="releases-collabs" class="release-content hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {releases.collabs.map((release) => (
+        <a 
+          href={release.soundcloud} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="group"
+        >
+          <div class="aspect-square overflow-hidden mb-3 bg-surface">
+            <img 
+              src={release.cover} 
+              alt={release.title}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+          <h3 class="text-sm md:text-base font-light tracking-wide text-center uppercase">
+            {release.title}
+          </h3>
+          <p class="text-xs text-muted text-center mt-1">
+            {release.artist && <span class="text-white/50">{release.artist} · </span>}
+            {release.year}
+          </p>
+          {release.label && (
+            <p class="text-xs text-white/40 text-center mt-0.5">
+              {release.label}
+            </p>
+          )}
         </a>
       ))}
     </div>
@@ -170,11 +203,11 @@ const releases = {
       
       // Update tabs styles
       tabs.forEach(t => {
-        t.classList.remove('text-white', 'border-white');
-        t.classList.add('text-muted', 'border-transparent');
+        t.classList.remove('text-background', 'bg-white', 'border-white');
+        t.classList.add('text-white/70', 'bg-transparent', 'border-white/30');
       });
-      tab.classList.remove('text-muted', 'border-transparent');
-      tab.classList.add('text-white', 'border-white');
+      tab.classList.remove('text-white/70', 'bg-transparent', 'border-white/30');
+      tab.classList.add('text-background', 'bg-white', 'border-white');
       
       // Show/hide content
       contents.forEach(content => {
@@ -184,4 +217,3 @@ const releases = {
     });
   });
 </script>
-

@@ -8,14 +8,29 @@ interface Props {
 
 const { lang } = Astro.props;
 
+// Language prefix for links
+const langPrefix = lang === 'ru' ? '' : `/${lang}`;
+
 // Projects data (will come from Sanity later)
 const projects = [
+  {
+    id: 'camp-klassika',
+    title: 'Camp Klassika',
+    year: '2019—2024',
+    image: '/projects/camp-klassika.jpg',
+    hasPage: true,
+    description: {
+      ru: 'Музыкальная программа для бёрнерских фестивалей Огонёк и Холодок. Концерты под открытым небом, импровизации и творческие встречи в атмосфере сообщества.',
+      en: 'Music program for burner festivals Ogonek and Kholodok. Open-air concerts, improvisations and creative gatherings in a community atmosphere.',
+      cn: '燃烧者节日Ogonek和Kholodok的音乐节目。露天音乐会、即兴创作和社区氛围中的创意聚会。',
+    },
+  },
   {
     id: 'lampu-bali',
     title: 'Lampu Bali',
     year: '2024',
-    image: '/hero.jpg', // placeholder - will be replaced with actual project image
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // placeholder
+    image: '/projects/lampu-bali.jpg',
+    hasPage: false,
     description: {
       ru: 'Музыкальная резиденция на Бали. Концерты на закате в рисовых полях, джем-сессии с местными музыкантами и творческие встречи.',
       en: 'Music residency in Bali. Sunset concerts in rice fields, jam sessions with local musicians and creative gatherings.',
@@ -23,35 +38,11 @@ const projects = [
     },
   },
   {
-    id: 'camp-klassika',
-    title: 'Camp Klassika',
-    year: '2023',
-    image: '/hero.jpg', // placeholder
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // placeholder
-    description: {
-      ru: 'Огонёк, Холодок — летний лагерь на природе с концертами под открытым небом. Музыка, общение и творчество в атмосфере бёрнерского сообщества.',
-      en: 'Ogonek, Kholodok — summer camp in nature with open-air concerts. Music, connection and creativity in the burner community atmosphere.',
-      cn: 'Ogonek, Kholodok — 自然中的夏令营，露天音乐会。燃烧者社区氛围中的音乐、交流和创意。',
-    },
-  },
-  {
-    id: 'camp-budilnik',
-    title: 'Camp Будильник',
-    year: '2023',
-    image: '/hero.jpg', // placeholder
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // placeholder
-    description: {
-      ru: 'Огонёк, Россия — утренние сеты на рассвете, пробуждающие лагерь звуками эмбиента и неоклассики.',
-      en: 'Ogonek, Russia — morning sets at dawn, awakening the camp with ambient and neoclassical sounds.',
-      cn: 'Ogonek, 俄罗斯 — 黎明时分的早晨演出，用氛围音乐和新古典音乐唤醒营地。',
-    },
-  },
-  {
     id: 'qatar',
     title: 'Qatar',
     year: '2022',
-    image: '/hero.jpg', // placeholder
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // placeholder
+    image: '/releases/qatar-22.jpg',
+    hasPage: false,
     description: {
       ru: 'Выступление в Катаре на площадке Heenat Salma. Специальная программа с участием Дмитрия Скворцова.',
       en: 'Performance in Qatar at Heenat Salma venue. Special program featuring Dmitry Skvortsov.',
@@ -62,8 +53,8 @@ const projects = [
     id: 'portugal',
     title: 'Portugal Special',
     year: '2023',
-    image: '/hero.jpg', // placeholder
-    video: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // placeholder
+    image: '/hero.jpg',
+    hasPage: false,
     description: {
       ru: 'Двойной концерт в Лиссабоне: электроника, неоклассика и минимализм + трибьют Radiohead.',
       en: 'Double concert in Lisbon: electronics, neoclassical and minimalism + Radiohead tribute.',
@@ -94,27 +85,57 @@ const projects = [
               data-slide={index}
             >
               <div class="grid md:grid-cols-2 gap-8 items-center">
-                <!-- Image/Video -->
-                <div class="aspect-video overflow-hidden">
+                <!-- Image -->
+                <a 
+                  href={project.hasPage ? `${langPrefix}/projects/${project.id}/` : undefined}
+                  class:list={[
+                    "block aspect-video overflow-hidden group",
+                    project.hasPage && "cursor-pointer"
+                  ]}
+                >
                   <img 
                     src={project.image}
                     alt={project.title}
-                    class="w-full h-full object-cover"
+                    class:list={[
+                      "w-full h-full object-cover transition-transform duration-500",
+                      project.hasPage && "group-hover:scale-105"
+                    ]}
                     loading="lazy"
                   />
-                </div>
+                </a>
                 
                 <!-- Info -->
                 <div class="text-center md:text-left">
                   <h3 class="text-2xl md:text-3xl font-light tracking-wide mb-2">
-                    {project.title}
+                    {project.hasPage ? (
+                      <a 
+                        href={`${langPrefix}/projects/${project.id}/`}
+                        class="hover:text-white/70 transition-colors"
+                      >
+                        {project.title}
+                      </a>
+                    ) : (
+                      project.title
+                    )}
                   </h3>
                   <p class="text-muted text-sm tracking-wider uppercase mb-6">
                     {project.year}
                   </p>
-                  <p class="text-text/70 leading-relaxed">
+                  <p class="text-text/70 leading-relaxed mb-6">
                     {project.description[lang]}
                   </p>
+                  
+                  {project.hasPage && (
+                    <a 
+                      href={`${langPrefix}/projects/${project.id}/`}
+                      class="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-white/70 hover:text-white transition-colors"
+                    >
+                      {lang === 'ru' ? 'Подробнее' : lang === 'cn' ? '了解更多' : 'Learn more'}
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                      </svg>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -212,4 +233,3 @@ const projects = [
     }
   });
 </script>
-

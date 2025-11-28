@@ -28,10 +28,23 @@ const { lang } = Astro.props;
         {t(lang, 'history.title')}
       </h3>
       
-      <div class="space-y-6 text-lg leading-relaxed text-text/80">
-        <p>{t(lang, 'history.p1')}</p>
-        <p>{t(lang, 'history.p2')}</p>
-        <p set:html={t(lang, 'history.p3').replace('<em>', '<em class="text-white not-italic">')} />
+      <div class="grid md:grid-cols-2 gap-8 items-center mb-8">
+        <!-- History Photo -->
+        <div class="aspect-[4/3] overflow-hidden">
+          <img 
+            src="/history/band-early.jpg" 
+            alt="Nomusicians early days"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+        
+        <!-- History Text -->
+        <div class="space-y-4 text-text/80">
+          <p>{t(lang, 'history.p1')}</p>
+          <p>{t(lang, 'history.p2')}</p>
+          <p set:html={t(lang, 'history.p3').replace('<em>', '<em class="text-white not-italic">')} />
+        </div>
       </div>
     </div>
   </div>
