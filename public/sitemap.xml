@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Russian (default) -->
+  <url>
+    <loc>https://nomusicians.com/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nomusicians.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nomusicians.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nomusicians.com/cn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nomusicians.com/"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- English -->
+  <url>
+    <loc>https://nomusicians.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nomusicians.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nomusicians.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nomusicians.com/cn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nomusicians.com/"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Chinese -->
+  <url>
+    <loc>https://nomusicians.com/cn/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nomusicians.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nomusicians.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nomusicians.com/cn/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nomusicians.com/"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- People pages -->
+  <url>
+    <loc>https://nomusicians.com/people</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nomusicians.com/people"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nomusicians.com/en/people"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nomusicians.com/cn/people"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://nomusicians.com/en/people</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nomusicians.com/people"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nomusicians.com/en/people"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nomusicians.com/cn/people"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://nomusicians.com/cn/people</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://nomusicians.com/people"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nomusicians.com/en/people"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://nomusicians.com/cn/people"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Projects -->
+  <url>
+    <loc>https://nomusicians.com/projects/klassika/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>
+

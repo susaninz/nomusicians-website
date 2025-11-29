@@ -1,36 +1,13 @@
 ---
 import type { Lang } from '../i18n/translations';
 import { t } from '../i18n/translations';
+import { videos, youtubeChannelUrl } from '../data/videos';
 
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
-
-// Videos from Taplink
-const videos = [
-  { 
-    title: 'Marcia Moderato (Live)', 
-    url: 'https://www.youtube.com/watch?v=PzFOKI7Ezl0',
-    thumbnail: 'https://img.youtube.com/vi/PzFOKI7Ezl0/maxresdefault.jpg'
-  },
-  { 
-    title: 'Besedka Live', 
-    url: 'https://www.youtube.com/watch?v=MkBzeE7Wye4',
-    thumbnail: 'https://img.youtube.com/vi/MkBzeE7Wye4/maxresdefault.jpg'
-  },
-  { 
-    title: 'Fast No Fast / Blanc', 
-    url: 'https://www.youtube.com/watch?v=Tt64lxUyiPw',
-    thumbnail: 'https://img.youtube.com/vi/Tt64lxUyiPw/maxresdefault.jpg'
-  },
-  { 
-    title: 'MiR / Lampu, Bali', 
-    url: 'https://www.youtube.com/watch?v=D0fvoGoUxxI',
-    thumbnail: 'https://img.youtube.com/vi/D0fvoGoUxxI/maxresdefault.jpg'
-  },
-];
 ---
 
 <section id="watch" class="py-24 px-6">
@@ -75,7 +52,7 @@ const videos = [
     <!-- More videos link -->
     <div class="text-center mt-8">
       <a 
-        href="https://www.youtube.com/@nomusicians"
+        href={youtubeChannelUrl}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 text-sm tracking-[0.2em] uppercase text-muted hover:text-white transition-colors"

@@ -90,6 +90,17 @@ export const translations = {
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. Все права защищены.',
+        
+        // People page
+        'people.title': 'Musicians & Nomusicians',
+        'people.subtitle': 'Те, кто играет, и те, кто делает музыку возможной',
+        'people.musicians': 'Musicians',
+        'people.musicians.sub': 'Основной состав',
+        'people.family': 'Nomusicians Family',
+        'people.family.sub': 'Расширенный состав',
+        'people.collaborators': 'Nomusicians',
+        'people.collaborators.sub': 'Те, кто делает музыку возможной',
+        'people.back': 'Вернуться на главную',
     },
 
     en: {
@@ -175,6 +186,17 @@ export const translations = {
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. All rights reserved.',
+        
+        // People page
+        'people.title': 'Musicians & Nomusicians',
+        'people.subtitle': 'Those who play, and those who make the music possible',
+        'people.musicians': 'Musicians',
+        'people.musicians.sub': 'Core lineup',
+        'people.family': 'Nomusicians Family',
+        'people.family.sub': 'Extended lineup',
+        'people.collaborators': 'Nomusicians',
+        'people.collaborators.sub': 'Those who make the music possible',
+        'people.back': 'Back to home',
     },
 
     cn: {
@@ -260,6 +282,17 @@ export const translations = {
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. 保留所有权利。',
+        
+        // People page
+        'people.title': 'Musicians & Nomusicians',
+        'people.subtitle': '演奏者与幕后推动者',
+        'people.musicians': 'Musicians',
+        'people.musicians.sub': '核心阵容',
+        'people.family': 'Nomusicians Family',
+        'people.family.sub': '扩展阵容',
+        'people.collaborators': 'Nomusicians',
+        'people.collaborators.sub': '让音乐成为可能的人',
+        'people.back': '返回首页',
     },
 } as const;
 

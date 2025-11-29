@@ -17,7 +17,11 @@ const homeBase = currentLang === 'ru' ? '' : `/${currentLang}`;
 
 // Функция для генерации ссылки
 function getNavHref(anchor: string): string {
-  if (anchor.startsWith('/')) return anchor; // Абсолютные ссылки не меняем
+  // Для /people добавляем языковой префикс
+  if (anchor === '/people') {
+    return currentLang === 'ru' ? '/people' : `/${currentLang}/people`;
+  }
+  if (anchor.startsWith('/')) return anchor; // Другие абсолютные ссылки не меняем
   return isHomePage ? anchor : `${homeBase}/${anchor}`;
 }
 

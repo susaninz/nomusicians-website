@@ -1,0 +1,7 @@
+# Nomusicians Website
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://nomusicians.com/sitemap.xml
+

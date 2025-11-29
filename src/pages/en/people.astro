@@ -1,17 +1,17 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import { getMusicians, getFamily, getCollaborators, getLinkIcon } from '../data/people';
-import { t } from '../i18n/translations';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import { getMusicians, getFamily, getCollaborators, getLinkIcon } from '../../data/people';
+import { t } from '../../i18n/translations';
 
-const lang = 'ru';
+const lang = 'en';
 
 // Получаем данные из единого источника
 const musicians = getMusicians();
 const family = getFamily();
 const collaborators = getCollaborators();
 
-const homeUrl = '/';
+const homeUrl = '/en/';
 ---
 
 <Layout title="Musicians & Nomusicians — Nomusicians" lang={lang}>
@@ -91,7 +91,7 @@ const homeUrl = '/';
       </div>
     </section>
 
-    <!-- Разделитель -->
+    <!-- Separator -->
     <div class="max-w-4xl mx-auto px-6 mb-20">
       <div class="border-t border-white/10 relative">
         <span class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted text-sm tracking-widest">
@@ -165,7 +165,7 @@ const homeUrl = '/';
       </div>
     </section>
 
-    <!-- Разделитель -->
+    <!-- Separator -->
     <div class="max-w-4xl mx-auto px-6 mb-20">
       <div class="border-t border-white/10 relative">
         <span class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted text-sm tracking-widest">
@@ -234,7 +234,7 @@ const homeUrl = '/';
       </div>
     </section>
 
-    <!-- Навигация -->
+    <!-- Navigation -->
     <section class="px-6 py-16 text-center">
       <a 
         href={homeUrl}
@@ -248,3 +248,4 @@ const homeUrl = '/';
     </section>
   </main>
 </Layout>
+

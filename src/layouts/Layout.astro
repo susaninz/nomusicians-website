@@ -2,24 +2,49 @@
 interface Props {
   title?: string;
   description?: string;
+  lang?: 'ru' | 'en' | 'cn';
+  ogImage?: string;
 }
 
 const { 
   title = 'Nomusicians — Electronic & Neoclassical Music',
-  description = 'Импровизационная электроакустическая музыка. Live performances combining analog synthesizers, drums, violin, flugelhorn with visual art.'
+  description = 'Импровизационная электроакустическая музыка. Live performances combining analog synthesizers, drums, violin, flugelhorn with visual art.',
+  lang = 'ru',
+  ogImage = '/og-image.jpg'
 } = Astro.props;
+
+// HTML lang attribute mapping
+const htmlLang = {
+  ru: 'ru',
+  en: 'en', 
+  cn: 'zh-CN'
+}[lang];
+
+// OG locale mapping
+const ogLocale = {
+  ru: 'ru_RU',
+  en: 'en_US',
+  cn: 'zh_CN'
+}[lang];
+
+// Canonical URL
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://nomusicians.com');
 ---
 
 <!doctype html>
-<html lang="ru">
+<html lang={htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content={description} />
     
-    <!-- Fonts -->
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Fonts with display=swap for faster rendering -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Manrope:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&display=swap" as="style" />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Manrope:wght@300;400;500&family=Noto+Sans+SC:wght@300;400&display=swap" rel="stylesheet" />
     
     <!-- Favicon -->
@@ -29,7 +54,16 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="Nomusicians" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     
     <title>{title}</title>
   </head>
