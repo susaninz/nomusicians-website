@@ -24,3 +24,7 @@ pnpm-debug.log*
 # IDE
 .vscode/
 .idea/
+
+# Large video files
+public/videos/klassika/*.MOV
+public/videos/klassika/*.mp4

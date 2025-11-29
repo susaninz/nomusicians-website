@@ -1,0 +1,13 @@
+{
+  "name": "deepl-proxy",
+  "version": "1.0.0",
+  "description": "DeepL translation proxy for Nomusicians Sanity Studio",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
+
