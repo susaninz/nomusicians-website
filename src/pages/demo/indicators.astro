@@ -1,0 +1,289 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+const lang = 'ru';
+const itemCount = 6;
+---
+
+<Layout title="Демо: Варианты индикаторов галереи — Nomusicians">
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-16">
+    <section class="px-6 mb-16">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl font-light tracking-wide mb-6" style="font-family: var(--font-logo);">
+          Индикаторы галереи
+        </h1>
+        <p class="text-lg text-muted">
+          Варианты оформления индикаторов для горизонтального скролла
+        </p>
+      </div>
+    </section>
+
+    <!-- Вариант 1: Точки (классика) -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">1. Точки (классика)</h2>
+        <p class="text-muted text-sm mb-8">Минималистичный вариант, привычный всем</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="flex gap-2 items-center">
+            {Array.from({length: itemCount}).map((_, i) => (
+              <button 
+                class:list={[
+                  "w-2 h-2 rounded-full transition-all duration-300",
+                  i === 0 ? "bg-white w-6" : "bg-white/30 hover:bg-white/50"
+                ]}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 2: Линии -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">2. Линии</h2>
+        <p class="text-muted text-sm mb-8">Горизонтальные штрихи, как в музыкальной нотации</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="flex gap-1 items-center">
+            {Array.from({length: itemCount}).map((_, i) => (
+              <button 
+                class:list={[
+                  "h-[2px] transition-all duration-300 rounded-full",
+                  i === 0 ? "bg-white w-8" : "bg-white/30 hover:bg-white/50 w-4"
+                ]}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 3: Нотный стан -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">3. Нотный стан</h2>
+        <p class="text-muted text-sm mb-8">Точки на линейках, напоминающие ноты</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="relative h-8">
+            <!-- Линейки стана -->
+            <div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+              {[0,1,2,3,4].map(() => (
+                <div class="h-[1px] w-full bg-white/10"></div>
+              ))}
+            </div>
+            <!-- Ноты -->
+            <div class="relative flex gap-4 items-center h-full px-2">
+              {Array.from({length: itemCount}).map((_, i) => {
+                const positions = [0, 4, 8, 16, 24, 28]; // Разные позиции по вертикали
+                return (
+                  <button 
+                    class:list={[
+                      "w-3 h-3 rounded-full transition-all duration-300 relative",
+                      i === 0 ? "bg-white scale-110" : "bg-white/40 hover:bg-white/60"
+                    ]}
+                    style={`margin-top: ${positions[i % positions.length]}px`}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 4: Вертикальные линии (эквалайзер) -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">4. Эквалайзер</h2>
+        <p class="text-muted text-sm mb-8">Вертикальные полоски разной высоты</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="flex gap-1 items-end h-8">
+            {Array.from({length: itemCount}).map((_, i) => {
+              const heights = [16, 24, 20, 28, 18, 22];
+              return (
+                <button 
+                  class:list={[
+                    "w-1 transition-all duration-300 rounded-t",
+                    i === 0 ? "bg-white" : "bg-white/30 hover:bg-white/50"
+                  ]}
+                  style={`height: ${heights[i % heights.length]}px`}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 5: Минимальные вертикали -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">5. Минимальные вертикали</h2>
+        <p class="text-muted text-sm mb-8">Тонкие вертикальные линии одинаковой высоты</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="flex gap-2 items-center h-6">
+            {Array.from({length: itemCount}).map((_, i) => (
+              <button 
+                class:list={[
+                  "w-[1px] h-full transition-all duration-300",
+                  i === 0 ? "bg-white w-[2px]" : "bg-white/30 hover:bg-white/50"
+                ]}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 6: Прогресс-бар -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">6. Прогресс-бар</h2>
+        <p class="text-muted text-sm mb-8">Единая линия с позицией</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="relative w-48 h-[2px] bg-white/20 rounded-full">
+            <div class="absolute left-0 top-0 h-full w-1/6 bg-white rounded-full transition-all duration-300"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 7: Цифры -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">7. Цифры</h2>
+        <p class="text-muted text-sm mb-8">Номер текущего слайда</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="flex items-center gap-2 text-sm tracking-wider">
+            <span class="text-white">01</span>
+            <span class="text-white/30">/</span>
+            <span class="text-white/30">06</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 8: Точки с тире -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">8. Точки с тире</h2>
+        <p class="text-muted text-sm mb-8">Активная точка растягивается в линию</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="flex gap-2 items-center">
+            {Array.from({length: itemCount}).map((_, i) => (
+              <button 
+                class:list={[
+                  "h-1 rounded-full transition-all duration-300",
+                  i === 0 ? "bg-white w-8" : "bg-white/30 hover:bg-white/50 w-1"
+                ]}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 9: Волна/синусоида -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">9. Волна</h2>
+        <p class="text-muted text-sm mb-8">Плавная линия, активная точка выделена</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center">
+          <div class="flex items-center">
+            <svg width="180" height="24" viewBox="0 0 180 24" class="overflow-visible">
+              <!-- Волна -->
+              <path 
+                d="M0,12 Q15,4 30,12 T60,12 T90,12 T120,12 T150,12 T180,12" 
+                fill="none" 
+                stroke="rgba(255,255,255,0.2)" 
+                stroke-width="1"
+              />
+              <!-- Точки на волне -->
+              {Array.from({length: itemCount}).map((_, i) => {
+                const yPositions = [12, 4, 12, 20, 12, 4];
+                return (
+                  <circle 
+                    cx={i * 30 + 15} 
+                    cy={yPositions[i % yPositions.length]} 
+                    r={i === 0 ? 4 : 3}
+                    fill={i === 0 ? "white" : "rgba(255,255,255,0.3)"}
+                  />
+                );
+              })}
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Вариант 10: Без индикаторов -->
+    <section class="mb-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-xl font-light tracking-wide mb-2">10. Без индикаторов</h2>
+        <p class="text-muted text-sm mb-8">Минимализм — только стрелки по бокам</p>
+        
+        <div class="bg-surface/30 p-8 rounded-lg flex justify-center items-center gap-8">
+          <button class="text-white/30 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          <span class="text-white/50 text-sm">← свайп →</span>
+          <button class="text-white/30 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Сравнительная таблица -->
+    <section class="px-6 py-16 bg-surface/30">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-light tracking-wide text-center mb-12">Рекомендации</h2>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-6 border border-white/10 rounded-lg">
+            <h3 class="text-lg font-light mb-4 text-green-400">Подходят для музыкального сайта</h3>
+            <ul class="space-y-2 text-sm text-muted">
+              <li>• <strong class="text-white">1. Точки</strong> — классика, не отвлекает</li>
+              <li>• <strong class="text-white">3. Нотный стан</strong> — музыкальная ассоциация</li>
+              <li>• <strong class="text-white">7. Цифры</strong> — минимализм</li>
+              <li>• <strong class="text-white">8. Точки с тире</strong> — современно</li>
+            </ul>
+          </div>
+          
+          <div class="p-6 border border-white/10 rounded-lg">
+            <h3 class="text-lg font-light mb-4 text-yellow-400">Альтернативы</h3>
+            <ul class="space-y-2 text-sm text-muted">
+              <li>• <strong class="text-white">6. Прогресс-бар</strong> — чистый минимализм</li>
+              <li>• <strong class="text-white">9. Волна</strong> — если хочется декора</li>
+              <li>• <strong class="text-white">10. Без индикаторов</strong> — ultra minimal</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Навигация -->
+    <section class="px-6 py-16 text-center">
+      <a href="/demo/galleries" class="text-white/60 hover:text-white transition-colors">
+        ← Вернуться к галереям
+      </a>
+    </section>
+  </main>
+</Layout>
+

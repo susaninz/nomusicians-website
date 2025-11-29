@@ -10,34 +10,25 @@ import Projects from '../components/Projects.astro';
 import Watch from '../components/Watch.astro';
 import Merch from '../components/Merch.astro';
 import Contact from '../components/Contact.astro';
+import { getTourForLang, getConcertForLang } from '../data/concerts';
 
 const lang = 'ru';
 
-// Concert data (will be from Sanity later)
-const concert = {
-  date: '15 ноября',
-  time: '18:30',
-  city: 'Лиссабон, Португалия',
-  venue: 'Двойной концерт',
-  description: 'электроника, неоклассика и минимализм / трибьют Radiohead',
-  isPast: true,
-};
+// Данные о концертах из централизованного модуля
+const tour = getTourForLang(lang);
+const concert = getConcertForLang(lang);
 ---
 
 <Layout title="Nomusicians — Электроника и неоклассика">
   <Header currentLang={lang} />
   <main>
-    <Hero lang={lang} imageUrl="/hero.jpg" />
+    <Hero lang={lang} />
     
-    <Concert 
-      lang={lang}
-      date={concert.date}
-      time={concert.time}
-      city={concert.city}
-      venue={concert.venue}
-      description={concert.description}
-      isPast={concert.isPast}
-    />
+    {tour ? (
+      <Concert lang={lang} tour={tour} />
+    ) : concert ? (
+      <Concert lang={lang} {...concert} />
+    ) : null}
     
     <About lang={lang} />
     

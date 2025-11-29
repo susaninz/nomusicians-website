@@ -2,54 +2,153 @@
 import type { Lang } from '../i18n/translations';
 import { t } from '../i18n/translations';
 
-interface Props {
-  lang: Lang;
+interface ConcertEvent {
   date: string;
   time: string;
   city: string;
-  venue: string;
+  venue?: string;
+  ticketUrl?: string;
+}
+
+interface Props {
+  lang: Lang;
+  // Одиночный концерт (обратная совместимость)
+  date?: string;
+  time?: string;
+  city?: string;
+  venue?: string;
   description?: string;
   ticketUrl?: string;
   isPast?: boolean;
+  // Тур (несколько концертов)
+  tour?: {
+    title: string;
+    description?: string;
+    events: ConcertEvent[];
+  };
 }
 
-const { lang, date, time, city, venue, description, ticketUrl, isPast = false } = Astro.props;
+const { lang, date, time, city, venue, description, ticketUrl, isPast = false, tour } = Astro.props;
+
+// Определяем режим: тур или одиночный концерт
+const isTour = !!tour;
 ---
 
 <section id="concert" class="bg-surface py-16 px-6">
   <div class="max-w-4xl mx-auto text-center">
-    <p class="text-muted text-sm tracking-[0.2em] uppercase mb-4">
-      {isPast ? t(lang, 'concert.recent') : t(lang, 'concert.upcoming')}
-    </p>
-    
-    <div class="space-y-2">
-      <p class="text-2xl md:text-3xl font-light">
-        <span class="text-white">{date}</span>
-        <span class="text-muted mx-2">·</span>
-        <span class="text-white">{time}</span>
-      </p>
-      
-      <h2 class="text-3xl md:text-4xl font-light tracking-wide">
-        {city}
-        {venue && <span class="text-muted"> / {venue}</span>}
-      </h2>
-      
-      {description && (
-        <p class="text-muted text-lg mt-4">
-          {description}
+    {isTour ? (
+      <!-- Режим тура -->
+      <>
+        <p class="text-muted text-sm tracking-[0.2em] uppercase mb-4">
+          {t(lang, 'concert.upcoming')}
         </p>
-      )}
-    </div>
-    
-    {ticketUrl && !isPast && (
-      <a 
-        href={ticketUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-block mt-8 px-8 py-3 border border-white/30 text-sm tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-300"
-      >
-        {t(lang, 'concert.tickets')}
-      </a>
+        
+        <h2 class="text-3xl md:text-4xl font-light tracking-wide mb-2">
+          {tour.title}
+        </h2>
+        
+        {tour.description && (
+          <p class="text-muted text-lg mb-8">
+            {tour.description}
+          </p>
+        )}
+        
+        <div class="grid gap-4 mt-8 max-w-2xl mx-auto">
+          {tour.events.map((event, index) => (
+            event.ticketUrl ? (
+              <a 
+                href={event.ticketUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-between py-4 px-6 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all group cursor-pointer no-underline"
+              >
+                <div class="flex items-center gap-6">
+                  <span class="text-muted text-sm w-8">{String(index + 1).padStart(2, '0')}</span>
+                  <div class="text-left">
+                    <p class="text-white font-light">{event.city}</p>
+                    {event.venue && <p class="text-muted text-sm">{event.venue}</p>}
+                  </div>
+                </div>
+                <div class="flex items-center gap-4">
+                  <div class="text-right">
+                    <p class="text-white text-sm">{event.date}</p>
+                    <p class="text-muted text-xs">{event.time}</p>
+                  </div>
+                  <span class="px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase opacity-0 group-hover:opacity-100 transition-opacity">
+                    →
+                  </span>
+                </div>
+              </a>
+            ) : (
+              <div class="flex items-center justify-between py-4 px-6 border border-white/10 transition-colors">
+                <div class="flex items-center gap-6">
+                  <span class="text-muted text-sm w-8">{String(index + 1).padStart(2, '0')}</span>
+                  <div class="text-left">
+                    <p class="text-white font-light">{event.city}</p>
+                    {event.venue && <p class="text-muted text-sm">{event.venue}</p>}
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-white text-sm">{event.date}</p>
+                  <p class="text-muted text-xs">{event.time}</p>
+                </div>
+              </div>
+            )
+          ))}
+        </div>
+      </>
+    ) : (
+      <!-- Режим одиночного концерта -->
+      <>
+        <p class="text-muted text-sm tracking-[0.2em] uppercase mb-4">
+          {isPast ? t(lang, 'concert.recent') : t(lang, 'concert.upcoming')}
+        </p>
+        
+        <div class="space-y-2">
+          <p class="text-2xl md:text-3xl font-light">
+            <span class="text-white">{date}</span>
+            <span class="text-muted mx-2">·</span>
+            <span class="text-white">{time}</span>
+          </p>
+          
+          <h2 class="text-3xl md:text-4xl font-light tracking-wide">
+            {city}
+            {venue && <span class="text-muted"> / {venue}</span>}
+          </h2>
+          
+          {description && (
+            <p class="text-muted text-lg mt-4">
+              {description}
+            </p>
+          )}
+        </div>
+        
+        {ticketUrl && !isPast && (
+          <a 
+            href={ticketUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block mt-8 px-8 py-3 border border-white/30 text-white text-sm tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-300"
+          >
+            {t(lang, 'concert.tickets')}
+          </a>
+        )}
+      </>
     )}
   </div>
 </section>
+
+<style>
+  /* Сброс браузерных стилей для посещённых ссылок */
+  #concert a,
+  #concert a:visited,
+  #concert a:hover,
+  #concert a:active {
+    text-decoration: none;
+  }
+  
+  #concert a p,
+  #concert a span {
+    text-decoration: none !important;
+  }
+</style>

@@ -17,14 +17,17 @@
     // Scene
     const scene = new THREE.Scene();
     
-    // Camera
+    // Camera - adjust distance based on screen width
+    const isMobile = window.innerWidth < 768;
+    const cameraDistance = isMobile ? 55 : 35; // Further back on mobile
+    
     const camera = new THREE.PerspectiveCamera(
       45,
       container.clientWidth / container.clientHeight,
       0.1,
       1000
     );
-    camera.position.set(0, 0, 35);  // Closer = bigger
+    camera.position.set(0, 0, cameraDistance);
     camera.lookAt(0, 0, 0);
     
     // Renderer
@@ -237,9 +240,11 @@
     
     animate();
     
-    // Resize
+    // Resize - also adjust camera distance for mobile/desktop
     window.addEventListener('resize', () => {
       if (container) {
+        const newIsMobile = window.innerWidth < 768;
+        camera.position.z = newIsMobile ? 55 : 35;
         camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);

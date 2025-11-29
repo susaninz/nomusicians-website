@@ -14,6 +14,7 @@ export const translations = {
         'nav.releases': 'Релизы',
         'nav.projects': 'Проекты',
         'nav.watch': 'Видео',
+        'nav.people': 'Люди',
         'nav.contact': 'Контакты',
 
         // Hero
@@ -58,6 +59,7 @@ export const translations = {
         'musicians.shchedrin.role': 'Скрипач',
         'musicians.shchedrin.instruments': 'Скрипка',
         'musicians.shchedrin.bio': 'Выпускник РАМ им. Гнесиных. Присоединился в 2023 году, добавив в звучание классическую глубину и виртуозность академической школы.',
+        'musicians.more': 'Ещё',
 
         // Releases
         'releases.title': 'Релизы',
@@ -97,6 +99,7 @@ export const translations = {
         'nav.releases': 'Releases',
         'nav.projects': 'Projects',
         'nav.watch': 'Watch',
+        'nav.people': 'People',
         'nav.contact': 'Contact',
 
         // Hero
@@ -141,6 +144,7 @@ export const translations = {
         'musicians.shchedrin.role': 'Violinist',
         'musicians.shchedrin.instruments': 'Violin',
         'musicians.shchedrin.bio': 'Graduate of the Gnessin Russian Academy of Music. Joined in 2023, adding classical depth and virtuosity of the academic school to the sound.',
+        'musicians.more': 'More',
 
         // Releases
         'releases.title': 'Releases',
@@ -180,6 +184,7 @@ export const translations = {
         'nav.releases': '专辑',
         'nav.projects': '项目',
         'nav.watch': '视频',
+        'nav.people': '人们',
         'nav.contact': '联系',
 
         // Hero
@@ -224,6 +229,7 @@ export const translations = {
         'musicians.shchedrin.role': '小提琴家',
         'musicians.shchedrin.instruments': '小提琴',
         'musicians.shchedrin.bio': '格涅辛俄罗斯音乐学院毕业生。2023年加入，为声音增添了古典深度和学院派的精湛技艺。',
+        'musicians.more': '更多',
 
         // Releases
         'releases.title': '专辑',

@@ -5,20 +5,34 @@ import Logo3D from './Logo3D.astro';
 
 interface Props {
   lang: Lang;
-  imageUrl?: string;
   use3DLogo?: boolean;
 }
 
-const { lang, imageUrl = '/hero.jpg', use3DLogo = true } = Astro.props;
+const { lang, use3DLogo = true } = Astro.props;
+
+// Hero photos — random selection on each page load
+// Each photo can have custom position (default: center)
+const heroPhotos = [
+  { url: '/hero/VGD_1998.jpg', position: 'center' },
+  { url: '/hero/VGD_2151.jpg', position: 'center' },
+  { url: '/hero/VGD_3073.jpg', position: 'center' },
+  { url: '/hero/VGD_3241.jpg', position: 'center' },
+];
+
+// Random photo at build time (SSG) — will change on each deployment
+// For truly random on each visit, we'll add client-side JS
+const randomIndex = Math.floor(Math.random() * heroPhotos.length);
+const selectedPhoto = heroPhotos[randomIndex];
 ---
 
 <section id="hero" class="relative h-screen w-full overflow-hidden">
   <!-- Parallax Background Image -->
   <div class="absolute inset-0 overflow-hidden">
     <div 
-      class="parallax-bg absolute inset-[-20%] bg-cover bg-center"
+      class="parallax-bg absolute inset-[-20%] bg-cover transition-opacity duration-1000"
       id="hero-parallax-bg"
-      style={`background-image: url('${imageUrl}')`}
+      style={`background-image: url('${selectedPhoto.url}'); background-position: ${selectedPhoto.position}`}
+      data-photos={JSON.stringify(heroPhotos)}
     ></div>
     <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/80"></div>
   </div>
@@ -56,6 +70,15 @@ const { lang, imageUrl = '/hero.jpg', use3DLogo = true } = Astro.props;
   const hero = document.getElementById('hero');
   
   if (parallaxBg && hero) {
+    // Random photo on each page visit (client-side)
+    const photos = JSON.parse(parallaxBg.dataset.photos || '[]');
+    if (photos.length > 0) {
+      const randomPhoto = photos[Math.floor(Math.random() * photos.length)];
+      parallaxBg.style.backgroundImage = `url('${randomPhoto.url}')`;
+      parallaxBg.style.backgroundPosition = randomPhoto.position || 'center';
+    }
+    
+    // Parallax scroll effect
     window.addEventListener('scroll', () => {
       const scrolled = window.scrollY;
       const rate = scrolled * 0.4;

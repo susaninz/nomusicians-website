@@ -8,6 +8,19 @@ interface Props {
 
 const { currentLang } = Astro.props;
 
+// Определяем, находимся ли на главной странице
+const pathname = Astro.url.pathname;
+const isHomePage = pathname === '/' || pathname === '/en/' || pathname === '/cn/';
+
+// Базовый путь главной для текущего языка
+const homeBase = currentLang === 'ru' ? '' : `/${currentLang}`;
+
+// Функция для генерации ссылки
+function getNavHref(anchor: string): string {
+  if (anchor.startsWith('/')) return anchor; // Абсолютные ссылки не меняем
+  return isHomePage ? anchor : `${homeBase}/${anchor}`;
+}
+
 const langLinks = {
   ru: '/',
   en: '/en/',
@@ -19,12 +32,13 @@ const navItems = [
   { key: 'nav.releases' as const, href: '#releases' },
   { key: 'nav.projects' as const, href: '#projects' },
   { key: 'nav.watch' as const, href: '#watch' },
+  { key: 'nav.people' as const, href: '/people' },
   { key: 'nav.contact' as const, href: '#contact' },
 ];
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300" id="main-header">
-  <nav class="max-w-7xl mx-auto flex items-center justify-between">
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="main-header" style="padding-top: env(safe-area-inset-top);">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
     <!-- Logo (hidden on hero, visible on scroll) -->
     <a 
       href={langLinks[currentLang]} 
@@ -41,7 +55,7 @@ const navItems = [
       <nav class="hidden md:flex items-center gap-4">
         {navItems.map((item) => (
           <a 
-            href={item.href}
+            href={getNavHref(item.href)}
             class="text-muted hover:text-white transition-colors duration-200"
           >
             {t(currentLang, item.key)}
@@ -90,7 +104,7 @@ const navItems = [
       
       <!-- Mobile Menu Button -->
       <button 
-        class="md:hidden text-white p-2"
+        class="md:hidden text-white p-2 bg-transparent border-none"
         id="mobile-menu-btn"
         aria-label="Menu"
       >
@@ -101,30 +115,32 @@ const navItems = [
     </div>
   </nav>
   
-  <!-- Mobile Menu -->
-  <div class="md:hidden hidden fixed inset-0 bg-background/95 backdrop-blur-md z-50" id="mobile-menu">
-    <div class="flex flex-col items-center justify-center h-full gap-8">
-      <button 
-        class="absolute top-4 right-6 text-white p-2"
-        id="mobile-menu-close"
-        aria-label="Close menu"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-      
-      {navItems.map((item) => (
-        <a 
-          href={item.href}
-          class="text-2xl text-white hover:text-muted transition-colors duration-200 mobile-menu-link"
-        >
-          {t(currentLang, item.key)}
-        </a>
-      ))}
-    </div>
-  </div>
 </header>
+
+<!-- Mobile Menu (outside header for proper layering) -->
+<div class="md:hidden hidden fixed inset-0 bg-black z-[100]" id="mobile-menu" style="padding-top: env(safe-area-inset-top);">
+  <div class="flex flex-col items-center justify-center h-full gap-8">
+    <button 
+      class="absolute top-4 right-6 text-white p-2 bg-transparent border-none"
+      id="mobile-menu-close"
+      aria-label="Close menu"
+      style="margin-top: env(safe-area-inset-top);"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    
+    {navItems.map((item) => (
+      <a 
+        href={getNavHref(item.href)}
+        class="text-2xl text-white hover:text-muted transition-colors duration-200 mobile-menu-link no-underline"
+      >
+        {t(currentLang, item.key)}
+      </a>
+    ))}
+  </div>
+</div>
 
 <script>
   // Show logo on scroll
@@ -171,6 +187,13 @@ const navItems = [
       window.location.href = url.toString();
     });
   });
+  
+  // Clear hash from URL after page load (so pull-to-refresh starts at top)
+  if (window.location.hash) {
+    setTimeout(() => {
+      history.replaceState(null, '', window.location.pathname);
+    }, 100);
+  }
   
   // Mobile menu
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');

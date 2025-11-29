@@ -14,10 +14,10 @@ const langPrefix = lang === 'ru' ? '' : `/${lang}`;
 // Projects data (will come from Sanity later)
 const projects = [
   {
-    id: 'camp-klassika',
-    title: 'Кэмп Классика',
-    year: '2019—2024',
-    image: '/projects/camp-klassika.jpg',
+    id: 'klassika',
+    title: 'Классика',
+    year: '2022—2024',
+    image: '/projects/klassika-hero.png',
     hasPage: true,
     description: {
       ru: 'Музыкальная программа для бёрнерских фестивалей Огонёк и Холодок. Концерты под открытым небом, импровизации и творческие встречи в атмосфере сообщества.',
@@ -64,157 +64,230 @@ const projects = [
 ];
 ---
 
-<section id="projects" class="py-24 px-6 bg-surface/30">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="text-3xl md:text-4xl font-light tracking-wide text-center mb-16">
+<section id="projects" class="py-24 bg-surface/30">
+  <div class="max-w-6xl mx-auto px-6 mb-8">
+    <h2 class="text-3xl md:text-4xl font-light tracking-wide text-center mb-4">
       {t(lang, 'projects.title')}
     </h2>
-    
-    <!-- Carousel Container -->
-    <div class="relative">
-      <!-- Main Slide -->
-      <div class="overflow-hidden">
+    <p class="text-muted text-center text-sm">
+      {lang === 'ru' ? 'Свайпайте для просмотра →' : lang === 'cn' ? '滑动查看 →' : 'Swipe to browse →'}
+    </p>
+  </div>
+  
+  <!-- Swipeable Carousel -->
+  <div 
+    class="projects-scroll overflow-x-auto scrollbar-hide scroll-snap-x"
+    id="projects-carousel"
+  >
+    <div class="flex w-max pl-[7.5vw] md:pl-[15vw]">
+      {projects.map((project, index) => (
         <div 
-          class="flex transition-transform duration-500 ease-out" 
-          id="projects-carousel"
-          style="transform: translateX(0)"
+          class="w-[85vw] md:w-[70vw] max-w-4xl flex-shrink-0 px-4 md:px-8 scroll-snap-center"
+          data-slide={index}
         >
-          {projects.map((project, index) => (
-            <div 
-              class="w-full flex-shrink-0 px-4"
-              data-slide={index}
+          <div class="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
+            <!-- Image -->
+            <a 
+              href={project.hasPage ? `${langPrefix}/projects/${project.id}/` : undefined}
+              class:list={[
+                "block aspect-video overflow-hidden group",
+                project.hasPage && "cursor-pointer"
+              ]}
             >
-              <div class="grid md:grid-cols-2 gap-8 items-center">
-                <!-- Image -->
+              <img 
+                src={project.image}
+                alt={project.title}
+                class:list={[
+                  "w-full h-full object-cover transition-all duration-500 grayscale group-hover:grayscale-0",
+                  project.hasPage && "group-hover:scale-105"
+                ]}
+                loading="lazy"
+              />
+            </a>
+            
+            <!-- Info -->
+            <div class="text-center md:text-left">
+              <h3 class="text-2xl md:text-3xl font-light tracking-wide mb-2">
+                {project.hasPage ? (
+                  <a 
+                    href={`${langPrefix}/projects/${project.id}/`}
+                    class="text-white hover:text-white/70 transition-colors no-underline"
+                  >
+                    {project.title}
+                  </a>
+                ) : (
+                  project.title
+                )}
+              </h3>
+              <p class="text-muted text-sm tracking-wider uppercase mb-4 md:mb-6">
+                {project.year}
+              </p>
+              <p class="text-text/70 leading-relaxed mb-4 md:mb-6 text-sm md:text-base">
+                {project.description[lang]}
+              </p>
+              
+              {project.hasPage && (
                 <a 
-                  href={project.hasPage ? `${langPrefix}/projects/${project.id}/` : undefined}
-                  class:list={[
-                    "block aspect-video overflow-hidden group",
-                    project.hasPage && "cursor-pointer"
-                  ]}
+                  href={`${langPrefix}/projects/${project.id}/`}
+                  class="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-white/70 hover:text-white transition-colors"
                 >
-                  <img 
-                    src={project.image}
-                    alt={project.title}
-                    class:list={[
-                      "w-full h-full object-cover transition-all duration-500 grayscale group-hover:grayscale-0",
-                      project.hasPage && "group-hover:scale-105"
-                    ]}
-                    loading="lazy"
-                  />
+                  {lang === 'ru' ? 'Подробнее' : lang === 'cn' ? '了解更多' : 'Learn more'}
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                  </svg>
                 </a>
-                
-                <!-- Info -->
-                <div class="text-center md:text-left">
-                  <h3 class="text-2xl md:text-3xl font-light tracking-wide mb-2">
-                    {project.hasPage ? (
-                      <a 
-                        href={`${langPrefix}/projects/${project.id}/`}
-                        class="text-white hover:text-white/70 transition-colors no-underline"
-                      >
-                        {project.title}
-                      </a>
-                    ) : (
-                      project.title
-                    )}
-                  </h3>
-                  <p class="text-muted text-sm tracking-wider uppercase mb-6">
-                    {project.year}
-                  </p>
-                  <p class="text-text/70 leading-relaxed mb-6">
-                    {project.description[lang]}
-                  </p>
-                  
-                  {project.hasPage && (
-                    <a 
-                      href={`${langPrefix}/projects/${project.id}/`}
-                      class="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-white/70 hover:text-white transition-colors"
-                    >
-                      {lang === 'ru' ? 'Подробнее' : lang === 'cn' ? '了解更多' : 'Learn more'}
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                      </svg>
-                    </a>
-                  )}
-                </div>
-              </div>
+              )}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-      
-      <!-- Navigation Arrows -->
-      <button 
-        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-colors"
-        id="projects-prev"
-        aria-label={t(lang, 'projects.prev')}
-      >
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </button>
-      
-      <button 
-        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-colors"
-        id="projects-next"
-        aria-label={t(lang, 'projects.next')}
-      >
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </button>
-      
-      <!-- Dots Indicator -->
-      <div class="flex justify-center gap-3 mt-8">
-        {projects.map((_, index) => (
-          <button 
-            class:list={[
-              "project-dot w-2 h-2 rounded-full transition-all duration-300",
-              index === 0 ? "bg-white w-6" : "bg-white/30 hover:bg-white/50"
-            ]}
-            data-dot={index}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
+      ))}
     </div>
+  </div>
+  
+  <!-- Индикаторы N8 (штили/фейдеры) -->
+  <div class="flex justify-center items-end gap-5 mt-8 h-10 px-6">
+    {projects.map((_, index) => {
+      const heights = [12, 20, 16, 24];
+      const h = heights[index % heights.length];
+      return (
+        <button 
+          class:list={[
+            "project-dot indicator-n8",
+            index === 0 && "active"
+          ]}
+          data-dot={index}
+          style={`--stem-height: ${h}px`}
+          aria-label={`Go to slide ${index + 1}`}
+        ></button>
+      );
+    })}
   </div>
 </section>
 
+<style>
+  /* Scrollbar hide */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* Scroll snap */
+  .scroll-snap-x {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .scroll-snap-center {
+    scroll-snap-align: center;
+  }
+  
+  /* Индикаторы N8 (штили/фейдеры) через псевдоэлементы */
+  .indicator-n8 {
+    position: relative;
+    width: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  
+  .indicator-n8::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: var(--stem-height, 16px);
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .indicator-n8::after {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    margin-top: -2px;
+    transition: all 0.3s ease;
+  }
+  
+  .indicator-n8.active::before,
+  .indicator-n8:hover::before {
+    background: white;
+  }
+  
+  .indicator-n8.active::after,
+  .indicator-n8:hover::after {
+    background: white;
+  }
+</style>
+
 <script>
   const carousel = document.getElementById('projects-carousel');
-  const prevBtn = document.getElementById('projects-prev');
-  const nextBtn = document.getElementById('projects-next');
   const dots = document.querySelectorAll('.project-dot');
+  const slides = carousel?.querySelectorAll('[data-slide]');
   
   let currentSlide = 0;
   const totalSlides = dots.length;
   
-  function goToSlide(index: number) {
-    if (index < 0) index = totalSlides - 1;
-    if (index >= totalSlides) index = 0;
+  // Update indicators based on scroll position
+  function updateIndicators() {
+    if (!carousel || !slides) return;
     
-    currentSlide = index;
+    const carouselRect = carousel.getBoundingClientRect();
+    const carouselCenter = carouselRect.left + carouselRect.width / 2;
     
-    if (carousel) {
-      carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
-    }
+    let closestIndex = 0;
+    let closestDistance = Infinity;
     
-    // Update dots
-    dots.forEach((dot, i) => {
-      if (i === currentSlide) {
-        dot.classList.add('bg-white', 'w-6');
-        dot.classList.remove('bg-white/30', 'w-2');
-      } else {
-        dot.classList.remove('bg-white', 'w-6');
-        dot.classList.add('bg-white/30', 'w-2');
+    slides.forEach((slide, index) => {
+      const slideRect = slide.getBoundingClientRect();
+      const slideCenter = slideRect.left + slideRect.width / 2;
+      const distance = Math.abs(slideCenter - carouselCenter);
+      
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
       }
+    });
+    
+    if (closestIndex !== currentSlide) {
+      currentSlide = closestIndex;
+      
+      dots.forEach((dot, i) => {
+        if (i === currentSlide) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+  }
+  
+  // Scroll to specific slide
+  function goToSlide(index: number) {
+    if (!carousel || !slides) return;
+    
+    const slide = slides[index] as HTMLElement;
+    slide.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'center'
     });
   }
   
-  prevBtn?.addEventListener('click', () => goToSlide(currentSlide - 1));
-  nextBtn?.addEventListener('click', () => goToSlide(currentSlide + 1));
+  // Listen for scroll events
+  carousel?.addEventListener('scroll', () => {
+    requestAnimationFrame(updateIndicators);
+  });
   
+  // Click on indicators
   dots.forEach((dot, index) => {
     dot.addEventListener('click', () => goToSlide(index));
   });
@@ -228,8 +301,14 @@ const projects = [
     const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
     
     if (isVisible) {
-      if (e.key === 'ArrowLeft') goToSlide(currentSlide - 1);
-      if (e.key === 'ArrowRight') goToSlide(currentSlide + 1);
+      if (e.key === 'ArrowLeft') {
+        const newIndex = Math.max(0, currentSlide - 1);
+        goToSlide(newIndex);
+      }
+      if (e.key === 'ArrowRight') {
+        const newIndex = Math.min(totalSlides - 1, currentSlide + 1);
+        goToSlide(newIndex);
+      }
     }
   });
 </script>
