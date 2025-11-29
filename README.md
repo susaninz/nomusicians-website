@@ -1,43 +1,196 @@
-# Astro Starter Kit: Minimal
+# Nomusicians Website
 
-```sh
-npm create astro@latest -- --template minimal
+Официальный сайт музыкального коллектива Nomusicians.
+
+## 🚀 Быстрый старт
+
+### Запуск всех серверов (3 терминала)
+
+```bash
+# Терминал 1: Основной сайт (Astro)
+cd nomusicians-website
+npm run dev
+# → http://localhost:4321
+
+# Терминал 2: Sanity Studio (админка)
+cd nomusicians-website/studio
+npm run dev
+# → http://localhost:3333
+
+# Терминал 3: DeepL Proxy (для переводов в админке)
+cd nomusicians-website/studio
+npm run proxy
+# → http://localhost:3334
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### Или одной командой (3 вкладки терминала):
 
-## 🚀 Project Structure
+```bash
+# Запустить всё из корня проекта
+cd "/Users/ivanslezkin/Nomusicians taplink/nomusicians-website"
 
-Inside of your Astro project, you'll see the following folders and files:
+# Вкладка 1
+npm run dev
 
-```text
-/
-├── public/
+# Вкладка 2
+cd studio && npm run dev
+
+# Вкладка 3
+cd studio && npm run proxy
+```
+
+---
+
+## 📁 Структура проекта
+
+```
+nomusicians-website/
 ├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+│   ├── components/     # Astro компоненты
+│   ├── data/           # Данные (releases, projects, videos, people, concerts)
+│   ├── i18n/           # Переводы (translations.ts)
+│   ├── layouts/        # Layout компоненты
+│   ├── lib/            # Утилиты (sanity.ts, deepl.ts)
+│   ├── pages/          # Страницы сайта
+│   │   ├── index.astro        # Главная RU
+│   │   ├── en/index.astro     # Главная EN
+│   │   ├── cn/index.astro     # Главная CN
+│   │   ├── people.astro       # Люди RU
+│   │   └── projects/          # Страницы проектов
+│   └── styles/         # Глобальные стили
+├── public/             # Статические файлы
+│   ├── hero/           # Фото для Hero секции
+│   ├── releases/       # Обложки релизов
+│   ├── projects/       # Фото проектов
+│   ├── people/         # Фото людей
+│   └── og-image.jpg    # Превью для соцсетей
+├── studio/             # Sanity Studio (админка)
+│   ├── schemaTypes/    # Схемы контента
+│   ├── actions/        # Кастомные действия (перевод)
+│   └── proxy-server.js # Прокси для DeepL API
+├── scripts/            # Скрипты
+│   ├── seed-sanity.ts  # Загрузка данных в Sanity
+│   └── translate-sanity.ts  # Перевод через CLI
+└── assets/             # Исходные фото (не публикуются)
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+---
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## 🔧 Технологии
 
-Any static assets, like images, can be placed in the `public/` directory.
+| Технология | Назначение |
+|------------|------------|
+| **Astro** | Фреймворк для сайта (SSG) |
+| **Tailwind CSS** | Стилизация |
+| **Three.js** | 3D логотип на главной |
+| **Sanity CMS** | Админка для контента |
+| **DeepL API** | Автоматические переводы |
 
-## 🧞 Commands
+---
 
-All commands are run from the root of the project, from a terminal:
+## 🌍 Языки
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- **RU** — `/` (русский, основной)
+- **EN** — `/en/` (английский)
+- **CN** — `/cn/` (китайский)
 
-## 👀 Want to learn more?
+---
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## 🔑 Ключи и токены
+
+### Sanity
+- **Project ID:** `9ejs3m2v`
+- **Dataset:** `production`
+- **API Token (Editor):** см. `.env` или память Cursor
+
+### DeepL
+- **API Key:** `3e9634f6-0951-45a9-8469-65fb2a448c23:fx`
+- **Тип:** Free (500,000 символов/месяц)
+
+### ngrok (для удалённого показа)
+- **Authtoken:** `369C4OcYqBxWfc1ne2QwQJQYJQj_2nTFbecUXoMpAKPJFTC8h`
+
+---
+
+## 📱 Тестирование на телефоне
+
+1. Узнать IP компьютера: `ifconfig | grep "inet " | grep -v 127.0.0.1`
+2. На телефоне открыть: `http://IP_АДРЕС:4321`
+
+Сервер уже настроен с `--host` флагом.
+
+---
+
+## 🌐 Удалённый показ (ngrok)
+
+```bash
+# Сайт
+ngrok http 4321
+# → Получите публичный URL типа https://xxxx.ngrok.io
+
+# Админка
+ngrok http 3333
+# → Отдельный URL для Sanity Studio
+```
+
+---
+
+## 📝 Работа с контентом
+
+### Через Sanity Studio (рекомендуется)
+
+1. Открыть http://localhost:3333
+2. Редактировать контент
+3. Нажать **... → Перевести** для автоперевода
+4. Нажать **Publish**
+
+### Через код (для разработчика)
+
+Данные хранятся в `/src/data/`:
+- `concerts.ts` — концерты и туры
+- `releases.ts` — релизы
+- `projects.ts` — проекты
+- `videos.ts` — видео
+- `people.ts` — музыканты и коллабораторы
+
+---
+
+## 🚀 Деплой
+
+### Сайт (Vercel/Netlify)
+```bash
+npm run build
+# Загрузить папку dist/
+```
+
+### Sanity Studio
+```bash
+cd studio
+npm run deploy
+# Деплоит на sanity.studio
+```
+
+---
+
+## 🐛 Частые проблемы
+
+### "Failed to fetch" при переводе
+→ Не запущен прокси-сервер. Запустить: `cd studio && npm run proxy`
+
+### Сайт не открывается на телефоне
+→ Проверить, что устройства в одной Wi-Fi сети
+→ Проверить IP адрес: `ifconfig | grep "inet "`
+
+### 3D логотип тормозит
+→ Это нормально на старых устройствах. Можно отключить: `use3DLogo={false}` в Hero
+
+### Sanity Studio пустой
+→ Запустить seed: `npx tsx scripts/seed-sanity.ts`
+
+---
+
+## 📞 Контакты
+
+- **Email:** mail@nomusicians.com
+- **Домен:** nomusicians.com
+- **GitHub:** susaninz
