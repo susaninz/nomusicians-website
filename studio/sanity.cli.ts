@@ -5,6 +5,16 @@ export default defineCliConfig({
     projectId: '9ejs3m2v',
     dataset: 'production'
   },
-  studioHost: 'nomusicians'
+  studioHost: 'nomusicians',
+  vite: (config) => {
+    return {
+      ...config,
+      server: {
+        ...config.server,
+        host: true,
+        allowedHosts: true
+      }
+    }
+  }
 })
 

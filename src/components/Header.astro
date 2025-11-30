@@ -55,6 +55,76 @@ const navItems = [
     
     <!-- Navigation + Language Switcher -->
     <div class="flex items-center gap-6 text-sm tracking-wider">
+      <!-- Music Platforms + Main Navigation -->
+      <div class="hidden md:flex items-center gap-4">
+        <!-- Music Platform Links -->
+        <div class="flex items-center gap-3 mr-2">
+          <!-- Apple Music — бесцветная, цветная при ховере -->
+          <a href="https://music.apple.com/artist/nomusicians" target="_blank" rel="noopener noreferrer" class="opacity-60 hover:opacity-100 transition-opacity group" aria-label="Apple Music">
+            <!-- Бесцветная -->
+            <svg class="w-5 h-5 block group-hover:hidden text-muted" fill="currentColor" viewBox="0 0 48 48">
+              <rect x="0" y="0" width="48" height="48" rx="10"/>
+              <path d="M35 12.5v18.8c0 3.5-2.8 5.2-5.5 5.2-2.7 0-4.5-1.7-4.5-4 0-2.5 2-4.2 4.5-4.2.8 0 1.7.2 2.5.5V16.5l-12 2.7v16.3c0 3.5-2.8 5.2-5.5 5.2-2.7 0-4.5-1.7-4.5-4 0-2.5 2-4.2 4.5-4.2.8 0 1.7.2 2.5.5V15l15-3.5c.8-.2 1.5-.2 2 .2s1 1 1 1.8z" fill="#0a0a0a"/>
+            </svg>
+            <!-- Цветная при ховере -->
+            <svg class="w-5 h-5 hidden group-hover:block" viewBox="0 0 48 48">
+              <defs>
+                <linearGradient id="amGrad" x1="0%" y1="100%" x2="100%" y2="0%" gradientUnits="objectBoundingBox">
+                  <stop offset="0%" stop-color="#FA233B"/>
+                  <stop offset="100%" stop-color="#FB5C74"/>
+                </linearGradient>
+              </defs>
+              <rect x="0" y="0" width="48" height="48" rx="10" fill="url(#amGrad)"/>
+              <path d="M35 12.5v18.8c0 3.5-2.8 5.2-5.5 5.2-2.7 0-4.5-1.7-4.5-4 0-2.5 2-4.2 4.5-4.2.8 0 1.7.2 2.5.5V16.5l-12 2.7v16.3c0 3.5-2.8 5.2-5.5 5.2-2.7 0-4.5-1.7-4.5-4 0-2.5 2-4.2 4.5-4.2.8 0 1.7.2 2.5.5V15l15-3.5c.8-.2 1.5-.2 2 .2s1 1 1 1.8z" fill="#FFFFFF"/>
+            </svg>
+          </a>
+          
+          <!-- Spotify — бесцветная, зелёная при ховере -->
+          <a href="https://open.spotify.com/artist/nomusicians" target="_blank" rel="noopener noreferrer" class="opacity-60 hover:opacity-100 transition-opacity group" aria-label="Spotify">
+            <svg class="w-5 h-5 text-muted group-hover:text-[#1DB954] transition-colors" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+            </svg>
+          </a>
+          
+          <!-- Яндекс Музыка — бесцветная, цветная при ховере -->
+          <a href="https://music.yandex.ru/artist/nomusicians" target="_blank" rel="noopener noreferrer" class="opacity-60 hover:opacity-100 transition-opacity group" aria-label="Яндекс Музыка">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-5 h-5 text-muted" aria-hidden="true">
+              <!-- Монохромная версия -->
+              <g class="group-hover:opacity-0 transition-opacity duration-150" fill="currentColor">
+                <circle cx="20" cy="28" r="16" />
+                <circle cx="20" cy="28" r="9" />
+                <rect x="26" y="8" width="4" height="22" rx="2" />
+                <polygon points="30,4 40,4 40,12 30,9" />
+              </g>
+              <!-- Цветная версия -->
+              <g class="opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                <circle cx="20" cy="28" r="16" fill="#FFCC00" />
+                <circle cx="20" cy="28" r="9" fill="#FF3333" />
+                <rect x="26" y="8" width="4" height="22" rx="2" fill="#FF3333" />
+                <polygon points="30,4 40,4 40,12 30,9" fill="#FF3333" />
+              </g>
+            </svg>
+          </a>
+          
+          <!-- YouTube Music — бесцветная, красная при ховере -->
+          <a href="https://music.youtube.com/channel/nomusicians" target="_blank" rel="noopener noreferrer" class="opacity-60 hover:opacity-100 transition-opacity group" aria-label="YouTube Music">
+            <svg class="w-5 h-5 text-muted group-hover:text-[#FF0000] transition-colors" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228 18.228 15.432 18.228 12 15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"/>
+            </svg>
+          </a>
+          
+          <!-- Deezer — бесцветная, белая при ховере -->
+          <a href="https://www.deezer.com/artist/nomusicians" target="_blank" rel="noopener noreferrer" class="opacity-60 hover:opacity-100 transition-opacity group" aria-label="Deezer">
+            <svg class="w-5 h-5 text-muted group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.81 4.16v3.03H24V4.16h-5.19zM6.27 8.38v3.027h5.189V8.38h-5.19zm12.54 0v3.027H24V8.38h-5.19zM6.27 12.564v3.022h5.189v-3.022h-5.19zm6.27 0v3.022h5.19v-3.022h-5.19zm6.27 0v3.022H24v-3.022h-5.19zM0 16.745v3.03h5.19v-3.03H0zm6.27 0v3.03h5.189v-3.03h-5.19zm6.27 0v3.03h5.19v-3.03h-5.19zm6.27 0v3.03H24v-3.03h-5.19z"/>
+            </svg>
+          </a>
+        </div>
+        
+        <!-- Separator -->
+        <span class="text-muted/30">|</span>
+      </div>
+      
       <!-- Main Navigation -->
       <nav class="hidden md:flex items-center gap-4">
         {navItems.map((item) => (

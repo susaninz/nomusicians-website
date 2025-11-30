@@ -8,7 +8,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     server: {
-      allowedHosts: ['localhost', '.ngrok-free.dev', '.loca.lt']
+      allowedHosts: ['localhost', '.ngrok-free.dev', '.ngrok.io', '.loca.lt']
     }
   }
 });
