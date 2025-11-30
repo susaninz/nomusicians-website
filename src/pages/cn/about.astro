@@ -1,0 +1,374 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import { t } from '../../i18n/translations';
+import { getNomusicians, getFamily, getTeam, getTeamRoleOrder, urlFor, teamRoleNames } from '../../lib/sanity';
+
+const lang = 'cn';
+
+// Получаем данные из Sanity
+const nomusicians = await getNomusicians();
+const family = await getFamily();
+const team = await getTeam();
+const roleOrder = await getTeamRoleOrder();
+
+// Группируем команду по ролям
+const teamByRole = team.reduce((acc, person) => {
+  const role = person.teamRole || 'other';
+  if (!acc[role]) acc[role] = [];
+  acc[role].push(person);
+  return acc;
+}, {} as Record<string, typeof team>);
+
+// Получаем порядок ролей
+const orderedRoles = roleOrder.length > 0 
+  ? roleOrder.map(r => r.roleKey).filter(key => teamByRole[key]?.length > 0)
+  : Object.keys(teamByRole).filter(key => teamByRole[key]?.length > 0);
+
+// Helper для локализованных полей
+function getLocalized(person: any, field: string): string {
+  // Для CN: сначала ищем поле с суффиксом Cn, потом En, потом базовое
+  const cnField = person[field + 'Cn'];
+  if (cnField) return cnField;
+  const enField = person[field + 'En'];
+  if (enField) return enField;
+  return person[field] || '';
+}
+
+// Helper для иконок
+function getLinkIcon(type: string): string {
+  switch(type) {
+    case 'telegram': return '✈';
+    case 'youtube': return '▶';
+    case 'website': return '◎';
+    case 'instagram': return 'IG';
+    default: return '→';
+  }
+}
+---
+
+<Layout title="关于我们 — Nomusicians" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-16">
+    <!-- Hero -->
+    <section class="px-6 mb-16">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-6" style="font-family: var(--font-logo);">
+          {t(lang, 'about.title')}
+        </h1>
+      </div>
+    </section>
+
+    <!-- О музыке -->
+    <section class="px-6 mb-20">
+      <div class="max-w-3xl mx-auto space-y-6 text-lg leading-relaxed">
+        <p class="text-white" set:html={t(lang, 'about.p1')} />
+        <p class="text-muted" set:html={t(lang, 'about.p2')} />
+        <p class="text-muted" set:html={t(lang, 'about.p3')} />
+        <p class="text-muted" set:html={t(lang, 'about.p4')} />
+      </div>
+    </section>
+
+    <!-- Фото -->
+    <section class="px-6 mb-20">
+      <div class="max-w-5xl mx-auto">
+        <img 
+          src="/history/band-early.jpg" 
+          alt="Nomusicians"
+          class="w-full aspect-[21/9] object-cover grayscale"
+        />
+      </div>
+    </section>
+
+    <!-- История -->
+    <section class="px-6 mb-20">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-light tracking-wide mb-8 text-center">{t(lang, 'history.title')}</h2>
+        <div class="space-y-4 text-lg leading-relaxed text-muted">
+          <p set:html={t(lang, 'history.p1')} />
+          <p set:html={t(lang, 'history.p2')} />
+          <p set:html={t(lang, 'history.p3')} />
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ЛЮДИ ========== -->
+
+    <!-- Заголовок 音乐家 -->
+    {(nomusicians.length > 0 || family.length > 0) && (
+      <section class="px-6 mb-12">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-2xl font-light tracking-wide text-center">音乐家</h2>
+        </div>
+      </section>
+    )}
+
+    <!-- Разделитель Nomusicians -->
+    {nomusicians.length > 0 && (
+      <div class="max-w-5xl mx-auto px-6 mb-20">
+        <div class="border-t border-white/10 relative">
+          <span class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted text-sm tracking-widest">
+            NOMUSICIANS
+          </span>
+        </div>
+      </div>
+    )}
+
+    <!-- Nomusicians -->
+    {nomusicians.length > 0 && (
+      <section class="mb-20">
+        <div class="max-w-5xl mx-auto px-6">
+          <div class="space-y-16">
+            {nomusicians.map((person, index) => (
+              <div 
+                id={person.slug?.current || person._id}
+                class:list={[
+                  "flex flex-col items-center gap-8",
+                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                ]}
+              >
+                <div class="w-full md:w-1/2">
+                  <div class="aspect-square overflow-hidden group">
+                    {person.photo ? (
+                      <img 
+                        src={urlFor(person.photo).width(600).url()} 
+                        alt={getLocalized(person, 'name')}
+                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div class="w-full h-full bg-surface flex items-center justify-center">
+                        <span class="text-6xl text-white/20">{getLocalized(person, 'name')[0]}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 text-center md:text-left space-y-4">
+                  <h3 class="text-2xl font-light tracking-wide text-white">{getLocalized(person, 'name')}</h3>
+                  <p class="text-lg text-muted">{getLocalized(person, 'role')}</p>
+                  {getLocalized(person, 'instruments') && <p class="text-sm text-white/50 tracking-wider">{getLocalized(person, 'instruments')}</p>}
+                  {getLocalized(person, 'bio') && <p class="text-base leading-relaxed text-text/80">{getLocalized(person, 'bio')}</p>}
+                  
+                  {person.links && person.links.length > 0 && (
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                      {person.links.map(link => (
+                        link.type === 'instagram' && link.url ? (
+                          <a 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="ig-icon-link text-white/50 hover:text-white transition-colors no-underline"
+                            aria-label="Instagram"
+                          >
+                            <span class="ig-icon">IG</span>
+                          </a>
+                        ) : link.url ? (
+                          <a 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="text-sm text-white/50 hover:text-white transition-colors no-underline"
+                          >
+                            {getLinkIcon(link.type)} {link.label}
+                          </a>
+                        ) : null
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Разделитель Nomusicians Family -->
+    {family.length > 0 && (
+      <div class="max-w-5xl mx-auto px-6 mb-20">
+        <div class="border-t border-white/10 relative">
+          <span class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted text-sm tracking-widest">
+            NOMUSICIANS FAMILY
+          </span>
+        </div>
+      </div>
+    )}
+
+    <!-- Nomusicians Family -->
+    {family.length > 0 && (
+      <section class="mb-20">
+        <div class="max-w-5xl mx-auto px-6">
+          <div class="space-y-16">
+            {family.map((person, index) => (
+              <div 
+                id={person.slug?.current || person._id}
+                class:list={[
+                  "flex flex-col items-center gap-8",
+                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                ]}
+              >
+                <div class="w-full md:w-1/2">
+                  <div class="aspect-square overflow-hidden group">
+                    {person.photo ? (
+                      <img 
+                        src={urlFor(person.photo).width(600).url()} 
+                        alt={getLocalized(person, 'name')}
+                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div class="w-full h-full bg-surface flex items-center justify-center">
+                        <span class="text-6xl text-white/20">{getLocalized(person, 'name')[0]}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 text-center md:text-left space-y-4">
+                  <h3 class="text-2xl font-light tracking-wide text-white">{getLocalized(person, 'name')}</h3>
+                  <p class="text-lg text-muted">{getLocalized(person, 'role')}</p>
+                  {getLocalized(person, 'instruments') && <p class="text-sm text-white/50 tracking-wider">{getLocalized(person, 'instruments')}</p>}
+                  {getLocalized(person, 'bio') && <p class="text-base leading-relaxed text-text/80">{getLocalized(person, 'bio')}</p>}
+                  
+                  {person.links && person.links.length > 0 && (
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                      {person.links.map(link => (
+                        link.type === 'instagram' && link.url ? (
+                          <a 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="ig-icon-link text-white/50 hover:text-white transition-colors no-underline"
+                            aria-label="Instagram"
+                          >
+                            <span class="ig-icon">IG</span>
+                          </a>
+                        ) : link.url ? (
+                          <a 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="text-sm text-white/50 hover:text-white transition-colors no-underline"
+                          >
+                            {getLinkIcon(link.type)} {link.label}
+                          </a>
+                        ) : null
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Команда (по ролям) -->
+    {orderedRoles.map(roleKey => {
+      const people = teamByRole[roleKey];
+      if (!people || people.length === 0) return null;
+      
+      const roleName = teamRoleNames[roleKey]?.[lang] || roleKey;
+      
+      return (
+        <>
+          <div class="max-w-5xl mx-auto px-6 mb-20">
+            <div class="border-t border-white/10 relative">
+              <span class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted text-sm tracking-widest uppercase">
+                {roleName}
+              </span>
+            </div>
+          </div>
+
+          <section class="mb-20">
+            <div class="max-w-5xl mx-auto px-6">
+              <div class="grid md:grid-cols-2 gap-12">
+                {people.map(person => (
+                  <div id={person.slug?.current || person._id} class="flex gap-6">
+                    <div class="w-24 h-24 flex-shrink-0 overflow-hidden group">
+                      {person.photo ? (
+                        <img 
+                          src={urlFor(person.photo).width(200).url()} 
+                          alt={getLocalized(person, 'name')}
+                          class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div class="w-full h-full bg-surface flex items-center justify-center">
+                          <span class="text-2xl text-white/20">{getLocalized(person, 'name')[0]}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div class="space-y-2">
+                      <h3 class="text-lg font-light tracking-wide text-white">{getLocalized(person, 'name')}</h3>
+                      <p class="text-sm text-muted">{getLocalized(person, 'role')}</p>
+                      {getLocalized(person, 'bio') && <p class="text-sm text-text/60">{getLocalized(person, 'bio')}</p>}
+                      
+                      {person.links && person.links.length > 0 && (
+                        <div class="flex flex-wrap gap-2 items-center">
+                          {person.links.map(link => (
+                            link.type === 'instagram' && link.url ? (
+                              <a 
+                                href={link.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="ig-icon-link text-white/40 hover:text-white transition-colors no-underline"
+                                aria-label="Instagram"
+                              >
+                                <span class="ig-icon ig-icon-sm">IG</span>
+                              </a>
+                            ) : link.url ? (
+                              <a 
+                                href={link.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="text-xs text-white/40 hover:text-white transition-colors no-underline"
+                              >
+                                {getLinkIcon(link.type)} {link.label}
+                              </a>
+                            ) : null
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      );
+    })}
+
+  </main>
+</Layout>
+
+<style>
+  .ig-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border: 1.5px solid currentColor;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+  }
+  
+  .ig-icon-link:hover .ig-icon {
+    background: white;
+    color: black;
+    border-color: white;
+  }
+  
+  .ig-icon-sm {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.3rem;
+  }
+</style>

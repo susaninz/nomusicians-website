@@ -1,0 +1,452 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import { t } from '../i18n/translations';
+import { getNomusicians, getFamily, getTeam, getTeamRoleOrder, urlFor, teamRoleNames } from '../lib/sanity';
+
+const lang = 'ru';
+
+// Получаем данные из Sanity
+const nomusicians = await getNomusicians();
+const family = await getFamily();
+const team = await getTeam();
+const roleOrder = await getTeamRoleOrder();
+
+// Группируем команду по ролям
+const teamByRole = team.reduce((acc, person) => {
+  const role = person.teamRole || 'other';
+  if (!acc[role]) acc[role] = [];
+  acc[role].push(person);
+  return acc;
+}, {} as Record<string, typeof team>);
+
+// Получаем порядок ролей (если настроен в админке)
+const orderedRoles = roleOrder.length > 0 
+  ? roleOrder.map(r => r.roleKey).filter(key => teamByRole[key]?.length > 0)
+  : Object.keys(teamByRole).filter(key => teamByRole[key]?.length > 0);
+
+// Helper для локализованных полей
+function getLocalized(person: any, field: string): string {
+  // Для RU используем базовое поле
+  return person[field] || '';
+}
+
+// Helper для иконок
+function getLinkIcon(type: string): string {
+  switch(type) {
+    case 'youtube': return '▶';
+    case 'website': return '◎';
+    default: return '→';
+  }
+}
+
+// Проверка: это канал Telegram или личный аккаунт?
+function isTelegramChannel(link: any): boolean {
+  if (link.type !== 'telegram') return false;
+  // Канал, если label != просто "Telegram" (есть конкретное название)
+  // или URL содержит "_channel" или "channel"
+  const url = link.url || '';
+  const label = link.label || '';
+  return label.toLowerCase() !== 'telegram' || 
+         url.includes('_channel') || 
+         url.includes('channel');
+}
+---
+
+<Layout title="О нас — Nomusicians" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-16">
+    <!-- Hero -->
+    <section class="px-6 mb-16">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-6" style="font-family: var(--font-logo);">
+          {t(lang, 'about.title')}
+        </h1>
+      </div>
+    </section>
+
+    <!-- О музыке -->
+    <section class="px-6 mb-20">
+      <div class="max-w-3xl mx-auto space-y-6 text-lg leading-relaxed">
+        <p class="text-white" set:html={t(lang, 'about.p1')} />
+        <p class="text-muted" set:html={t(lang, 'about.p2')} />
+        <p class="text-muted" set:html={t(lang, 'about.p3')} />
+        <p class="text-muted" set:html={t(lang, 'about.p4')} />
+      </div>
+    </section>
+
+    <!-- Фото -->
+    <section class="px-6 mb-20">
+      <div class="max-w-5xl mx-auto">
+        <img 
+          src="/history/band-early.jpg" 
+          alt="Nomusicians"
+          class="w-full aspect-[21/9] object-cover grayscale"
+        />
+      </div>
+    </section>
+
+    <!-- История -->
+    <section class="px-6 mb-20">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-light tracking-wide mb-8 text-center">{t(lang, 'history.title')}</h2>
+        <div class="space-y-4 text-lg leading-relaxed text-muted">
+          <p set:html={t(lang, 'history.p1')} />
+          <p set:html={t(lang, 'history.p2')} />
+          <p set:html={t(lang, 'history.p3')} />
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ЛЮДИ ========== -->
+
+    <!-- Заголовок Музыканты -->
+    {(nomusicians.length > 0 || family.length > 0) && (
+      <section class="px-6 mb-12">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-2xl font-light tracking-wide text-center">Музыканты</h2>
+        </div>
+      </section>
+    )}
+
+    <!-- Разделитель Nomusicians -->
+    {nomusicians.length > 0 && (
+      <div class="max-w-5xl mx-auto px-6 mb-20">
+        <div class="border-t border-white/10 relative">
+          <span class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted text-sm tracking-widest">
+            NOMUSICIANS
+          </span>
+        </div>
+      </div>
+    )}
+
+    <!-- Nomusicians (основной состав) -->
+    {nomusicians.length > 0 && (
+      <section class="mb-20">
+        <div class="max-w-5xl mx-auto px-6">
+          <div class="space-y-16">
+            {nomusicians.map((person, index) => (
+              <div 
+                id={person.slug?.current || person._id}
+                class:list={[
+                  "flex flex-col items-center gap-8",
+                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                ]}
+              >
+                <div class="w-full md:w-1/2">
+                  <div class="aspect-square overflow-hidden group">
+                    {person.photo ? (
+                      <img 
+                        src={urlFor(person.photo).width(600).url()} 
+                        alt={person.name}
+                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div class="w-full h-full bg-surface flex items-center justify-center">
+                        <span class="text-6xl text-white/20">{person.name[0]}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 text-center md:text-left space-y-4">
+                  <h3 class="text-2xl font-light tracking-wide text-white">{person.name}</h3>
+                  <p class="text-lg text-muted">{person.role}</p>
+                  {person.instruments && <p class="text-sm text-white/50 tracking-wider">{person.instruments}</p>}
+                  {person.bio && <p class="text-base leading-relaxed text-text/80">{person.bio}</p>}
+                  
+                  {person.links && person.links.length > 0 && (
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start items-center">
+                      {person.links.map(link => {
+                        // Telegram: показываем только каналы
+                        if (link.type === 'telegram') {
+                          if (!isTelegramChannel(link) || !link.url) return null;
+                          return (
+                            <a 
+                              href={link.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              class="social-link text-white/50 hover:text-white transition-colors no-underline"
+                            >
+                              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                              </svg>
+                              <span>{link.label === 'Telegram' ? 'Канал' : link.label}</span>
+                            </a>
+                          );
+                        }
+                        // Instagram: иконка камеры
+                        if (link.type === 'instagram' && link.url) {
+                          return (
+                            <a 
+                              href={link.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              class="social-link text-white/50 hover:text-white transition-colors no-underline"
+                              aria-label="Instagram"
+                            >
+                              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+                              </svg>
+                            </a>
+                          );
+                        }
+                        // Остальные ссылки (website, youtube)
+                        if (link.url) {
+                          return (
+                            <a 
+                              href={link.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              class="text-sm text-white/50 hover:text-white transition-colors no-underline"
+                            >
+                              {getLinkIcon(link.type)} {link.label}
+                            </a>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Разделитель Nomusicians Family -->
+    {family.length > 0 && (
+      <div class="max-w-5xl mx-auto px-6 mb-20">
+        <div class="border-t border-white/10 relative">
+          <span class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted text-sm tracking-widest">
+            NOMUSICIANS FAMILY
+          </span>
+        </div>
+      </div>
+    )}
+
+    <!-- Nomusicians Family -->
+    {family.length > 0 && (
+      <section class="mb-20">
+        <div class="max-w-5xl mx-auto px-6">
+          <div class="space-y-16">
+            {family.map((person, index) => (
+              <div 
+                id={person.slug?.current || person._id}
+                class:list={[
+                  "flex flex-col items-center gap-8",
+                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                ]}
+              >
+                <div class="w-full md:w-1/2">
+                  <div class="aspect-square overflow-hidden group">
+                    {person.photo ? (
+                      <img 
+                        src={urlFor(person.photo).width(600).url()} 
+                        alt={person.name}
+                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div class="w-full h-full bg-surface flex items-center justify-center">
+                        <span class="text-6xl text-white/20">{person.name[0]}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 text-center md:text-left space-y-4">
+                  <h3 class="text-2xl font-light tracking-wide text-white">{person.name}</h3>
+                  <p class="text-lg text-muted">{person.role}</p>
+                  {person.instruments && <p class="text-sm text-white/50 tracking-wider">{person.instruments}</p>}
+                  {person.bio && <p class="text-base leading-relaxed text-text/80">{person.bio}</p>}
+                  
+                  {person.links && person.links.length > 0 && (
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start items-center">
+                      {person.links.map(link => {
+                        // Telegram: показываем только каналы
+                        if (link.type === 'telegram') {
+                          if (!isTelegramChannel(link) || !link.url) return null;
+                          return (
+                            <a 
+                              href={link.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              class="social-link text-white/50 hover:text-white transition-colors no-underline"
+                            >
+                              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                              </svg>
+                              <span>{link.label === 'Telegram' ? 'Канал' : link.label}</span>
+                            </a>
+                          );
+                        }
+                        // Instagram: иконка камеры
+                        if (link.type === 'instagram' && link.url) {
+                          return (
+                            <a 
+                              href={link.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              class="social-link text-white/50 hover:text-white transition-colors no-underline"
+                              aria-label="Instagram"
+                            >
+                              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+                              </svg>
+                            </a>
+                          );
+                        }
+                        // Остальные ссылки (website, youtube)
+                        if (link.url) {
+                          return (
+                            <a 
+                              href={link.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              class="text-sm text-white/50 hover:text-white transition-colors no-underline"
+                            >
+                              {getLinkIcon(link.type)} {link.label}
+                            </a>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Команда (по ролям) -->
+    {orderedRoles.map(roleKey => {
+      const people = teamByRole[roleKey];
+      if (!people || people.length === 0) return null;
+      
+      const roleName = teamRoleNames[roleKey]?.[lang] || roleKey;
+      
+      return (
+        <>
+          <!-- Разделитель -->
+          <div class="max-w-5xl mx-auto px-6 mb-20">
+            <div class="border-t border-white/10 relative">
+              <span class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-muted text-sm tracking-widest uppercase">
+                {roleName}
+              </span>
+            </div>
+          </div>
+
+          <section class="mb-20">
+            <div class="max-w-5xl mx-auto px-6">
+              <div class="grid md:grid-cols-2 gap-12">
+                {people.map(person => (
+                  <div id={person.slug?.current || person._id} class="flex gap-6">
+                    <div class="w-24 h-24 flex-shrink-0 overflow-hidden group">
+                      {person.photo ? (
+                        <img 
+                          src={urlFor(person.photo).width(200).url()} 
+                          alt={person.name}
+                          class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div class="w-full h-full bg-surface flex items-center justify-center">
+                          <span class="text-2xl text-white/20">{person.name[0]}</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div class="space-y-2">
+                      <h3 class="text-lg font-light tracking-wide text-white">{person.name}</h3>
+                      <p class="text-sm text-muted">{person.role}</p>
+                      {person.bio && <p class="text-sm text-text/60">{person.bio}</p>}
+                      
+                      {person.links && person.links.length > 0 && (
+                        <div class="flex flex-wrap gap-2 items-center">
+                          {person.links.map(link => {
+                            // Telegram: показываем только каналы
+                            if (link.type === 'telegram') {
+                              if (!isTelegramChannel(link) || !link.url) return null;
+                              return (
+                                <a 
+                                  href={link.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  class="social-link-sm text-white/40 hover:text-white transition-colors no-underline"
+                                >
+                                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                                  </svg>
+                                  <span class="text-xs">{link.label === 'Telegram' ? 'Канал' : link.label}</span>
+                                </a>
+                              );
+                            }
+                            // Instagram: иконка камеры
+                            if (link.type === 'instagram' && link.url) {
+                              return (
+                                <a 
+                                  href={link.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  class="text-white/40 hover:text-white transition-colors no-underline"
+                                  aria-label="Instagram"
+                                >
+                                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+                                  </svg>
+                                </a>
+                              );
+                            }
+                            // Остальные ссылки
+                            if (link.url) {
+                              return (
+                                <a 
+                                  href={link.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  class="text-xs text-white/40 hover:text-white transition-colors no-underline"
+                                >
+                                  {getLinkIcon(link.type)} {link.label}
+                                </a>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      );
+    })}
+
+  </main>
+</Layout>
+
+<style>
+  /* Стиль для ссылок с иконками (Telegram канал, Instagram) */
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+  }
+  
+  .social-link-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+</style>

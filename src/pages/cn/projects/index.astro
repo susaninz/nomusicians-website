@@ -1,0 +1,68 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import { getProjects, urlFor } from '../../../lib/sanity';
+import { t } from '../../../i18n/translations';
+
+const lang = 'cn';
+
+const sanityProjects = await getProjects();
+
+const projects = sanityProjects.map(p => ({
+  id: p.slug?.current || p._id,
+  title: p.title?.[lang] || p.title?.cn || p.title?.ru || '项目',
+  year: p.year || '',
+  image: p.image ? urlFor(p.image).width(800).url() : '/og-image.png',
+  description: p.description?.[lang] || p.description?.cn || p.description?.ru || '',
+  hasPage: p.hasPage || false,
+}));
+---
+
+<Layout title="项目 — Nomusicians" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-16">
+    <section class="px-6 mb-16">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-6" style="font-family: var(--font-logo);">
+          {t(lang, 'projects.title')}
+        </h1>
+        <p class="text-lg text-muted max-w-2xl mx-auto">
+          音乐会节目、驻留项目和特别项目
+        </p>
+      </div>
+    </section>
+
+    <section class="px-6">
+      <div class="max-w-6xl mx-auto grid gap-12">
+        {projects.map((project, index) => (
+          <a 
+            href={project.hasPage ? `/cn/projects/${project.id}/` : '#'}
+            class:list={["group block no-underline", !project.hasPage && "pointer-events-none"]}
+          >
+            <div class:list={["flex flex-col md:flex-row gap-8", index % 2 === 1 && "md:flex-row-reverse"]}>
+              <div class="w-full md:w-1/2">
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img src={project.image} alt={project.title} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"/>
+                </div>
+              </div>
+              <div class="w-full md:w-1/2 flex flex-col justify-center">
+                <p class="text-muted text-sm tracking-wider mb-2">{project.year}</p>
+                <h2 class="text-3xl font-light text-white mb-4 group-hover:text-muted transition-colors">{project.title}</h2>
+                <p class="text-muted leading-relaxed mb-6">{project.description}</p>
+                {project.hasPage && <span class="text-white text-sm tracking-wider uppercase group-hover:tracking-widest transition-all">了解更多 →</span>}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  a, a:visited, a:hover, a:active {
+    text-decoration: none !important;
+    color: inherit;
+  }
+</style>

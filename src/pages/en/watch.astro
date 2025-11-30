@@ -1,0 +1,97 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import { getVideosForWatch, urlFor } from '../../lib/sanity';
+
+const lang = 'en';
+
+// Получаем видео для страницы /watch
+const videos = await getVideosForWatch();
+
+// Функция для получения YouTube thumbnail
+function getYoutubeThumbnail(url: string): string {
+  const match = url?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+  if (match && match[1]) {
+    return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+  }
+  return '/og-image.png';
+}
+
+// Helper для локализованных полей
+function getLocalized(video: any, field: string): string {
+  const enField = video[field + 'En'];
+  if (enField) return enField;
+  return video[field] || '';
+}
+---
+
+<Layout title="Watch — Nomusicians" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-16">
+    <!-- Hero -->
+    <section class="px-6 mb-16">
+      <div class="max-w-5xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-6" style="font-family: var(--font-logo);">
+          Watch
+        </h1>
+        <p class="text-muted text-lg">
+          Concert recordings, sessions and video art
+        </p>
+      </div>
+    </section>
+
+    <!-- Видео grid -->
+    {videos.length > 0 ? (
+      <section class="px-6">
+        <div class="max-w-6xl mx-auto">
+          <div class="grid md:grid-cols-2 gap-8">
+            {videos.map((video) => {
+              const thumbnail = video.thumbnail 
+                ? urlFor(video.thumbnail).width(800).url() 
+                : getYoutubeThumbnail(video.youtubeUrl);
+              
+              return (
+                <a 
+                  href={video.youtubeUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="block relative aspect-video group overflow-hidden no-underline"
+                >
+                  <img 
+                    src={thumbnail}
+                    alt={getLocalized(video, 'title')}
+                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full border-2 border-white/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                    <h3 class="text-white text-lg font-light">{getLocalized(video, 'title')}</h3>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section class="px-6">
+        <div class="max-w-3xl mx-auto text-center">
+          <p class="text-muted">Videos coming soon</p>
+        </div>
+      </section>
+    )}
+  </main>
+</Layout>
+
+
+
+
+
+

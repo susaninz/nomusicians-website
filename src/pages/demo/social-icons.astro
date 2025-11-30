@@ -1,0 +1,617 @@
+---
+// Демо-страница для унификации социальных иконок
+// С оценкой юридических рисков
+---
+
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Icons — Унификация</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container { max-width: 1100px; margin: 0 auto; }
+    
+    h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .subtitle { color: #666; margin-bottom: 3rem; }
+    
+    h2 { font-size: 1.25rem; font-weight: 500; margin: 2rem 0 1rem; color: #888; }
+    h3 { font-size: 1rem; font-weight: 400; margin: 1.5rem 0 0.75rem; color: #666; }
+    
+    .section {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    
+    .label { color: #666; font-size: 0.8rem; min-width: 100px; }
+    
+    /* Risk badges */
+    .risk-safe { 
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: rgba(0, 200, 100, 0.15); 
+      color: #0c6; 
+      padding: 0.2rem 0.6rem; 
+      border-radius: 4px; 
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .risk-gray { 
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: rgba(255, 200, 0, 0.15); 
+      color: #fc0; 
+      padding: 0.2rem 0.6rem; 
+      border-radius: 4px; 
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .risk-danger { 
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      background: rgba(255, 80, 80, 0.15); 
+      color: #f55; 
+      padding: 0.2rem 0.6rem; 
+      border-radius: 4px; 
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    /* Icons grid */
+    .icons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .icon-card {
+      background: #0a0a0a;
+      border: 1px solid #222;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .icon-card:hover {
+      border-color: #444;
+      transform: translateY(-2px);
+    }
+    .icon-card.recommended {
+      border-color: #3a3;
+      background: rgba(0, 200, 100, 0.03);
+    }
+    
+    .icon-preview {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .icon-name { font-weight: 500; margin-bottom: 0.5rem; }
+    .icon-desc { font-size: 0.8rem; color: #666; margin-bottom: 0.75rem; }
+    
+    /* Text icon style */
+    .text-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.3rem 0.6rem;
+      border: 1.5px solid currentColor;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+    }
+    .text-icon:hover {
+      background: white;
+      color: black;
+      border-color: white;
+    }
+    .text-icon.small {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.4rem;
+    }
+    
+    /* SVG icons */
+    .svg-icon {
+      width: 28px;
+      height: 28px;
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+    }
+    .svg-icon:hover { color: white; }
+    
+    .svg-icon-sm {
+      width: 18px;
+      height: 18px;
+      color: rgba(255,255,255,0.6);
+      transition: all 0.2s;
+    }
+    
+    /* Footer Preview */
+    .footer-preview {
+      background: #0a0a0a;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 2rem;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .footer-icons { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      gap: 1.5rem; 
+      margin-bottom: 1rem;
+    }
+    .footer-link {
+      color: rgba(255,255,255,0.5);
+      transition: color 0.2s;
+      text-decoration: none;
+    }
+    .footer-link:hover { color: white; }
+    
+    /* Musician Card */
+    .musician-card {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      padding: 1.5rem;
+      background: #0a0a0a;
+      border-radius: 8px;
+    }
+    .musician-photo {
+      width: 150px;
+      height: 150px;
+      background: #222;
+      flex-shrink: 0;
+    }
+    .musician-info { flex: 1; }
+    .musician-name { font-size: 1.3rem; font-weight: 400; margin-bottom: 0.3rem; }
+    .musician-role { color: #888; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .musician-bio { color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.75rem; }
+    .musician-links { 
+      display: flex; 
+      gap: 0.75rem; 
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .link-with-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+    .link-with-label:hover { color: white; }
+    .link-with-label svg { width: 16px; height: 16px; }
+    
+    .divider { 
+      width: 1px; 
+      height: 14px; 
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .note {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255, 200, 0, 0.05);
+      border: 1px solid rgba(255, 200, 0, 0.2);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #999;
+    }
+    .note strong { color: #ffc800; }
+    
+    a.back { 
+      color: #666; 
+      text-decoration: none; 
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+    a.back:hover { color: white; }
+    
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #222;
+    }
+    .comparison-table th { color: #666; font-weight: 500; font-size: 0.8rem; }
+    .comparison-table td { font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back">← На сайт</a>
+    
+    <h1>Иконки Instagram для сайта</h1>
+    <p class="subtitle">Выбор варианта с учётом юридических рисков (РФ)</p>
+    
+    <!-- ЮРИДИЧЕСКАЯ СПРАВКА -->
+    <div class="section" style="border-color: #f55;">
+      <h2>⚖️ Юридическая справка</h2>
+      <p style="color: #888; margin-bottom: 1rem;">Meta признана экстремистской организацией в РФ. Демонстрация символики — административное правонарушение.</p>
+      
+      <table class="comparison-table">
+        <tr>
+          <th>Вариант</th>
+          <th>Риск</th>
+          <th>Пояснение</th>
+        </tr>
+        <tr>
+          <td>🔴 Оригинал (градиент)</td>
+          <td><span class="risk-danger">Запрещено</span></td>
+          <td>Прямое использование символики</td>
+        </tr>
+        <tr>
+          <td>⚫ Чёрно-белый логотип</td>
+          <td><span class="risk-danger">Рискованно</span></td>
+          <td>Форма узнаваема → "до степени смешения"</td>
+        </tr>
+        <tr>
+          <td>⬜ Контурный логотип</td>
+          <td><span class="risk-danger">Рискованно</span></td>
+          <td>Форма та же, цвет не важен</td>
+        </tr>
+        <tr>
+          <td>📦 Квадрат + камера</td>
+          <td><span class="risk-gray">Серая зона</span></td>
+          <td>Геометрия похожа, но не копия</td>
+        </tr>
+        <tr>
+          <td>📷 Обычная камера</td>
+          <td><span class="risk-safe">✓ Безопасно</span></td>
+          <td>Стандартная иконка фотоаппарата</td>
+        </tr>
+        <tr>
+          <td>📝 Текст [inst] / [IG]</td>
+          <td><span class="risk-safe">✓ Безопасно</span></td>
+          <td>Просто буквы, не символика</td>
+        </tr>
+        <tr>
+          <td>🔲 Сетка / галерея</td>
+          <td><span class="risk-safe">✓ Безопасно</span></td>
+          <td>Абстрактная иконка</td>
+        </tr>
+      </table>
+    </div>
+    
+    <!-- ВСЕ ВАРИАНТЫ ИКОНОК -->
+    <div class="section">
+      <h2>Все варианты иконок Instagram</h2>
+      
+      <div class="icons-grid">
+        <!-- 1. Текст inst -->
+        <div class="icon-card recommended">
+          <div class="icon-preview">
+            <span class="text-icon">inst</span>
+          </div>
+          <div class="icon-name">#1 — Текст «inst»</div>
+          <div class="icon-desc">Минималистичный текст в рамке</div>
+          <span class="risk-safe">✓ 100% безопасно</span>
+        </div>
+        
+        <!-- 2. Текст IG -->
+        <div class="icon-card recommended">
+          <div class="icon-preview">
+            <span class="text-icon">IG</span>
+          </div>
+          <div class="icon-name">#2 — Текст «IG»</div>
+          <div class="icon-desc">Короткая аббревиатура</div>
+          <span class="risk-safe">✓ 100% безопасно</span>
+        </div>
+        
+        <!-- 3. Простая камера -->
+        <div class="icon-card recommended">
+          <div class="icon-preview">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <circle cx="12" cy="12" r="3.5"/>
+              <circle cx="17" cy="8" r="1" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="icon-name">#3 — Камера (фотоаппарат)</div>
+          <div class="icon-desc">Классическая иконка камеры</div>
+          <span class="risk-safe">✓ 100% безопасно</span>
+        </div>
+        
+        <!-- 4. Квадрат + камера -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="icon-name">#4 — Квадрат + камера</div>
+          <div class="icon-desc">Стилизация, не логотип</div>
+          <span class="risk-gray">⚠ Серая зона</span>
+        </div>
+        
+        <!-- 5. Буква i в круге -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"/>
+              <text x="12" y="17" text-anchor="middle" fill="currentColor" stroke="none" font-size="14" font-weight="600">i</text>
+            </svg>
+          </div>
+          <div class="icon-name">#5 — Буква «i» в круге</div>
+          <div class="icon-desc">Абстрактный символ</div>
+          <span class="risk-safe">✓ Безопасно</span>
+        </div>
+        
+        <!-- 6. Сетка / галерея -->
+        <div class="icon-card recommended">
+          <div class="icon-preview">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="2" width="8" height="8" rx="1"/>
+              <rect x="14" y="2" width="8" height="8" rx="1"/>
+              <rect x="2" y="14" width="8" height="8" rx="1"/>
+              <rect x="14" y="14" width="8" height="8" rx="1"/>
+            </svg>
+          </div>
+          <div class="icon-name">#6 — Сетка / Галерея</div>
+          <div class="icon-desc">Иконка фотогалереи</div>
+          <span class="risk-safe">✓ 100% безопасно</span>
+        </div>
+        
+        <!-- 7. Поляроид -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="2" width="18" height="20" rx="2"/>
+              <rect x="5" y="4" width="14" height="12" rx="1"/>
+              <line x1="8" y1="19" x2="16" y2="19"/>
+            </svg>
+          </div>
+          <div class="icon-name">#7 — Поляроид</div>
+          <div class="icon-desc">Ретро-фото стиль</div>
+          <span class="risk-safe">✓ Безопасно</span>
+        </div>
+        
+        <!-- 8. Фото с сердцем -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="18" rx="2"/>
+              <path d="M12 17s-4-3.5-4-6c0-1.5 1-2.5 2.5-2.5 1 0 1.5.5 1.5.5s.5-.5 1.5-.5c1.5 0 2.5 1 2.5 2.5 0 2.5-4 6-4 6z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="icon-name">#8 — Фото с сердцем</div>
+          <div class="icon-desc">Лайки, соцсети</div>
+          <span class="risk-safe">✓ Безопасно</span>
+        </div>
+        
+        <!-- 9. @ символ -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <span class="text-icon" style="font-size: 1.2rem; padding: 0.2rem 0.5rem;">@</span>
+          </div>
+          <div class="icon-name">#9 — Символ «@»</div>
+          <div class="icon-desc">Универсальный соцсети</div>
+          <span class="risk-safe">✓ Безопасно</span>
+        </div>
+        
+        <!-- 10. Хэштег -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <span class="text-icon" style="font-size: 1rem;">#</span>
+          </div>
+          <div class="icon-name">#10 — Хэштег</div>
+          <div class="icon-desc">Символ соцсетей</div>
+          <span class="risk-safe">✓ Безопасно</span>
+        </div>
+        
+        <!-- 11. Filled камера (простая) -->
+        <div class="icon-card recommended">
+          <div class="icon-preview">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#11 — Камера (filled)</div>
+          <div class="icon-desc">Заливка, классический стиль</div>
+          <span class="risk-safe">✓ 100% безопасно</span>
+        </div>
+        
+        <!-- 12. Картинка/пейзаж -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg class="svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="18" rx="2"/>
+              <circle cx="8" cy="9" r="2"/>
+              <path d="M22 15l-5-5-4 4-3-3-8 8"/>
+            </svg>
+          </div>
+          <div class="icon-name">#12 — Картинка</div>
+          <div class="icon-desc">Изображение с пейзажем</div>
+          <span class="risk-safe">✓ Безопасно</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- РЕКОМЕНДУЕМЫЕ КОМБИНАЦИИ -->
+    <div class="section" style="border-color: #3a3;">
+      <h2>✅ Рекомендуемые комбинации</h2>
+      <p style="color: #666; margin-bottom: 1.5rem;">Готовые решения для footer и карточек музыкантов</p>
+      
+      <h3>Комбинация A: Все текстовые</h3>
+      <div class="footer-preview" style="margin-bottom: 2rem;">
+        <div class="footer-icons">
+          <a href="#" class="text-icon small">TG</a>
+          <a href="#" class="text-icon small">YT</a>
+          <a href="#" class="text-icon small">SC</a>
+          <a href="#" class="text-icon small">IG</a>
+        </div>
+        <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem;">© 2025 Nomusicians</p>
+      </div>
+      
+      <h3>Комбинация B: SVG иконки + текст для IG</h3>
+      <div class="footer-preview" style="margin-bottom: 2rem;">
+        <div class="footer-icons">
+          <a href="#" class="footer-link">
+            <svg class="svg-icon-sm" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer-link">
+            <svg class="svg-icon-sm" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer-link">
+            <svg class="svg-icon-sm" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M1.175 12.225c-.051 0-.094.046-.101.1l-.233 2.154.233 2.105c.007.058.05.098.101.098.05 0 .09-.04.099-.098l.255-2.105-.27-2.154c-.009-.06-.052-.1-.084-.1zm-.899 1.18c-.05 0-.091.039-.099.092l-.164 1.08.164 1.056c.008.05.049.09.099.09.05 0 .09-.038.098-.09l.186-1.056-.186-1.08c-.008-.05-.048-.092-.098-.092zm1.799-.6c-.057 0-.101.048-.109.104l-.21 1.77.21 1.725c.008.058.052.104.109.104.054 0 .1-.048.107-.104l.233-1.725-.233-1.77c-.007-.056-.053-.104-.107-.104zm.9-.454c-.063 0-.11.051-.117.109l-.186 2.225.186 2.154c.007.063.054.11.117.11.063 0 .11-.047.117-.11l.209-2.154-.209-2.225c-.007-.058-.054-.109-.117-.109zm5.394-3.15c-.09 0-.164.073-.172.163l-.163 5.165.163 2.107c.008.09.082.164.172.164.089 0 .163-.074.17-.164l.186-2.107-.186-5.165c-.007-.09-.081-.163-.17-.163zm-3.593 1.674c-.072 0-.127.057-.134.127l-.186 3.651.186 2.123c.007.071.062.127.134.127.07 0 .124-.056.131-.127l.209-2.123-.209-3.651c-.007-.07-.061-.127-.131-.127zm.9-.273c-.08 0-.14.062-.148.14l-.163 3.784.163 2.108c.008.08.068.14.148.14.078 0 .14-.06.147-.14l.186-2.108-.186-3.784c-.007-.078-.069-.14-.147-.14zm.899-.137c-.085 0-.149.066-.156.15l-.14 3.784.14 2.106c.007.086.071.15.156.15.085 0 .149-.064.156-.15l.163-2.106-.163-3.784c-.007-.084-.071-.15-.156-.15zm.901-.093c-.093 0-.163.072-.17.163l-.117 3.784.117 2.091c.007.093.077.163.17.163.092 0 .162-.07.17-.163l.131-2.091-.131-3.784c-.008-.091-.078-.163-.17-.163zm4.292 1.406c-.195 0-.379.033-.553.091-.117-1.332-1.241-2.377-2.609-2.377-.341 0-.667.069-.967.186-.115.047-.145.093-.145.186v4.87c0 .099.077.18.172.186h4.102c.963 0 1.746-.787 1.746-1.758-.001-.97-.784-1.384-1.746-1.384z"/>
+            </svg>
+          </a>
+          <a href="#" class="text-icon small">IG</a>
+        </div>
+        <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem;">© 2025 Nomusicians</p>
+      </div>
+      
+      <h3>Комбинация C: SVG иконки + камера для IG</h3>
+      <div class="footer-preview" style="margin-bottom: 2rem;">
+        <div class="footer-icons">
+          <a href="#" class="footer-link">
+            <svg class="svg-icon-sm" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer-link">
+            <svg class="svg-icon-sm" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer-link">
+            <svg class="svg-icon-sm" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M1.175 12.225c-.051 0-.094.046-.101.1l-.233 2.154.233 2.105c.007.058.05.098.101.098.05 0 .09-.04.099-.098l.255-2.105-.27-2.154c-.009-.06-.052-.1-.084-.1zm-.899 1.18c-.05 0-.091.039-.099.092l-.164 1.08.164 1.056c.008.05.049.09.099.09.05 0 .09-.038.098-.09l.186-1.056-.186-1.08c-.008-.05-.048-.092-.098-.092zm1.799-.6c-.057 0-.101.048-.109.104l-.21 1.77.21 1.725c.008.058.052.104.109.104.054 0 .1-.048.107-.104l.233-1.725-.233-1.77c-.007-.056-.053-.104-.107-.104zm.9-.454c-.063 0-.11.051-.117.109l-.186 2.225.186 2.154c.007.063.054.11.117.11.063 0 .11-.047.117-.11l.209-2.154-.209-2.225c-.007-.058-.054-.109-.117-.109zm5.394-3.15c-.09 0-.164.073-.172.163l-.163 5.165.163 2.107c.008.09.082.164.172.164.089 0 .163-.074.17-.164l.186-2.107-.186-5.165c-.007-.09-.081-.163-.17-.163zm-3.593 1.674c-.072 0-.127.057-.134.127l-.186 3.651.186 2.123c.007.071.062.127.134.127.07 0 .124-.056.131-.127l.209-2.123-.209-3.651c-.007-.07-.061-.127-.131-.127zm.9-.273c-.08 0-.14.062-.148.14l-.163 3.784.163 2.108c.008.08.068.14.148.14.078 0 .14-.06.147-.14l.186-2.108-.186-3.784c-.007-.078-.069-.14-.147-.14zm.899-.137c-.085 0-.149.066-.156.15l-.14 3.784.14 2.106c.007.086.071.15.156.15.085 0 .149-.064.156-.15l.163-2.106-.163-3.784c-.007-.084-.071-.15-.156-.15zm.901-.093c-.093 0-.163.072-.17.163l-.117 3.784.117 2.091c.007.093.077.163.17.163.092 0 .162-.07.17-.163l.131-2.091-.131-3.784c-.008-.091-.078-.163-.17-.163zm4.292 1.406c-.195 0-.379.033-.553.091-.117-1.332-1.241-2.377-2.609-2.377-.341 0-.667.069-.967.186-.115.047-.145.093-.145.186v4.87c0 .099.077.18.172.186h4.102c.963 0 1.746-.787 1.746-1.758-.001-.97-.784-1.384-1.746-1.384z"/>
+            </svg>
+          </a>
+          <a href="#" class="footer-link">
+            <svg class="svg-icon-sm" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+            </svg>
+          </a>
+        </div>
+        <p style="color: rgba(255,255,255,0.3); font-size: 0.7rem;">© 2025 Nomusicians</p>
+      </div>
+      
+      <h3>Карточка музыканта (любая комбинация)</h3>
+      <div class="musician-card">
+        <div class="musician-photo"></div>
+        <div class="musician-info">
+          <h3 class="musician-name">Максим Котнов</h3>
+          <p class="musician-role">Соосноватаель · Композитор</p>
+          <p class="musician-bio">Соосноватаель проекта, отвечающий за ритмическую архитектуру звука.</p>
+          
+          <div class="musician-links">
+            <a href="#" class="link-with-label">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+              </svg>
+              Канал
+            </a>
+            
+            <span class="divider"></span>
+            
+            <!-- Вариант A: текст -->
+            <a href="#" class="link-with-label">
+              <span class="text-icon small">IG</span>
+            </a>
+            
+            <!-- ИЛИ Вариант B: камера -->
+            <!--
+            <a href="#" class="link-with-label">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+              </svg>
+            </a>
+            -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ИТОГОВАЯ РЕКОМЕНДАЦИЯ -->
+    <div class="section" style="border-color: #0c6; background: rgba(0,200,100,0.03);">
+      <h2>🎯 Итоговая рекомендация</h2>
+      
+      <p style="color: #ccc; line-height: 1.7; margin-bottom: 1rem;">
+        Для <strong style="color: white;">100% юридической безопасности</strong> используйте:
+      </p>
+      
+      <div class="row" style="margin-bottom: 1.5rem;">
+        <span style="font-size: 1.2rem;">1.</span>
+        <span class="text-icon">IG</span>
+        <span style="color: #888;">или</span>
+        <span class="text-icon">inst</span>
+        <span style="color: #0c6;">← Текст в рамке</span>
+      </div>
+      
+      <div class="row" style="margin-bottom: 1.5rem;">
+        <span style="font-size: 1.2rem;">2.</span>
+        <svg style="width: 24px; height: 24px; color: rgba(255,255,255,0.6);" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+        </svg>
+        <span style="color: #0c6;">← Обычная камера (не квадрат Instagram)</span>
+      </div>
+      
+      <div class="row">
+        <span style="font-size: 1.2rem;">3.</span>
+        <svg style="width: 24px; height: 24px; color: rgba(255,255,255,0.6);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="8" height="8" rx="1"/>
+          <rect x="14" y="2" width="8" height="8" rx="1"/>
+          <rect x="2" y="14" width="8" height="8" rx="1"/>
+          <rect x="14" y="14" width="8" height="8" rx="1"/>
+        </svg>
+        <span style="color: #0c6;">← Сетка/галерея</span>
+      </div>
+      
+      <div class="note" style="margin-top: 1.5rem; border-color: rgba(0,200,100,0.3); background: rgba(0,200,100,0.05);">
+        <strong style="color: #0c6;">Моя рекомендация:</strong> Комбинация B — SVG для TG/YT/SC + текст <code style="background: #222; padding: 0.1rem 0.3rem; border-radius: 3px;">[IG]</code> для Instagram. Выглядит стильно и безопасно.
+      </div>
+    </div>
+    
+    <div style="text-align: center; padding: 2rem; color: #666;">
+      <p>Ссылка для Ракитина: <a href="https://nomusicians.ngrok.io/demo/social-icons" style="color: #888;">nomusicians.ngrok.io/demo/social-icons</a></p>
+    </div>
+  </div>
+</body>
+</html>

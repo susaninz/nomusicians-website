@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import { t } from '../../i18n/translations';
+
+const lang = 'cn';
+---
+
+<Layout title="联系方式 — Nomusicians" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-16 min-h-screen flex flex-col">
+    <section class="px-6 flex-1 flex items-center justify-center">
+      <div class="max-w-2xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-8" style="font-family: var(--font-logo);">
+          {t(lang, 'contact.title')}
+        </h1>
+        
+        <p class="text-muted text-lg mb-12">{t(lang, 'contact.booking')}</p>
+        
+        <a href="mailto:mail@nomusicians.com" class="block text-2xl md:text-3xl text-white hover:text-muted transition-colors mb-12">
+          mail@nomusicians.com
+        </a>
+        
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
+          <a href="#" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-3 px-6 py-3 border border-white/30 text-white hover:bg-white hover:text-black transition-all duration-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+            </svg>
+            {t(lang, 'contact.presskit')}
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-3 px-6 py-3 border border-white/30 text-white hover:bg-white hover:text-black transition-all duration-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13l-3 3m0 0l-3-3m3 3V9"></path>
+            </svg>
+            {t(lang, 'contact.presentation')}
+          </a>
+        </div>
+        
+        <div class="flex items-center justify-center gap-8">
+          <a href="https://t.me/nomusicians" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-white transition-colors" aria-label="Telegram">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          </a>
+          <a href="https://youtube.com/@nomusicians" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-white transition-colors" aria-label="YouTube">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+          <a href="https://soundcloud.com/nomusicians" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-white transition-colors" aria-label="SoundCloud">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M1.175 12.225c-.051 0-.094.046-.101.1l-.233 2.154.233 2.105c.007.058.05.098.101.098.05 0 .09-.04.099-.098l.255-2.105-.27-2.154c-.009-.06-.052-.1-.084-.1zm-.899 1.18c-.05 0-.091.039-.099.092l-.164 1.08.164 1.056c.008.05.049.09.099.09.05 0 .09-.038.098-.09l.186-1.056-.186-1.08c-.008-.05-.048-.092-.098-.092zm1.799-.6c-.057 0-.101.048-.109.104l-.21 1.77.21 1.725c.008.058.052.104.109.104.054 0 .1-.048.107-.104l.233-1.725-.233-1.77c-.007-.056-.053-.104-.107-.104zm.9-.454c-.063 0-.11.051-.117.109l-.186 2.225.186 2.154c.007.063.054.11.117.11.063 0 .11-.047.117-.11l.209-2.154-.209-2.225c-.007-.058-.054-.109-.117-.109zm5.394-3.15c-.09 0-.164.073-.172.163l-.163 5.165.163 2.107c.008.09.082.164.172.164.089 0 .163-.074.17-.164l.186-2.107-.186-5.165c-.007-.09-.081-.163-.17-.163zm-3.593 1.674c-.072 0-.127.057-.134.127l-.186 3.651.186 2.123c.007.071.062.127.134.127.07 0 .124-.056.131-.127l.209-2.123-.209-3.651c-.007-.07-.061-.127-.131-.127zm.9-.273c-.08 0-.14.062-.148.14l-.163 3.784.163 2.108c.008.08.068.14.148.14.078 0 .14-.06.147-.14l.186-2.108-.186-3.784c-.007-.078-.069-.14-.147-.14zm.899-.137c-.085 0-.149.066-.156.15l-.14 3.784.14 2.106c.007.086.071.15.156.15.085 0 .149-.064.156-.15l.163-2.106-.163-3.784c-.007-.084-.071-.15-.156-.15zm.901-.093c-.093 0-.163.072-.17.163l-.117 3.784.117 2.091c.007.093.077.163.17.163.092 0 .162-.07.17-.163l.131-2.091-.131-3.784c-.008-.091-.078-.163-.17-.163zm4.292 1.406c-.195 0-.379.033-.553.091-.117-1.332-1.241-2.377-2.609-2.377-.341 0-.667.069-.967.186-.115.047-.145.093-.145.186v4.87c0 .099.077.18.172.186h4.102c.963 0 1.746-.787 1.746-1.758-.001-.97-.784-1.384-1.746-1.384z"/></svg>
+          </a>
+          <a href="https://instagram.com/nomusicians" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-white transition-colors" aria-label="Instagram">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+          </a>
+          <a href="https://vk.com/nomusicians" target="_blank" rel="noopener noreferrer" class="text-muted hover:text-white transition-colors" aria-label="VK">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C4.624 10.857 4 8.57 4 8.096c0-.254.102-.491.593-.491h1.744c.44 0 .61.203.78.678.863 2.49 2.303 4.675 2.896 4.675.22 0 .322-.102.322-.66V9.721c-.068-1.186-.695-1.287-.695-1.71 0-.203.17-.407.44-.407h2.744c.373 0 .508.203.508.643v3.473c0 .372.17.508.271.508.22 0 .407-.136.813-.542 1.27-1.422 2.18-3.61 2.18-3.61.119-.254.322-.491.763-.491h1.744c.525 0 .644.27.525.643-.22 1.017-2.354 4.031-2.354 4.031-.186.305-.254.44 0 .78.186.254.796.779 1.203 1.253.745.847 1.32 1.558 1.473 2.05.17.49-.085.744-.576.744z"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+    
+    <footer class="text-center py-8 text-muted text-sm">© 2025 Nomusicians</footer>
+  </main>
+</Layout>
+

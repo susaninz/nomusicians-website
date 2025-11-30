@@ -1,0 +1,712 @@
+---
+// Демо-страница для выбора иконок музыкальных платформ в хедере
+---
+
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Icons — Выбор иконок для хедера</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .subtitle { color: #666; margin-bottom: 3rem; }
+    
+    h2 { font-size: 1.25rem; font-weight: 500; margin: 2rem 0 1rem; color: #888; border-bottom: 1px solid #222; padding-bottom: 0.5rem; }
+    
+    .section {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .icons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .icon-card {
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .icon-card:hover {
+      border-color: #666;
+      transform: translateY(-2px);
+    }
+    .icon-card.selected {
+      border-color: #0f0;
+      background: rgba(0, 255, 0, 0.05);
+    }
+    
+    .icon-preview {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    
+    .icon-preview svg {
+      width: 32px;
+      height: 32px;
+      color: rgba(255,255,255,0.7);
+    }
+    
+    .icon-name { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .icon-desc { font-size: 0.75rem; color: #666; }
+    
+    /* Preview header */
+    .header-preview {
+      background: #000;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+    
+    .header-logo {
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 300;
+    }
+    
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .header-icons svg {
+      width: 20px;
+      height: 20px;
+      color: rgba(255,255,255,0.5);
+      transition: color 0.2s;
+    }
+    .header-icons a:hover svg {
+      color: white;
+    }
+    
+    .header-separator {
+      color: rgba(255,255,255,0.2);
+    }
+    
+    .header-nav {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+    }
+    
+    a.back { 
+      color: #666; 
+      text-decoration: none; 
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+    a.back:hover { color: white; }
+    
+    .size-demo {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+    
+    .size-item {
+      text-align: center;
+    }
+    
+    .size-item svg {
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 0.5rem;
+    }
+    
+    .size-label {
+      font-size: 0.7rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back">← На сайт</a>
+    
+    <h1>Иконки музыкальных платформ</h1>
+    <p class="subtitle">Выбор иконок для хедера: Apple Music, Spotify, Яндекс Музыка</p>
+    
+    <!-- PREVIEW -->
+    <div class="section">
+      <h2>Текущий хедер (предпросмотр)</h2>
+      <div class="header-preview">
+        <div class="header-logo">Nomusicians</div>
+        <div class="header-icons" id="preview-icons">
+          <!-- Apple Music -->
+          <a href="#" id="preview-apple">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+          </a>
+          <!-- Spotify -->
+          <a href="#">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+            </svg>
+          </a>
+          <!-- Yandex -->
+          <a href="#" id="preview-yandex">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm2.4 17.4h-2.064l-2.904-5.136V17.4H7.44V6.6h2.784c2.352 0 3.744 1.2 3.744 3.12 0 1.416-.768 2.448-2.064 2.904L14.4 17.4zm-3.168-6.24c1.008 0 1.56-.504 1.56-1.416 0-.912-.552-1.392-1.56-1.392H9.432v2.808h1.8z"/>
+            </svg>
+          </a>
+        </div>
+        <span class="header-separator">|</span>
+        <div class="header-nav">
+          <span>О нас</span>
+          <span>Релизы</span>
+          <span>Проекты</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- APPLE MUSIC -->
+    <div class="section">
+      <h2>🍎 Apple Music — варианты иконок</h2>
+      
+      <div class="icons-grid">
+        <!-- 1. Простая нота -->
+        <div class="icon-card" data-platform="apple" data-variant="1">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#1 Простая нота</div>
+          <div class="icon-desc">Material Design</div>
+        </div>
+        
+        <!-- 2. Двойная нота -->
+        <div class="icon-card" data-platform="apple" data-variant="2">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21 3v12.5a3.5 3.5 0 1 1-2-3.163V5H9v11.5a3.5 3.5 0 1 1-2-3.163V3h14zM5.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm12 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#2 Двойная нота</div>
+          <div class="icon-desc">Классическая</div>
+        </div>
+        
+        <!-- 3. Нота в круге -->
+        <div class="icon-card" data-platform="apple" data-variant="3">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3 14.5c0 1.38-1.12 2.5-2.5 2.5S10 17.88 10 16.5V10h5v6.5zM15 8h-5V6h5v2z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#3 Нота в круге</div>
+          <div class="icon-desc">Как у Spotify</div>
+        </div>
+        
+        <!-- 4. Официальный Apple Music (простой) -->
+        <div class="icon-card" data-platform="apple" data-variant="4">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 361 361">
+              <path d="M360 112.61c0-4.3 0-8.6-.06-12.9-.05-3.72-.14-7.44-.38-11.15-.49-7.54-1.46-15.12-3.79-22.39a66.26 66.26 0 00-16.08-26.2 66.09 66.09 0 00-26.17-16.08c-7.27-2.34-14.86-3.32-22.4-3.8-3.71-.24-7.43-.33-11.15-.38-4.3-.06-8.6-.06-12.9-.06H93.55c-4.3 0-8.6 0-12.9.06-3.72.05-7.44.14-11.15.38-7.54.48-15.13 1.46-22.4 3.8a66.09 66.09 0 00-26.17 16.08 66.26 66.26 0 00-16.08 26.2c-2.33 7.27-3.3 14.85-3.79 22.39-.24 3.71-.33 7.43-.38 11.15-.06 4.3-.06 8.6-.06 12.9v135.78c0 4.3 0 8.6.06 12.9.05 3.72.14 7.44.38 11.15.49 7.54 1.46 15.12 3.79 22.39a66.26 66.26 0 0016.08 26.2 66.09 66.09 0 0026.17 16.08c7.27 2.34 14.86 3.32 22.4 3.8 3.71.24 7.43.33 11.15.38 4.3.06 8.6.06 12.9.06h172.9c4.3 0 8.6 0 12.9-.06 3.72-.05 7.44-.14 11.15-.38 7.54-.48 15.13-1.46 22.4-3.8a66.09 66.09 0 0026.17-16.08 66.26 66.26 0 0016.08-26.2c2.33-7.27 3.3-14.85 3.79-22.39.24-3.71.33-7.43.38-11.15.06-4.3.06-8.6.06-12.9V112.61z"/>
+              <path fill="#000" d="M254.5 55.93v167.57a47.64 47.64 0 01-9.37 28.88 42.2 42.2 0 01-24.2 16.17 52.58 52.58 0 01-14.95 1.82 47.29 47.29 0 01-28.13-8.53 38.4 38.4 0 01-16.13-24.79 42.58 42.58 0 016.93-33.16 42.87 42.87 0 0129.47-18.07c7.57-1.08 15.22-.56 22.67 1.34V109.1L136.5 128.6v136.17a47.62 47.62 0 01-9.36 28.88 42.24 42.24 0 01-24.2 16.17 52.66 52.66 0 01-14.96 1.82 47.28 47.28 0 01-28.13-8.53 38.4 38.4 0 01-16.13-24.8A42.58 42.58 0 0150.66 245a42.87 42.87 0 0129.47-18.07 57.62 57.62 0 0122.66 1.34V90.8c0-5.67 1.47-10.51 4.4-14.62a23.37 23.37 0 0111.2-8.46l.27-.09 118.74-31.07a20.23 20.23 0 0111.78.52 12.14 12.14 0 017.02 8.21 23.1 23.1 0 01.63 5.5c-.33 1.68-.33 3.4-.33 5.14z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#4 Apple Music</div>
+          <div class="icon-desc">Официальный логотип</div>
+        </div>
+        
+        <!-- 4b. Apple Music нота (Simple Icons) -->
+        <div class="icon-card" data-platform="apple" data-variant="4b">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8.125 5.093v9.906a3.48 3.48 0 0 0-1.875-.531c-1.863 0-3.375 1.39-3.375 3.094s1.512 3.094 3.375 3.094 3.375-1.39 3.375-3.094V9.062h6v3.094a3.48 3.48 0 0 0-1.875-.531c-1.863 0-3.375 1.39-3.375 3.094s1.512 3.093 3.375 3.093 3.375-1.39 3.375-3.093V3.5h-1.5v1.593H8.125z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#4b Нота Apple</div>
+          <div class="icon-desc">Стилизованная</div>
+        </div>
+        
+        <!-- 5. Буква A -->
+        <div class="icon-card" data-platform="apple" data-variant="5">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <text x="12" y="16" text-anchor="middle" font-size="12" font-weight="600">A</text>
+            </svg>
+          </div>
+          <div class="icon-name">#5 Буква A</div>
+          <div class="icon-desc">Минималистичная</div>
+        </div>
+        
+        <!-- 6. AM -->
+        <div class="icon-card" data-platform="apple" data-variant="6">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <rect x="1" y="5" width="22" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <text x="12" y="15" text-anchor="middle" font-size="8" font-weight="600">AM</text>
+            </svg>
+          </div>
+          <div class="icon-name">#6 Текст AM</div>
+          <div class="icon-desc">Apple Music</div>
+        </div>
+        
+        <!-- 7. Простая нота 2 -->
+        <div class="icon-card" data-platform="apple" data-variant="7">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M9 3v12.26a5 5 0 1 0 2 3.74V9h6V3H9zm-2 18a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#7 Нота альт</div>
+          <div class="icon-desc">Чёткая форма</div>
+        </div>
+        
+        <!-- 8. Плеер -->
+        <div class="icon-card" data-platform="apple" data-variant="8">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M9.5 8v8l7-4z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#8 Play</div>
+          <div class="icon-desc">Универсальная</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- SPOTIFY -->
+    <div class="section">
+      <h2>🟢 Spotify — варианты иконок</h2>
+      
+      <div class="icons-grid">
+        <!-- 1. Официальный -->
+        <div class="icon-card selected" data-platform="spotify" data-variant="1">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#1 Официальный</div>
+          <div class="icon-desc">Spotify logo ✓</div>
+        </div>
+        
+        <!-- 2. Волны без круга -->
+        <div class="icon-card" data-platform="spotify" data-variant="2">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M4 17c3.5-2 9-2 13 1m-13-5c4.5-2 11-2 15 1m-15-5c5-2 12-2 16 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="icon-name">#2 Волны</div>
+          <div class="icon-desc">Минималист</div>
+        </div>
+        
+        <!-- 3. S в круге -->
+        <div class="icon-card" data-platform="spotify" data-variant="3">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <text x="12" y="16" text-anchor="middle" font-size="12" font-weight="600">S</text>
+            </svg>
+          </div>
+          <div class="icon-name">#3 Буква S</div>
+          <div class="icon-desc">Простая</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- YANDEX MUSIC -->
+    <div class="section">
+      <h2>🟠 Яндекс Музыка — варианты иконок</h2>
+      
+      <div class="icons-grid">
+        <!-- 1. Официальный Yandex Music (жёлтый круг + красная нота) -->
+        <div class="icon-card" data-platform="yandex" data-variant="1">
+          <div class="icon-preview">
+            <svg viewBox="0 0 48 48" width="32" height="32">
+              <!-- Жёлтый круг -->
+              <circle cx="20" cy="28" r="18" fill="#FFCC00"/>
+              <!-- Красная нота с флажком -->
+              <path fill="#FF3C30" d="M28 8v22a8 8 0 1 1-4-6.93V14h-8v16a8 8 0 1 1-4-6.93V8h16z"/>
+              <!-- Красный флажок -->
+              <path fill="#FF3C30" d="M28 8h12v10H28z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#1 Официальный цветной</div>
+          <div class="icon-desc">Жёлтый + красная нота</div>
+        </div>
+        
+        <!-- 1b. Официальный монохром -->
+        <div class="icon-card" data-platform="yandex" data-variant="1b">
+          <div class="icon-preview">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+              <circle cx="12" cy="12" r="12"/>
+              <path fill="#000" d="M15.5 6v9.17a3.001 3.001 0 1 1-2-2.83V9.5h-4v5.67a3.001 3.001 0 1 1-2-2.83V6h8z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#1b Официальный моно</div>
+          <div class="icon-desc">Монохромный</div>
+        </div>
+        
+        <!-- 2. Нота в круге (альт) -->
+        <div class="icon-card" data-platform="yandex" data-variant="2">
+          <div class="icon-preview">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+              <path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm4 6v9.5a2.5 2.5 0 1 1-2-2.45V8h-4v7.5a2.5 2.5 0 1 1-2-2.45V6h8z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#2 Нота в круге</div>
+          <div class="icon-desc">Альтернативная</div>
+        </div>
+        
+        <!-- 3. Я в круге -->
+        <div class="icon-card" data-platform="yandex" data-variant="3">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm2.4 17.4h-2.064l-2.904-5.136V17.4H7.44V6.6h2.784c2.352 0 3.744 1.2 3.744 3.12 0 1.416-.768 2.448-2.064 2.904L14.4 17.4zm-3.168-6.24c1.008 0 1.56-.504 1.56-1.416 0-.912-.552-1.392-1.56-1.392H9.432v2.808h1.8z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#3 Я в круге</div>
+          <div class="icon-desc">Яндекс стиль</div>
+        </div>
+        
+        <!-- 4. Просто нота -->
+        <div class="icon-card" data-platform="yandex" data-variant="4">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M16 3v10.17a3.001 3.001 0 1 1-2-2.83V6h-4v7.17a3.001 3.001 0 1 1-2-2.83V3h8z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#4 Двойная нота</div>
+          <div class="icon-desc">Без круга</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- YOUTUBE MUSIC -->
+    <div class="section">
+      <h2>🔴 YouTube Music — варианты иконок</h2>
+      
+      <div class="icons-grid">
+        <!-- 1. Официальный YouTube Music -->
+        <div class="icon-card" data-platform="ytmusic" data-variant="1">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#1 Официальный</div>
+          <div class="icon-desc">YouTube Music logo</div>
+        </div>
+        
+        <!-- 2. Play в круге -->
+        <div class="icon-card" data-platform="ytmusic" data-variant="2">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M9.5 7.5v9l7-4.5z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#2 Play круг</div>
+          <div class="icon-desc">Простой</div>
+        </div>
+        
+        <!-- 3. YT -->
+        <div class="icon-card" data-platform="ytmusic" data-variant="3">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <text x="12" y="15" text-anchor="middle" font-size="7" font-weight="600">YT</text>
+            </svg>
+          </div>
+          <div class="icon-name">#3 YT</div>
+          <div class="icon-desc">YouTube</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- DEEZER -->
+    <div class="section">
+      <h2>🟣 Deezer — варианты иконок</h2>
+      
+      <div class="icons-grid">
+        <!-- 1. Официальный Deezer -->
+        <div class="icon-card" data-platform="deezer" data-variant="1">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.81 4.16v3.03H24V4.16h-5.19zM6.27 8.38v3.027h5.189V8.38h-5.19zm12.54 0v3.027H24V8.38h-5.19zM6.27 12.594v3.027h5.189v-3.027h-5.19zm6.27 0v3.027h5.19v-3.027h-5.19zm6.27 0v3.027H24v-3.027h-5.19zM0 16.81v3.029h5.19v-3.03H0zm6.27 0v3.029h5.189v-3.03h-5.19zm6.27 0v3.029h5.19v-3.03h-5.19zm6.27 0v3.029H24v-3.03h-5.19z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#1 Официальный</div>
+          <div class="icon-desc">Deezer logo</div>
+        </div>
+        
+        <!-- 2. D в круге -->
+        <div class="icon-card" data-platform="deezer" data-variant="2">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <text x="12" y="16" text-anchor="middle" font-size="12" font-weight="600">D</text>
+            </svg>
+          </div>
+          <div class="icon-name">#2 Буква D</div>
+          <div class="icon-desc">Простой</div>
+        </div>
+        
+        <!-- 3. Эквалайзер -->
+        <div class="icon-card" data-platform="deezer" data-variant="3">
+          <div class="icon-preview">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <rect x="3" y="14" width="3" height="6"/>
+              <rect x="8" y="10" width="3" height="10"/>
+              <rect x="13" y="6" width="3" height="14"/>
+              <rect x="18" y="12" width="3" height="8"/>
+            </svg>
+          </div>
+          <div class="icon-name">#3 Эквалайзер</div>
+          <div class="icon-desc">Музыка</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ВИЗУАЛЬНЫЕ ИНДИКАТОРЫ -->
+    <div class="section">
+      <h2>🎧 Визуальные индикаторы "Слушать"</h2>
+      <p style="color: #666; margin-bottom: 1.5rem;">Элемент рядом с иконками, который показывает что здесь можно послушать музыку</p>
+      
+      <div class="icons-grid">
+        <!-- 1. Текст LISTEN -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <span style="font-size: 0.65rem; letter-spacing: 0.15em; color: rgba(255,255,255,0.4); text-transform: uppercase;">listen</span>
+          </div>
+          <div class="icon-name">#1 Текст "listen"</div>
+          <div class="icon-desc">Минимализм</div>
+        </div>
+        
+        <!-- 2. Наушники -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color: rgba(255,255,255,0.4);">
+              <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+              <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#2 Наушники</div>
+          <div class="icon-desc">Универсальный</div>
+        </div>
+        
+        <!-- 3. Волна звука -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" style="color: rgba(255,255,255,0.4);">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#3 Громкость</div>
+          <div class="icon-desc">Звук</div>
+        </div>
+        
+        <!-- 4. Эквалайзер -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" style="color: rgba(255,255,255,0.4);">
+              <rect x="4" y="8" width="2" height="8" rx="1"/>
+              <rect x="8" y="5" width="2" height="14" rx="1"/>
+              <rect x="12" y="10" width="2" height="4" rx="1"/>
+              <rect x="16" y="6" width="2" height="12" rx="1"/>
+              <rect x="20" y="9" width="2" height="6" rx="1"/>
+            </svg>
+          </div>
+          <div class="icon-name">#4 Эквалайзер</div>
+          <div class="icon-desc">Музыка играет</div>
+        </div>
+        
+        <!-- 5. Play -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="color: rgba(255,255,255,0.4);">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+          <div class="icon-name">#5 Play</div>
+          <div class="icon-desc">Воспроизвести</div>
+        </div>
+        
+        <!-- 6. Волны анимированные -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <div class="sound-bars" style="display: flex; align-items: center; gap: 2px; height: 20px;">
+              <span style="width: 3px; height: 40%; background: rgba(255,255,255,0.4); border-radius: 2px;"></span>
+              <span style="width: 3px; height: 70%; background: rgba(255,255,255,0.4); border-radius: 2px;"></span>
+              <span style="width: 3px; height: 100%; background: rgba(255,255,255,0.4); border-radius: 2px;"></span>
+              <span style="width: 3px; height: 50%; background: rgba(255,255,255,0.4); border-radius: 2px;"></span>
+              <span style="width: 3px; height: 80%; background: rgba(255,255,255,0.4); border-radius: 2px;"></span>
+            </div>
+          </div>
+          <div class="icon-name">#6 Звуковые волны</div>
+          <div class="icon-desc">Бары эквалайзера</div>
+        </div>
+        
+        <!-- 7. Стрелка вправо -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color: rgba(255,255,255,0.4);">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </div>
+          <div class="icon-name">#7 Стрелка →</div>
+          <div class="icon-desc">Направление</div>
+        </div>
+        
+        <!-- 8. Ничего -->
+        <div class="icon-card">
+          <div class="icon-preview">
+            <span style="color: rgba(255,255,255,0.3);">—</span>
+          </div>
+          <div class="icon-name">#8 Без индикатора</div>
+          <div class="icon-desc">Чисто иконки</div>
+        </div>
+      </div>
+      
+      <!-- Примеры в контексте хедера -->
+      <h3 style="font-size: 0.9rem; color: #666; margin: 2rem 0 1rem;">Примеры в хедере:</h3>
+      
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Вариант A: текст слева -->
+        <div class="header-preview">
+          <div class="header-logo">Nomusicians</div>
+          <span style="font-size: 0.6rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); text-transform: uppercase;">listen</span>
+          <div class="header-icons">
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></a>
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg></a>
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M13.2 17h-1.8l-2.1-4.2V17H7.5V7h3.3c2 0 3.2 1 3.2 2.7 0 1.3-.7 2.1-1.8 2.5l2 4.8zm-3-5.4c.9 0 1.4-.4 1.4-1.2s-.5-1.2-1.4-1.2H9.3v2.4h.9z"/></svg></a>
+          </div>
+          <span class="header-separator">|</span>
+          <div class="header-nav"><span>О нас</span><span>Релизы</span></div>
+        </div>
+        
+        <!-- Вариант B: наушники слева -->
+        <div class="header-preview">
+          <div class="header-logo">Nomusicians</div>
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color: rgba(255,255,255,0.35);"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v5zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3v5z"/></svg>
+          <div class="header-icons">
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></a>
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg></a>
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M13.2 17h-1.8l-2.1-4.2V17H7.5V7h3.3c2 0 3.2 1 3.2 2.7 0 1.3-.7 2.1-1.8 2.5l2 4.8zm-3-5.4c.9 0 1.4-.4 1.4-1.2s-.5-1.2-1.4-1.2H9.3v2.4h.9z"/></svg></a>
+          </div>
+          <span class="header-separator">|</span>
+          <div class="header-nav"><span>О нас</span><span>Релизы</span></div>
+        </div>
+        
+        <!-- Вариант C: эквалайзер слева -->
+        <div class="header-preview">
+          <div class="header-logo">Nomusicians</div>
+          <div style="display: flex; align-items: center; gap: 2px; height: 14px; opacity: 0.35;">
+            <span style="width: 2px; height: 40%; background: white; border-radius: 1px;"></span>
+            <span style="width: 2px; height: 70%; background: white; border-radius: 1px;"></span>
+            <span style="width: 2px; height: 100%; background: white; border-radius: 1px;"></span>
+            <span style="width: 2px; height: 50%; background: white; border-radius: 1px;"></span>
+          </div>
+          <div class="header-icons">
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></a>
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg></a>
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M13.2 17h-1.8l-2.1-4.2V17H7.5V7h3.3c2 0 3.2 1 3.2 2.7 0 1.3-.7 2.1-1.8 2.5l2 4.8zm-3-5.4c.9 0 1.4-.4 1.4-1.2s-.5-1.2-1.4-1.2H9.3v2.4h.9z"/></svg></a>
+          </div>
+          <span class="header-separator">|</span>
+          <div class="header-nav"><span>О нас</span><span>Релизы</span></div>
+        </div>
+        
+        <!-- Вариант D: без индикатора -->
+        <div class="header-preview">
+          <div class="header-logo">Nomusicians</div>
+          <div class="header-icons">
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg></a>
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg></a>
+            <a href="#"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M13.2 17h-1.8l-2.1-4.2V17H7.5V7h3.3c2 0 3.2 1 3.2 2.7 0 1.3-.7 2.1-1.8 2.5l2 4.8zm-3-5.4c.9 0 1.4-.4 1.4-1.2s-.5-1.2-1.4-1.2H9.3v2.4h.9z"/></svg></a>
+          </div>
+          <span class="header-separator">|</span>
+          <div class="header-nav"><span>О нас</span><span>Релизы</span></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- РАЗМЕРЫ -->
+    <div class="section">
+      <h2>📐 Сравнение размеров</h2>
+      <p style="color: #666; margin-bottom: 1rem;">Текущий размер в хедере: w-5 h-5 (20px)</p>
+      
+      <div class="size-demo">
+        <div class="size-item">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+          <div class="size-label">14px (w-3.5)</div>
+        </div>
+        <div class="size-item">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+          <div class="size-label">16px (w-4)</div>
+        </div>
+        <div class="size-item" style="border: 1px solid #0f0; padding: 0.5rem; border-radius: 4px;">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+          <div class="size-label">20px (w-5) ✓</div>
+        </div>
+        <div class="size-item">
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+          <div class="size-label">24px (w-6)</div>
+        </div>
+        <div class="size-item">
+          <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+          <div class="size-label">28px (w-7)</div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align: center; padding: 2rem; color: #666;">
+      <p>Ссылка: <a href="/demo/music-icons" style="color: #888;">localhost:4321/demo/music-icons</a></p>
+    </div>
+  </div>
+</body>
+</html>
+
