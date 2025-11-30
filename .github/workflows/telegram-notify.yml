@@ -1,0 +1,47 @@
+name: Telegram Notifications
+
+on:
+  issues:
+    types: [opened, assigned, closed]
+  issue_comment:
+    types: [created]
+  # Project card events (limited support for Projects V2)
+  project_card:
+    types: [created, moved]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram notification on new issue
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d parse_mode="HTML" \
+            -d text="📋 <b>Новая задача</b>%0A%0A<b>${{ github.event.issue.title }}</b>%0A%0A${{ github.event.issue.body }}%0A%0A👤 Автор: ${{ github.event.issue.user.login }}%0A🔗 <a href='${{ github.event.issue.html_url }}'>Открыть</a>"
+
+      - name: Send Telegram notification on issue assigned
+        if: github.event_name == 'issues' && github.event.action == 'assigned'
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d parse_mode="HTML" \
+            -d text="👤 <b>Задача назначена</b>%0A%0A<b>${{ github.event.issue.title }}</b>%0A%0AНазначена: ${{ github.event.assignee.login }}%0A🔗 <a href='${{ github.event.issue.html_url }}'>Открыть</a>"
+
+      - name: Send Telegram notification on issue closed
+        if: github.event_name == 'issues' && github.event.action == 'closed'
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d parse_mode="HTML" \
+            -d text="✅ <b>Задача закрыта</b>%0A%0A<b>${{ github.event.issue.title }}</b>%0A%0A👤 Закрыл: ${{ github.event.sender.login }}%0A🔗 <a href='${{ github.event.issue.html_url }}'>Открыть</a>"
+
+      - name: Send Telegram notification on comment
+        if: github.event_name == 'issue_comment' && github.event.action == 'created'
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d parse_mode="HTML" \
+            -d text="💬 <b>Новый комментарий</b>%0A%0AК задаче: <b>${{ github.event.issue.title }}</b>%0A%0A${{ github.event.comment.body }}%0A%0A👤 Автор: ${{ github.event.comment.user.login }}%0A🔗 <a href='${{ github.event.comment.html_url }}'>Открыть</a>"
+
