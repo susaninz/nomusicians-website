@@ -6,111 +6,166 @@ import { t } from '../../i18n/translations';
 
 const lang = 'en';
 
+// Получаем релизы из Sanity
 const allReleases = await getReleases();
 
+// Хелпер для создания slug
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-const releases = {
-  live: allReleases.filter(r => r.category === 'live').map(r => ({
-    title: r.title,
-    year: r.year,
-    cover: r.cover ? urlFor(r.cover).width(400).url() : '/og-image.png',
-    slug: slugify(r.title),
-  })),
-  studio: allReleases.filter(r => r.category === 'studio').map(r => ({
-    title: r.title,
-    year: r.year,
-    cover: r.cover ? urlFor(r.cover).width(400).url() : '/og-image.png',
-    slug: slugify(r.title),
-  })),
-  collabs: allReleases.filter(r => r.category === 'collabs').map(r => ({
-    title: r.title,
-    year: r.year,
-    cover: r.cover ? urlFor(r.cover).width(400).url() : '/og-image.png',
-    slug: slugify(r.title),
-    artist: r.artist,
-  })),
-};
+// Главный релиз - тот, у которого isFeatured, или первый в списке
+const featuredRelease = allReleases.find(r => r.isFeatured) || allReleases[0];
+
+// ВСЕ релизы разбиваем по категориям (включая главный - он дублируется)
+const studioReleases = allReleases.filter(r => r.category === 'studio');
+const liveReleases = allReleases.filter(r => r.category === 'live' || !r.category);
 ---
 
 <Layout title="Releases — Nomusicians" lang={lang}>
   <Header currentLang={lang} />
   
   <main class="pt-24 pb-16">
-    <section class="px-6 mb-16">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-6" style="font-family: var(--font-logo);">
-          {t(lang, 'releases.title')}
-        </h1>
-        <p class="text-lg text-muted max-w-2xl mx-auto">
-          Live recordings, studio works and collaborations
-        </p>
+    <!-- Основной контент -->
+    <section class="px-6">
+      <div class="max-w-6xl mx-auto">
+        
+        <!-- Заголовок раздела -->
+        <div class="text-center mb-16">
+          <h1 class="text-4xl md:text-6xl font-light tracking-wide mb-6" style="font-family: var(--font-logo);">
+            {t(lang, 'releases.title')}
+          </h1>
+          <p class="text-lg text-muted">
+            {t(lang, 'releases.subtitle')}
+          </p>
+        </div>
+
+        <!-- Сетка: главный слева, категории справа -->
+        <div class="grid lg:grid-cols-[300px_1fr] gap-8 lg:gap-12 items-start">
+          
+          <!-- Главный релиз слева -->
+          {featuredRelease && (
+            <div class="lg:sticky lg:top-24 lg:self-start">
+              <!-- Заголовок для выравнивания -->
+              <h2 class="text-sm font-light tracking-widest uppercase text-white mb-4 hidden lg:block leading-tight">
+                {t(lang, 'releases.featured')}
+              </h2>
+              
+              <a 
+                href={`/en/releases/${slugify(featuredRelease.title)}/`}
+                class="group block no-underline leading-none"
+              >
+                <!-- Квадратное фото без кропа, всегда цветное -->
+                <div class="aspect-square mb-6 overflow-hidden bg-surface flex items-center justify-center">
+                  <img 
+                    src={featuredRelease.cover ? urlFor(featuredRelease.cover).width(600).url() : '/og-image.png'} 
+                    alt={featuredRelease.title}
+                    class="max-w-full max-h-full object-contain transition-all duration-700"
+                  />
+                </div>
+                
+                <h2 class="text-3xl md:text-4xl font-light tracking-wide mb-3 text-white" style="font-family: var(--font-logo);">
+                  {featuredRelease.title}
+                </h2>
+                
+                {featuredRelease.artist && (
+                  <p class="text-lg text-muted mb-2">
+                    {t(lang, 'releases.with')} <span class="text-white">{featuredRelease.artist}</span>
+                  </p>
+                )}
+                
+                <p class="text-muted mb-4">
+                  {featuredRelease.year} {featuredRelease.label && `· ${featuredRelease.label}`}
+                </p>
+                
+                {(featuredRelease.descriptionEn || featuredRelease.description) && (
+                  <p class="text-muted/80 mb-6 leading-relaxed line-clamp-4">
+                    {featuredRelease.descriptionEn || featuredRelease.description}
+                  </p>
+                )}
+                
+                <div class="flex items-center gap-2 text-white group-hover:text-muted transition-colors">
+                  <span>{t(lang, 'releases.listen')}</span>
+                  <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </a>
+            </div>
+          )}
+
+          <!-- Категории справа -->
+          <div class="space-y-12">
+            
+            <!-- Studio (первые) -->
+            {studioReleases.length > 0 && (
+              <div>
+                <h2 class="text-sm font-light tracking-widest uppercase text-white mb-4 leading-tight">{t(lang, 'releases.studio')}</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                  {studioReleases.map((release) => (
+                    <a 
+                      href={`/en/releases/${slugify(release.title)}/`}
+                      class="group block no-underline"
+                    >
+                      <div class="aspect-square mb-3 overflow-hidden bg-surface">
+                        <img 
+                          src={release.cover ? urlFor(release.cover).width(400).url() : '/og-image.png'} 
+                          alt={release.title}
+                          class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        />
+                      </div>
+                      <h3 class="text-white text-sm md:text-base font-light group-hover:text-muted transition-colors">{release.title}</h3>
+                      {release.artist && (
+                        <p class="text-muted text-xs md:text-sm">{t(lang, 'releases.with')} {release.artist}</p>
+                      )}
+                      <p class="text-muted text-xs md:text-sm">{release.year}</p>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- Live -->
+            {liveReleases.length > 0 && (
+              <div>
+                <h2 class="text-sm font-light tracking-widest uppercase text-white mb-4 leading-tight">{t(lang, 'releases.live')}</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                  {liveReleases.map((release) => (
+                    <a 
+                      href={`/en/releases/${slugify(release.title)}/`}
+                      class="group block no-underline"
+                    >
+                      <div class="aspect-square mb-3 overflow-hidden bg-surface">
+                        <img 
+                          src={release.cover ? urlFor(release.cover).width(400).url() : '/og-image.png'} 
+                          alt={release.title}
+                          class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        />
+                      </div>
+                      <h3 class="text-white text-sm md:text-base font-light group-hover:text-muted transition-colors">{release.title}</h3>
+                      {release.artist && (
+                        <p class="text-muted text-xs md:text-sm">{t(lang, 'releases.with')} {release.artist}</p>
+                      )}
+                      <p class="text-muted text-xs md:text-sm">{release.year}</p>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </div>
+          
+        </div>
       </div>
     </section>
-
-    {releases.live.length > 0 && (
-      <section class="px-6 mb-20">
-        <div class="max-w-6xl mx-auto">
-          <h2 class="text-2xl font-light tracking-wide mb-8 text-center">{t(lang, 'releases.live')}</h2>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {releases.live.map((release) => (
-              <a href={`/en/releases/${release.slug}/`} class="group block no-underline">
-                <div class="aspect-square mb-3 overflow-hidden bg-surface">
-                  <img src={release.cover} alt={release.title} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"/>
-                </div>
-                <h3 class="text-white font-light group-hover:text-muted transition-colors">{release.title}</h3>
-                <p class="text-muted text-sm">{release.year}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
-
-    {releases.studio.length > 0 && (
-      <section class="px-6 mb-20">
-        <div class="max-w-6xl mx-auto">
-          <h2 class="text-2xl font-light tracking-wide mb-8 text-center">{t(lang, 'releases.studio')}</h2>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {releases.studio.map((release) => (
-              <a href={`/en/releases/${release.slug}/`} class="group block no-underline">
-                <div class="aspect-square mb-3 overflow-hidden bg-surface">
-                  <img src={release.cover} alt={release.title} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"/>
-                </div>
-                <h3 class="text-white font-light group-hover:text-muted transition-colors">{release.title}</h3>
-                <p class="text-muted text-sm">{release.year}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
-
-    {releases.collabs.length > 0 && (
-      <section class="px-6 mb-20">
-        <div class="max-w-6xl mx-auto">
-          <h2 class="text-2xl font-light tracking-wide mb-8 text-center">{t(lang, 'releases.collabs')}</h2>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {releases.collabs.map((release) => (
-              <a href={`/en/releases/${release.slug}/`} class="group block no-underline">
-                <div class="aspect-square mb-3 overflow-hidden bg-surface">
-                  <img src={release.cover} alt={release.title} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"/>
-                </div>
-                <h3 class="text-white font-light group-hover:text-muted transition-colors">{release.title}</h3>
-                {release.artist && <p class="text-muted text-sm">{release.artist}</p>}
-                <p class="text-muted text-sm">{release.year}</p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
   </main>
 </Layout>
 
 <style>
-  a { text-decoration: none !important; }
-  a:visited { color: inherit; }
+  a {
+    text-decoration: none !important;
+  }
+  a:visited {
+    color: inherit;
+  }
 </style>

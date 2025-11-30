@@ -63,9 +63,13 @@ export const translations = {
 
         // Releases
         'releases.title': 'Релизы',
+        'releases.subtitle': 'Студийные работы, live записи и коллаборации',
+        'releases.featured': 'Актуальное',
         'releases.live': 'Live',
-        'releases.studio': 'Studio',
+        'releases.studio': 'Студийные',
         'releases.collabs': 'Collabs',
+        'releases.listen': 'Слушать',
+        'releases.with': 'совместно с',
 
         // Projects
         'projects.title': 'Проекты',
@@ -160,9 +164,13 @@ export const translations = {
 
         // Releases
         'releases.title': 'Releases',
+        'releases.subtitle': 'Studio works, live recordings and collaborations',
+        'releases.featured': 'Featured',
         'releases.live': 'Live',
         'releases.studio': 'Studio',
         'releases.collabs': 'Collabs',
+        'releases.listen': 'Listen',
+        'releases.with': 'with',
 
         // Projects
         'projects.title': 'Projects',
@@ -257,9 +265,13 @@ export const translations = {
 
         // Releases
         'releases.title': '专辑',
+        'releases.subtitle': '录音室作品、现场录音和合作作品',
+        'releases.featured': '精选',
         'releases.live': '现场',
         'releases.studio': '录音室',
         'releases.collabs': '合作',
+        'releases.listen': '聆听',
+        'releases.with': '与',
 
         // Projects
         'projects.title': '项目',

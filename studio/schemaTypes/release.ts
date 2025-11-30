@@ -37,14 +37,20 @@ export default defineType({
       validation: Rule => Rule.required(),
     }),
     defineField({
+      name: 'isFeatured',
+      title: '⭐ Главный релиз',
+      type: 'boolean',
+      description: 'Отображается крупно слева на странице релизов',
+      initialValue: false,
+    }),
+    defineField({
       name: 'category',
       title: 'Категория',
       type: 'string',
       options: {
         list: [
           {title: 'Live', value: 'live'},
-          {title: 'Studio', value: 'studio'},
-          {title: 'Коллабы', value: 'collabs'},
+          {title: 'Студийные', value: 'studio'},
         ],
         layout: 'radio',
       },
@@ -198,8 +204,18 @@ export default defineType({
   preview: {
     select: {
       title: 'title',
-      subtitle: 'year',
+      year: 'year',
       media: 'cover',
+      isFeatured: 'isFeatured',
+      category: 'category',
+    },
+    prepare({title, year, media, isFeatured, category}) {
+      const categoryLabel = category === 'studio' ? 'Studio' : 'Live';
+      return {
+        title: isFeatured ? `⭐ ${title}` : title,
+        subtitle: `${year} · ${categoryLabel}`,
+        media,
+      }
     },
   },
   orderings: [
