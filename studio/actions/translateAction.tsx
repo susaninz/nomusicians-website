@@ -3,7 +3,7 @@ import {TranslateIcon} from '@sanity/icons'
 import {useState} from 'react'
 
 // Локальный прокси для обхода CORS
-const PROXY_URL = 'http://localhost:3334/translate'
+const PROXY_URL = 'https://deepl-proxy-production-834e.up.railway.app/translate'
 
 type Lang = 'RU' | 'EN' | 'ZH'
 
@@ -15,8 +15,7 @@ async function translateText(text: string, targetLang: Lang, sourceLang: Lang = 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       text: text,
-      target_lang: targetLang,
-      source_lang: sourceLang,
+      targetLang: targetLang,
     }),
   })
 
@@ -25,10 +24,13 @@ async function translateText(text: string, targetLang: Lang, sourceLang: Lang = 
   }
 
   const data = await response.json()
-  return data.translations[0]?.text || ''
+  return data.translatedText || ''
 }
 
-async function translateField(field: { ru?: string; en?: string; cn?: string }): Promise<{ ru: string; en: string; cn: string }> {
+async function translateField(
+  field: { ru?: string; en?: string; cn?: string },
+  forceOverwrite: boolean = false
+): Promise<{ ru: string; en: string; cn: string }> {
   const result = { ru: field.ru || '', en: field.en || '', cn: field.cn || '' }
   
   const sourceText = field.ru || field.en || ''
@@ -36,19 +38,43 @@ async function translateField(field: { ru?: string; en?: string; cn?: string }):
   
   if (!sourceText) return result
   
-  if (!result.en && sourceLang !== 'EN') {
+  // Переводим EN если пусто ИЛИ если принудительная перезапись
+  if ((!result.en || forceOverwrite) && sourceLang !== 'EN') {
     result.en = await translateText(sourceText, 'EN', sourceLang)
   }
   
-  if (!result.cn) {
+  // Переводим CN если пусто ИЛИ если принудительная перезапись
+  if (!result.cn || forceOverwrite) {
     result.cn = await translateText(sourceText, 'ZH', sourceLang)
   }
   
   return result
 }
 
+// Проверяем есть ли уже заполненные переводы
+function hasExistingTranslations(doc: any): boolean {
+  for (const key of Object.keys(doc)) {
+    const value = doc[key]
+    if (value && typeof value === 'object') {
+      if (('ru' in value) && (value.en || value.cn)) {
+        return true
+      }
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          if (item && typeof item === 'object' && hasExistingTranslations(item)) {
+            return true
+          }
+        }
+      } else if (hasExistingTranslations(value)) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 // Рекурсивно находим и переводим все объекты с полями ru/en/cn
-async function translateDocument(doc: any): Promise<any> {
+async function translateDocument(doc: any, forceOverwrite: boolean = false): Promise<any> {
   const result = { ...doc }
   
   for (const key of Object.keys(doc)) {
@@ -57,14 +83,14 @@ async function translateDocument(doc: any): Promise<any> {
     if (value && typeof value === 'object') {
       // Проверяем, является ли это переводимым полем (имеет ru/en/cn)
       if ('ru' in value || 'en' in value || 'cn' in value) {
-        result[key] = await translateField(value)
+        result[key] = await translateField(value, forceOverwrite)
       } 
       // Проверяем массивы (например events в турах)
       else if (Array.isArray(value)) {
         result[key] = await Promise.all(
           value.map(async (item) => {
             if (item && typeof item === 'object') {
-              return translateDocument(item)
+              return translateDocument(item, forceOverwrite)
             }
             return item
           })
@@ -72,7 +98,7 @@ async function translateDocument(doc: any): Promise<any> {
       }
       // Рекурсивно обрабатываем вложенные объекты
       else {
-        result[key] = await translateDocument(value)
+        result[key] = await translateDocument(value, forceOverwrite)
       }
     }
   }
@@ -89,16 +115,26 @@ export function TranslateAction(props: any) {
     icon: TranslateIcon,
     disabled: isTranslating,
     onHandle: async () => {
+      const doc = props.draft || props.published
+      if (!doc) {
+        alert('Нет документа для перевода')
+        return
+      }
+      
+      // Проверяем есть ли уже переводы
+      let forceOverwrite = false
+      if (hasExistingTranslations(doc)) {
+        forceOverwrite = confirm(
+          'Некоторые поля уже переведены.\n\n' +
+          'OK — перезаписать все переводы\n' +
+          'Отмена — перевести только пустые поля'
+        )
+      }
+      
       setIsTranslating(true)
       
       try {
-        const doc = props.draft || props.published
-        if (!doc) {
-          alert('Нет документа для перевода')
-          return
-        }
-        
-        const translated = await translateDocument(doc)
+        const translated = await translateDocument(doc, forceOverwrite)
         
         // Применяем изменения
         const changes: any = {}
@@ -113,7 +149,7 @@ export function TranslateAction(props: any) {
           patch.execute([{set: changes}])
           alert('✅ Перевод завершён!')
         } else {
-          alert('ℹ️ Все поля уже переведены')
+          alert('ℹ️ Нечего переводить')
         }
       } catch (error) {
         console.error('Translation error:', error)

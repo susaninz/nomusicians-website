@@ -3,45 +3,82 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Hero from '../../components/Hero.astro';
 import Concert from '../../components/Concert.astro';
-import About from '../../components/About.astro';
-import Musicians from '../../components/Musicians.astro';
-import Releases from '../../components/Releases.astro';
-import Projects from '../../components/Projects.astro';
-import Watch from '../../components/Watch.astro';
-import Merch from '../../components/Merch.astro';
-import Contact from '../../components/Contact.astro';
-import { getTourForLang, getConcertForLang } from '../../data/concerts';
+import Footer from '../../components/Footer.astro';
+import { getActiveTour, getVideoForHome, urlFor } from '../../lib/sanity';
 
 const lang = 'en';
 
-// Данные о концертах из централизованного модуля
-const tour = getTourForLang(lang);
-const concert = getConcertForLang(lang);
+const sanityTour = await getActiveTour();
+
+const tour = sanityTour ? {
+  title: sanityTour.title,
+  description: sanityTour.description?.[lang] || sanityTour.description?.en || '',
+  events: sanityTour.events?.map(e => ({
+    date: e.date?.[lang] || e.date?.en || '',
+    time: e.time || '',
+    city: e.city?.[lang] || e.city?.en || '',
+    venue: e.venue || '',
+    ticketUrl: e.ticketUrl || '#',
+  })) || [],
+} : null;
+
+const homeVideo = await getVideoForHome();
+
+function getYoutubeThumbnail(url: string): string {
+  const match = url?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+  if (match && match[1]) {
+    return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+  }
+  return '/og-image.png';
+}
+
+const featuredVideo = homeVideo ? {
+  title: homeVideo.titleEn || homeVideo.title,
+  url: homeVideo.youtubeUrl,
+  thumbnail: homeVideo.thumbnail 
+    ? urlFor(homeVideo.thumbnail).width(800).url() 
+    : getYoutubeThumbnail(homeVideo.youtubeUrl),
+} : null;
 ---
 
-<Layout title="Nomusicians — Electronic & Neoclassical Music" lang="en">
+<Layout title="Nomusicians — Electronics and neoclassics" lang="en">
   <Header currentLang={lang} />
   <main>
     <Hero lang={lang} />
     
-    {tour ? (
+    {tour && tour.events.length > 0 && (
       <Concert lang={lang} tour={tour} />
-    ) : concert ? (
-      <Concert lang={lang} {...concert} />
-    ) : null}
+    )}
     
-    <About lang={lang} />
+    {featuredVideo && (
+      <section id="watch" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+          <a 
+            href={featuredVideo.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="block relative aspect-video group overflow-hidden no-underline"
+          >
+            <img 
+              src={featuredVideo.thumbnail}
+              alt={featuredVideo.title}
+              class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+            />
+            <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
+              <div class="w-20 h-20 rounded-full border-2 border-white/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+              <h3 class="text-white text-xl font-light">{featuredVideo.title}</h3>
+            </div>
+          </a>
+        </div>
+      </section>
+    )}
     
-    <Musicians lang={lang} />
-    
-    <Releases lang={lang} />
-    
-    <Projects lang={lang} />
-    
-    <Watch lang={lang} />
-    
-    <Merch lang={lang} />
-    
-    <Contact lang={lang} />
+    <Footer />
   </main>
 </Layout>

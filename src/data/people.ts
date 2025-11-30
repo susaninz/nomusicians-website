@@ -2,7 +2,7 @@
 // Используется на /people и в проектах
 
 export type PersonLink = {
-  type: 'telegram' | 'youtube' | 'website' | 'handle' | 'banned';
+  type: 'telegram' | 'youtube' | 'website' | 'handle' | 'instagram';
   url?: string;
   label: string;
 };
@@ -37,7 +37,7 @@ export const people: Person[] = [
     bio: 'Отец-основатель и главная творческая единица Nomusicians. Композитор и мультиинструменталист, соединяющий академическую школу с экспериментальной электроникой.',
     links: [
       { type: 'telegram', url: 'https://t.me/RakitinSV', label: 'Telegram' },
-      { type: 'banned', label: '@sergeyra' },
+      { type: 'instagram', url: 'https://instagram.com/sergeyra', label: '@sergeyra' },
     ],
   },
   {
@@ -50,7 +50,7 @@ export const people: Person[] = [
     bio: 'Сооснователь проекта, отвечающий за ритмическую архитектуру звука. Мастер живых барабанов и электронных ритмов.',
     links: [
       { type: 'telegram', url: 'https://t.me/maxdrumm', label: 'Telegram' },
-      { type: 'banned', label: '@maksimkotnov' },
+      { type: 'instagram', url: 'https://instagram.com/maksimkotnov', label: '@maksimkotnov' },
     ],
   },
   {
@@ -63,7 +63,7 @@ export const people: Person[] = [
     bio: 'Присоединился к коллективу в 2022 году. Привносит духовые тембры и этнические мотивы.',
     links: [
       { type: 'telegram', url: 'https://t.me/Ivanslyozkin', label: 'Telegram' },
-      { type: 'banned', label: '@susaninz' },
+      { type: 'instagram', url: 'https://instagram.com/susaninz', label: '@susaninz' },
     ],
   },
   {
@@ -91,7 +91,7 @@ export const people: Person[] = [
     photo: '/people/alena.jpg',
     bio: 'Вокалистка с уникальным тембром, участница концертных программ.',
     links: [
-      { type: 'banned', label: '@alenascherbina' },
+      { type: 'instagram', url: 'https://instagram.com/alenascherbina', label: '@alenascherbina' },
     ],
   },
   {
@@ -106,7 +106,7 @@ export const people: Person[] = [
       { type: 'telegram', url: 'https://t.me/nusaash', label: 'Блог' },
       { type: 'telegram', url: 'https://t.me/humgathart', label: 'Humgath' },
       { type: 'telegram', url: 'https://t.me/sonusmagnum', label: 'Sonus Magnum' },
-      { type: 'banned', label: '@alvorontsov' },
+      { type: 'instagram', url: 'https://instagram.com/alvorontsov', label: '@alvorontsov' },
     ],
   },
   {
@@ -118,7 +118,7 @@ export const people: Person[] = [
     photo: '/people/kumiho.jpg',
     bio: 'Струнница, добавляющая глубину и выразительность в звучание.',
     links: [
-      { type: 'banned', label: '@kumihodreams' },
+      { type: 'instagram', url: 'https://instagram.com/kumihodreams', label: '@kumihodreams' },
     ],
   },
   {
@@ -131,7 +131,7 @@ export const people: Person[] = [
     bio: 'Трезв и опасен. Концерты, спектакли, мастерклассы, уроки, перформансы.',
     links: [
       { type: 'telegram', url: 'https://t.me/dmitresser', label: 'Telegram' },
-      { type: 'banned', label: '@dmitresser' },
+      { type: 'instagram', url: 'https://instagram.com/dmitresser', label: '@dmitresser' },
     ],
   },
 
@@ -161,7 +161,7 @@ export const people: Person[] = [
     photo: '/people/bioman.jpg',
     projects: ['Labirinth Nuanu', 'Lampu Bali'],
     links: [
-      { type: 'banned', label: '@vadbioman' },
+      { type: 'instagram', url: 'https://instagram.com/vadbioman', label: '@vadbioman' },
     ],
   },
   {
@@ -174,7 +174,7 @@ export const people: Person[] = [
     projects: [],
     links: [
       { type: 'telegram', url: 'https://t.me/no_illusions', label: 'Telegram' },
-      { type: 'banned', label: '@dansury.vj' },
+      { type: 'instagram', url: 'https://instagram.com/dansury.vj', label: '@dansury.vj' },
     ],
   },
   {
@@ -186,7 +186,7 @@ export const people: Person[] = [
     photo: '/people/samulekin.jpg',
     projects: ['ДК Рассвет'],
     links: [
-      { type: 'banned', label: '@aleksandr_samulekin' },
+      { type: 'instagram', url: 'https://instagram.com/aleksandr_samulekin', label: '@aleksandr_samulekin' },
     ],
   },
 ];
@@ -227,7 +227,7 @@ export function getLinkIcon(type: PersonLink['type']): string {
     case 'youtube': return '▶';
     case 'website': return '◎';
     case 'handle': return '';
-    case 'banned': return '⊘'; // "запрещёнограм"
+    case 'instagram': return 'IG';
     default: return '→';
   }
 }

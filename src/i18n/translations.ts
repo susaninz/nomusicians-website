@@ -26,7 +26,7 @@ export const translations = {
         'concert.tickets': 'Купить билеты',
 
         // About
-        'about.title': 'О проекте',
+        'about.title': 'О нашей музыке',
         'about.p1': '<strong>Nomusicians</strong> — это музыка, в которой академическое образование не препятствует свободе, а технологии не заслоняют человека.',
         'about.p2': 'Проект объединяет музыкантов с разным бэкграундом: классическое образование, джаз, электронная музыка. На сцене — фортепиано, скрипка, флюгельгорн, барабаны, аналоговые синтезаторы и драм-машины. Всё это сплетается в живую импровизацию, где каждое выступление — уникальное путешествие.',
         'about.p3': 'Мы называем это <em>classitronics</em> — подход, где звуковая палитра развивается как пейзаж за окном поезда. Атмосферная электроника, тяготеющая к камерной музыке и кинематографической выразительности.',
@@ -65,7 +65,7 @@ export const translations = {
         'releases.title': 'Релизы',
         'releases.live': 'Live',
         'releases.studio': 'Studio',
-        'releases.collabs': 'Коллабы',
+        'releases.collabs': 'Collabs',
 
         // Projects
         'projects.title': 'Проекты',
@@ -86,7 +86,8 @@ export const translations = {
         // Contact
         'contact.title': 'Контакты',
         'contact.booking': 'Букинг и сотрудничество',
-        'contact.presskit': 'Скачать пресс-кит',
+        'contact.presskit': 'Пресс-кит',
+        'contact.presentation': 'Презентация',
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. Все права защищены.',
@@ -122,7 +123,7 @@ export const translations = {
         'concert.tickets': 'Get Tickets',
 
         // About
-        'about.title': 'About',
+        'about.title': 'About Our Music',
         'about.p1': '<strong>Nomusicians</strong> is music where academic education doesn\'t hinder freedom, and technology doesn\'t overshadow the human.',
         'about.p2': 'The project brings together musicians with diverse backgrounds: classical education, jazz, electronic music. On stage — piano, violin, flugelhorn, drums, analog synthesizers and drum machines. All of this weaves into live improvisation, where each performance is a unique journey.',
         'about.p3': 'We call it <em>classitronics</em> — an approach where the sonic palette evolves like a landscape seen through a train window. Atmospheric electronics gravitating towards chamber music and cinematic expressiveness.',
@@ -182,7 +183,8 @@ export const translations = {
         // Contact
         'contact.title': 'Contact',
         'contact.booking': 'Booking & Collaboration',
-        'contact.presskit': 'Download Press Kit',
+        'contact.presskit': 'Press Kit',
+        'contact.presentation': 'Presentation',
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. All rights reserved.',
@@ -218,7 +220,7 @@ export const translations = {
         'concert.tickets': '购买门票',
 
         // About
-        'about.title': '关于我们',
+        'about.title': '关于我们的音乐',
         'about.p1': '<strong>Nomusicians</strong> 是一种音乐，学术教育不会阻碍自由，技术也不会掩盖人性。',
         'about.p2': '该项目汇集了具有不同背景的音乐家：古典教育、爵士乐、电子音乐。舞台上有钢琴、小提琴、翼号、鼓、模拟合成器和鼓机。所有这些都融入现场即兴演奏，每场演出都是一次独特的旅程。',
         'about.p3': '我们称之为 <em>classitronics</em> — 一种方法，声音调色板像火车窗外的风景一样演变。倾向于室内乐和电影表现力的氛围电子音乐。',
@@ -278,7 +280,8 @@ export const translations = {
         // Contact
         'contact.title': '联系方式',
         'contact.booking': '预订与合作',
-        'contact.presskit': '下载媒体资料包',
+        'contact.presskit': '媒体资料包',
+        'contact.presentation': '演示文稿',
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. 保留所有权利。',
