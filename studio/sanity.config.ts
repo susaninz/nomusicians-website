@@ -6,7 +6,7 @@ import {schemaTypes} from './schemaTypes'
 import {TranslateAction} from './actions/translateAction'
 
 // Типы документов, которые поддерживают перевод
-const translatableTypes = ['tour', 'project', 'siteSettings']
+const translatableTypes = ['tour', 'project', 'siteSettings', 'event']
 
 // Роли команды для создания списков
 const teamRolesList = [
@@ -127,6 +127,14 @@ export default defineConfig({
               S,
               context,
             }),
+            S.listItem()
+              .title('📅 События')
+              .schemaType('event')
+              .child(
+                S.documentTypeList('event')
+                  .title('События')
+                  .defaultOrdering([{field: 'date', direction: 'desc'}])
+              ),
 
             S.divider(),
 

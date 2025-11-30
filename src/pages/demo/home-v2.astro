@@ -1,0 +1,176 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+const lang = 'ru';
+
+// Демо данные - один слот "Актуальное" с приоритетом
+const featured = {
+  type: 'concert', // concert | release | news
+  title: 'Концерт в Лиссабоне',
+  subtitle: 'Casa da Música · Португалия',
+  date: '15 декабря 2025',
+  image: '/hero.jpg',
+  buttonText: 'Купить билеты',
+  buttonUrl: '#',
+};
+
+// Альтернативные варианты для демонстрации
+const featuredRelease = {
+  type: 'release',
+  title: 'Noch 3.0',
+  subtitle: 'Новый студийный альбом',
+  date: 'Вышел 1 декабря',
+  image: '/og-image.png',
+  buttonText: 'Слушать',
+  buttonUrl: '#',
+};
+
+const featuredNews = {
+  type: 'news',
+  title: 'Интервью для Афиши',
+  subtitle: 'О новом альбоме и планах на 2026',
+  date: '20 ноября 2025',
+  image: '/hero.jpg',
+  buttonText: 'Читать',
+  buttonUrl: '#',
+};
+---
+
+<Layout title="Главная — Вариант 2 (Один слот)" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main>
+    <!-- Демо лейбл -->
+    <div class="fixed top-20 right-4 z-50 bg-blue-500 text-white px-3 py-1 text-sm font-bold rounded">
+      DEMO: Вариант 2 — Один слот
+    </div>
+
+    <!-- Hero -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black"></div>
+      <img 
+        src="/hero.jpg" 
+        alt="Nomusicians" 
+        class="absolute inset-0 w-full h-full object-cover -z-10"
+      />
+      <div class="relative z-10 text-center px-6">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-light tracking-wider mb-4" style="font-family: var(--font-logo);">
+          Nomusicians
+        </h1>
+        <p class="text-lg md:text-xl text-muted tracking-wide">
+          Электроника и неоклассика
+        </p>
+      </div>
+    </section>
+
+    <!-- Актуальное — один слот -->
+    <section class="py-20 px-6">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-sm font-light tracking-widest uppercase text-white mb-8 text-center">
+          Актуальное
+        </h2>
+        
+        <!-- Карточка события -->
+        <a href={featured.buttonUrl} class="group block no-underline">
+          <div class="grid md:grid-cols-2 gap-8 items-center">
+            <!-- Изображение -->
+            <div class="aspect-[4/3] overflow-hidden bg-surface">
+              <img 
+                src={featured.image} 
+                alt={featured.title}
+                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+              />
+            </div>
+            
+            <!-- Контент -->
+            <div>
+              <!-- Тип события -->
+              <div class="flex items-center gap-2 mb-4">
+                {featured.type === 'concert' && (
+                  <span class="text-xs uppercase tracking-widest text-amber-400">🎫 Концерт</span>
+                )}
+                {featured.type === 'release' && (
+                  <span class="text-xs uppercase tracking-widest text-green-400">🎵 Релиз</span>
+                )}
+                {featured.type === 'news' && (
+                  <span class="text-xs uppercase tracking-widest text-blue-400">📰 Новость</span>
+                )}
+              </div>
+              
+              <h3 class="text-3xl md:text-4xl font-light tracking-wide mb-3 text-white" style="font-family: var(--font-logo);">
+                {featured.title}
+              </h3>
+              
+              <p class="text-lg text-muted mb-2">
+                {featured.subtitle}
+              </p>
+              
+              <p class="text-muted mb-6">
+                {featured.date}
+              </p>
+              
+              <div class="inline-flex items-center gap-2 text-white group-hover:text-muted transition-colors">
+                <span>{featured.buttonText}</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Демо: другие варианты контента -->
+    <section class="py-16 px-6 border-t border-white/10">
+      <div class="max-w-4xl mx-auto">
+        <p class="text-center text-muted mb-8 text-sm">
+          ↓ Демо: как выглядит с другими типами контента ↓
+        </p>
+        
+        <div class="grid md:grid-cols-2 gap-12">
+          <!-- Релиз -->
+          <div class="opacity-60">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-xs uppercase tracking-widest text-green-400">🎵 Релиз</span>
+            </div>
+            <h4 class="text-xl font-light mb-2">{featuredRelease.title}</h4>
+            <p class="text-muted text-sm mb-1">{featuredRelease.subtitle}</p>
+            <p class="text-muted text-sm">{featuredRelease.date}</p>
+          </div>
+          
+          <!-- Новость -->
+          <div class="opacity-60">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-xs uppercase tracking-widest text-blue-400">📰 Новость</span>
+            </div>
+            <h4 class="text-xl font-light mb-2">{featuredNews.title}</h4>
+            <p class="text-muted text-sm mb-1">{featuredNews.subtitle}</p>
+            <p class="text-muted text-sm">{featuredNews.date}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Видео секция (placeholder) -->
+    <section class="py-20 px-6">
+      <div class="max-w-6xl mx-auto text-center">
+        <h2 class="text-2xl font-light tracking-wide mb-8" style="font-family: var(--font-logo);">
+          Видео
+        </h2>
+        <div class="aspect-video bg-surface/50 flex items-center justify-center text-muted">
+          [Видео блок]
+        </div>
+      </div>
+    </section>
+
+  </main>
+</Layout>
+
+<style>
+  a {
+    text-decoration: none !important;
+  }
+</style>
+

@@ -1,0 +1,199 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+const lang = 'ru';
+
+// Демо данные - timeline событий
+const events = [
+  {
+    type: 'concert',
+    title: 'Концерт в Лиссабоне',
+    subtitle: 'Casa da Música',
+    date: '15 декабря 2025',
+    dateShort: '15 дек',
+    buttonText: 'Билеты',
+    buttonUrl: '#',
+    isFuture: true,
+    isPinned: true,
+  },
+  {
+    type: 'release',
+    title: 'Noch 3.0',
+    subtitle: 'Новый альбом',
+    date: '1 декабря 2025',
+    dateShort: '1 дек',
+    buttonText: 'Слушать',
+    buttonUrl: '#',
+    isFuture: false,
+    isPinned: false,
+  },
+  {
+    type: 'news',
+    title: 'Интервью для Афиши',
+    subtitle: 'О планах на 2026',
+    date: '20 ноября 2025',
+    dateShort: '20 ноя',
+    buttonText: 'Читать',
+    buttonUrl: '#',
+    isFuture: false,
+    isPinned: false,
+  },
+  {
+    type: 'concert',
+    title: 'Концерт в Москве',
+    subtitle: 'ДК Рассвет',
+    date: '15 ноября 2025',
+    dateShort: '15 ноя',
+    buttonText: 'Смотреть',
+    buttonUrl: '#',
+    isFuture: false,
+    isPinned: false,
+  },
+  {
+    type: 'release',
+    title: 'Live at Ogonek',
+    subtitle: 'Концертная запись',
+    date: '1 октября 2025',
+    dateShort: '1 окт',
+    buttonText: 'Слушать',
+    buttonUrl: '#',
+    isFuture: false,
+    isPinned: false,
+  },
+];
+
+const getTypeIcon = (type: string) => {
+  switch(type) {
+    case 'concert': return '🎫';
+    case 'release': return '🎵';
+    case 'news': return '📰';
+    default: return '•';
+  }
+};
+
+const getTypeColor = (type: string) => {
+  switch(type) {
+    case 'concert': return 'text-amber-400';
+    case 'release': return 'text-green-400';
+    case 'news': return 'text-blue-400';
+    default: return 'text-white';
+  }
+};
+---
+
+<Layout title="Главная — Вариант 4 (Timeline)" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main>
+    <!-- Демо лейбл -->
+    <div class="fixed top-20 right-4 z-50 bg-purple-500/80 text-white px-3 py-1 text-xs font-medium rounded">
+      DEMO: События (timeline)
+    </div>
+
+    <!-- Hero -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black"></div>
+      <img 
+        src="/hero.jpg" 
+        alt="Nomusicians" 
+        class="absolute inset-0 w-full h-full object-cover -z-10"
+      />
+      <div class="relative z-10 text-center px-6">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-light tracking-wider mb-4" style="font-family: var(--font-logo);">
+          Nomusicians
+        </h1>
+        <p class="text-lg md:text-xl text-muted tracking-wide">
+          Электроника и неоклассика
+        </p>
+      </div>
+    </section>
+
+    <!-- События — timeline -->
+    <section class="py-20 px-6">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-sm font-light tracking-widest uppercase text-white mb-12 text-center">
+          События
+        </h2>
+        
+        <!-- Timeline -->
+        <div class="relative">
+          <!-- Вертикальная линия -->
+          <div class="absolute left-[60px] md:left-[80px] top-0 bottom-0 w-px bg-white/20"></div>
+          
+          <!-- События -->
+          <div class="space-y-8">
+            {events.map((event, index) => (
+              <a 
+                href={event.buttonUrl} 
+                class={`group block no-underline relative pl-24 md:pl-28 ${event.isFuture ? 'opacity-100' : 'opacity-60 hover:opacity-100'} transition-opacity`}
+              >
+                <!-- Точка на timeline -->
+                <div class={`absolute left-[56px] md:left-[76px] top-1 w-2 h-2 rounded-full ${event.isFuture ? 'bg-white' : 'bg-white/40'} ${event.isPinned ? 'ring-2 ring-white/50 ring-offset-2 ring-offset-black' : ''}`}></div>
+                
+                <!-- Дата слева -->
+                <div class="absolute left-0 top-0 w-14 md:w-18 text-right">
+                  <span class="text-xs md:text-sm text-muted font-mono">{event.dateShort}</span>
+                </div>
+                
+                <!-- Контент -->
+                <div class="flex items-start justify-between gap-4">
+                  <div class="flex-1 min-w-0">
+                    <!-- Тип + заголовок -->
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class={`text-sm ${getTypeColor(event.type)}`}>{getTypeIcon(event.type)}</span>
+                      <h3 class="text-lg md:text-xl font-light text-white group-hover:text-muted transition-colors truncate">
+                        {event.title}
+                      </h3>
+                      {event.isPinned && (
+                        <span class="text-xs bg-white/10 px-2 py-0.5 rounded text-muted">Скоро</span>
+                      )}
+                    </div>
+                    <p class="text-muted text-sm">{event.subtitle}</p>
+                  </div>
+                  
+                  <!-- Кнопка -->
+                  <div class="flex-shrink-0">
+                    <span class="text-sm text-white/60 group-hover:text-white transition-colors flex items-center gap-1">
+                      {event.buttonText}
+                      <svg class="w-3 h-3 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+          
+          <!-- Показать все -->
+          <div class="mt-12 text-center">
+            <a href="#" class="text-muted hover:text-white transition-colors text-sm">
+              Все события →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Видео секция -->
+    <section class="py-20 px-6">
+      <div class="max-w-6xl mx-auto text-center">
+        <h2 class="text-2xl font-light tracking-wide mb-8" style="font-family: var(--font-logo);">
+          Видео
+        </h2>
+        <div class="aspect-video bg-surface/50 flex items-center justify-center text-muted">
+          [Видео блок]
+        </div>
+      </div>
+    </section>
+
+  </main>
+</Layout>
+
+<style>
+  a {
+    text-decoration: none !important;
+  }
+</style>
+

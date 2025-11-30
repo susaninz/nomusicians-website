@@ -1,0 +1,565 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'ru';
+
+// Реальные данные
+const featuredVideo = {
+  title: 'Nomusicians — Беседка',
+  description: 'Атмосферная импровизация в усадьбе',
+  src: '/videos/besedka/besedka-1-h.mp4',
+  poster: '/projects/klassika/ogonek-2024-1.jpg'
+};
+
+const videos = {
+  fromProjects: [
+    { title: 'Классика — Electronic', description: 'Электронный сет', src: '/videos/klassika/electronic set short.mp4', poster: '/projects/klassika/gallery/Ogonek 24 - 1.png', project: 'Классика', link: '/projects/klassika' },
+    { title: 'Классика — Quartet', description: 'Квартет со струнными', src: '/videos/klassika/quartet short.mp4', poster: '/projects/klassika/gallery/Ogonek 24 - 2.png', project: 'Классика', link: '/projects/klassika' },
+    { title: 'ДК Рассвет', description: 'Концерт в культурном центре', src: '/videos/rassvet/rassvet-2.mp4', poster: '/projects/klassika/gallery/Holodok 25 - 1.png', project: 'ДК Рассвет', link: '/projects/rassvet' },
+    { title: 'ДК Рассвет — DFAM', description: 'Синтезатор', src: '/videos/rassvet/rassvet-3.mp4', poster: '/projects/klassika/gallery/Holodok 25 - 2.png', project: 'ДК Рассвет', link: '/projects/rassvet', hidden: true },
+  ],
+  exclusive: [
+    { title: 'Marcia Moderato', description: 'Reel — атмосферное видео', src: '/videos/reels/marcia-moderato.mov', poster: '/projects/klassika/gallery/Dnevkin Yauza 1.png', type: 'reel' },
+    { title: 'Беседка #1', description: 'Импровизация в усадьбе', src: '/videos/besedka/besedka-1-h.mp4', poster: '/projects/klassika/gallery/Dnevkin Yauza 2.png', type: 'backstage' },
+    { title: 'Беседка #2', description: 'Атмосферное видео', src: '/videos/besedka/besedka-1-h.mp4', poster: '/projects/klassika/gallery/Dnevkin Yauza 3.png', type: 'reel', hidden: true },
+  ]
+};
+
+const photos = {
+  fromProjects: [
+    { title: 'Огонёк 2024', count: 3, cover: '/projects/klassika/ogonek-2024-1.jpg', project: 'Классика', link: '/projects/klassika', images: ['/projects/klassika/ogonek-2024-1.jpg', '/projects/klassika/ogonek-2024-2.jpg'] },
+    { title: 'Холодок 2025', count: 6, cover: '/projects/klassika/gallery/Holodok 25 - 1.png', project: 'Классика', link: '/projects/klassika', images: ['/projects/klassika/gallery/Holodok 25 - 1.png', '/projects/klassika/gallery/Holodok 25 - 2.png', '/projects/klassika/gallery/Holodok 25 - 3.png'] },
+    { title: 'Dnevkin Yauza', count: 3, cover: '/projects/klassika/gallery/Dnevkin Yauza 1.png', project: 'Классика', link: '/projects/klassika', images: ['/projects/klassika/gallery/Dnevkin Yauza 1.png', '/projects/klassika/gallery/Dnevkin Yauza 2.png', '/projects/klassika/gallery/Dnevkin Yauza 3.png'] },
+    { title: 'Ogonek slides', count: 3, cover: '/projects/klassika/gallery/Ogonek 24 - 1.png', project: 'Классика', link: '/projects/klassika', images: ['/projects/klassika/gallery/Ogonek 24 - 1.png', '/projects/klassika/gallery/Ogonek 24 - 2.png'], hidden: true },
+  ],
+  exclusive: [
+    { title: 'Hero shots', count: 4, cover: '/hero/VGD_1998.jpg', type: 'promo', images: ['/hero/VGD_1998.jpg', '/hero/VGD_2151.jpg', '/hero/VGD_3073.jpg', '/hero/VGD_3241.jpg'] },
+    { title: 'Музыканты', count: 6, cover: '/hero/VGD_2151.jpg', type: 'portraits', images: ['/hero/VGD_2151.jpg', '/hero/VGD_3073.jpg'] },
+    { title: 'Backstage', count: 4, cover: '/hero/VGD_3073.jpg', type: 'backstage', images: ['/hero/VGD_3073.jpg', '/hero/VGD_3241.jpg'], hidden: true },
+  ]
+};
+
+const filters = [
+  { key: 'all', label: 'Все' },
+  { key: 'video', label: 'Видео' },
+  { key: 'photo', label: 'Фото' },
+];
+---
+
+<Layout title="Медиа — Nomusicians" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-20">
+    <div class="max-w-6xl mx-auto px-6">
+      
+      <!-- Заголовок -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-light tracking-wide mb-4" style="font-family: var(--font-logo);">
+          Медиа
+        </h1>
+        <p class="text-muted">
+          Видео и фото с концертов и записей
+        </p>
+      </div>
+      
+      <!-- Фильтры -->
+      <div class="flex flex-wrap justify-center items-center gap-x-1 gap-y-2 mb-12" id="filters">
+        {filters.map((filter, index) => (
+          <>
+            <button 
+              class={`text-sm transition-all filter-btn px-2 py-1 ${index === 0 ? 'text-white' : 'text-white/40 hover:text-white'}`}
+              data-filter={filter.key}
+            >
+              {filter.label}
+            </button>
+            {index < filters.length - 1 && <span class="text-white/20">·</span>}
+          </>
+        ))}
+      </div>
+      
+      <!-- Featured Video -->
+      <div class="mb-16 featured-section" data-type="video">
+        <div class="aspect-video bg-black border border-white/20 overflow-hidden relative">
+          <video 
+            class="w-full h-full object-contain bg-black"
+            poster={featuredVideo.poster}
+            controls
+            preload="metadata"
+          >
+            <source src={featuredVideo.src} type="video/mp4" />
+          </video>
+        </div>
+        <div class="text-center mt-4">
+          <p class="text-white text-lg font-light">{featuredVideo.title}</p>
+          <p class="text-muted text-sm">{featuredVideo.description}</p>
+        </div>
+      </div>
+      
+      <!-- ВИДЕО секция -->
+      <section class="mb-16 video-section" data-type="video">
+        <p class="text-muted text-sm tracking-[0.2em] uppercase mb-8">Видео</p>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Из проектов -->
+          <div>
+            <p class="text-white/60 text-xs tracking-wider uppercase mb-4">Из проектов</p>
+            <div class="grid gap-4" id="videos-from-projects">
+              {videos.fromProjects.map((video, idx) => (
+                <div 
+                  class={`group flex gap-4 p-3 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all cursor-pointer video-card ${video.hidden ? 'hidden-item hidden' : ''}`}
+                  data-src={video.src}
+                  data-link={video.link}
+                >
+                  <div class="w-32 h-20 bg-black flex-shrink-0 overflow-hidden relative">
+                    <img src={video.poster} alt={video.title} class="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all" />
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-white/60 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-white font-light truncate">{video.title}</p>
+                    <p class="text-muted text-sm truncate">{video.description}</p>
+                    <p class="text-white/30 text-xs mt-1">→ {video.project}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <!-- Эксклюзив (Reels) -->
+          <div>
+            <p class="text-white/60 text-xs tracking-wider uppercase mb-4">Эксклюзив · Reels</p>
+            <div class="grid gap-4" id="videos-exclusive">
+              {videos.exclusive.map((video, idx) => (
+                <div 
+                  class={`group flex gap-4 p-3 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all cursor-pointer video-card ${video.hidden ? 'hidden-item hidden' : ''}`}
+                  data-src={video.src}
+                >
+                  <div class="w-32 h-20 bg-black flex-shrink-0 overflow-hidden relative">
+                    <img src={video.poster} alt={video.title} class="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all" />
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-white/60 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-white font-light truncate">{video.title}</p>
+                    <p class="text-muted text-sm truncate">{video.description}</p>
+                    <p class="text-white/30 text-xs mt-1 capitalize">{video.type}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Разделитель -->
+      <div class="h-px bg-white/10 mb-16 separator"></div>
+      
+      <!-- ФОТО секция -->
+      <section class="photo-section" data-type="photo">
+        <p class="text-muted text-sm tracking-[0.2em] uppercase mb-8">Фотогалереи</p>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Из проектов -->
+          <div>
+            <p class="text-white/60 text-xs tracking-wider uppercase mb-4">Из проектов</p>
+            <div class="grid gap-4" id="photos-from-projects">
+              {photos.fromProjects.map((gallery, idx) => (
+                <div 
+                  class={`group block border border-white/10 hover:border-white/30 transition-all overflow-hidden cursor-pointer gallery-card ${gallery.hidden ? 'hidden-item hidden' : ''}`}
+                  data-images={JSON.stringify(gallery.images)}
+                  data-title={gallery.title}
+                >
+                  <div class="aspect-[16/9] bg-black relative">
+                    <img src={gallery.cover} alt={gallery.title} class="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all" />
+                    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                      <p class="text-white font-light">{gallery.title}</p>
+                      <p class="text-muted text-sm">{gallery.count} фото · → {gallery.project}</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                      <div class="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <!-- Эксклюзив -->
+          <div>
+            <p class="text-white/60 text-xs tracking-wider uppercase mb-4">Эксклюзив</p>
+            <div class="grid gap-4" id="photos-exclusive">
+              {photos.exclusive.map((gallery, idx) => (
+                <div 
+                  class={`group block border border-white/10 hover:border-white/30 transition-all overflow-hidden cursor-pointer gallery-card ${gallery.hidden ? 'hidden-item hidden' : ''}`}
+                  data-images={JSON.stringify(gallery.images)}
+                  data-title={gallery.title}
+                >
+                  <div class="aspect-[16/9] bg-black relative">
+                    <img src={gallery.cover} alt={gallery.title} class="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-all" />
+                    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                      <p class="text-white font-light">{gallery.title}</p>
+                      <p class="text-muted text-sm">{gallery.count} фото · {gallery.type}</p>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                      <div class="w-12 h-12 rounded-full bg-white/30 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Загрузить ещё -->
+      <div class="text-center mt-12" id="load-more-container">
+        <button id="load-more-btn" class="text-muted hover:text-white transition-all text-sm cursor-pointer bg-transparent border-none">
+          Загрузить ещё →
+        </button>
+      </div>
+      
+    </div>
+  </main>
+  
+  <!-- Lightbox для фото -->
+  <div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center">
+    <!-- Закрыть -->
+    <button id="lightbox-close" class="nav-btn absolute top-6 right-6 text-white/40 hover:text-white transition-all z-20">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    
+    <!-- Навигация влево -->
+    <button id="lightbox-prev" class="nav-btn absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-all z-20">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    
+    <!-- Навигация вправо -->
+    <button id="lightbox-next" class="nav-btn absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-all z-20">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+    
+    <!-- Изображение -->
+    <img id="lightbox-img" class="max-w-[85vw] max-h-[80vh] object-contain" />
+    
+    <!-- Информация снизу -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-center">
+      <p id="lightbox-title" class="text-white text-base mb-1"></p>
+      <p id="lightbox-counter" class="text-white/40 text-sm"></p>
+    </div>
+  </div>
+  
+  <!-- Modal для видео -->
+  <div id="video-modal" class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center">
+    <!-- Закрыть -->
+    <button id="video-modal-close" class="nav-btn absolute top-6 right-6 text-white/40 hover:text-white transition-all z-20">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+    
+    <!-- Навигация влево -->
+    <button id="video-prev" class="nav-btn absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-all z-20">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    
+    <!-- Навигация вправо -->
+    <button id="video-next" class="nav-btn absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-all z-20">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+    
+    <!-- Видео -->
+    <video id="modal-video" class="max-w-[85vw] max-h-[75vh]" controls></video>
+    
+    <!-- Информация снизу -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-center">
+      <p id="video-title" class="text-white text-base mb-1"></p>
+      <p id="video-counter" class="text-white/40 text-sm"></p>
+    </div>
+  </div>
+  
+  <Footer />
+</Layout>
+
+<style>
+  a {
+    text-decoration: none !important;
+  }
+  
+  .filter-btn {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    cursor: pointer;
+  }
+  
+  .nav-btn {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    cursor: pointer;
+    padding: 0 !important;
+  }
+  
+  section.hidden, .featured-section.hidden, .separator.hidden {
+    display: none;
+  }
+  
+  .hidden-item {
+    display: none;
+  }
+  
+  .hidden-item.shown {
+    display: flex;
+  }
+  
+  .gallery-card.hidden-item.shown {
+    display: block;
+  }
+  
+  #lightbox.flex {
+    display: flex;
+  }
+  
+  #video-modal.flex {
+    display: flex;
+  }
+  
+  #load-more-container.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  // Фильтры
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const videoSection = document.querySelector('.video-section');
+  const photoSection = document.querySelector('.photo-section');
+  const featuredSection = document.querySelector('.featured-section');
+  const separator = document.querySelector('.separator');
+  
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      
+      filterBtns.forEach(b => {
+        b.classList.remove('text-white');
+        b.classList.add('text-white/40');
+      });
+      btn.classList.remove('text-white/40');
+      btn.classList.add('text-white');
+      
+      if (filter === 'all') {
+        featuredSection?.classList.remove('hidden');
+        videoSection?.classList.remove('hidden');
+        photoSection?.classList.remove('hidden');
+        separator?.classList.remove('hidden');
+      } else if (filter === 'video') {
+        featuredSection?.classList.remove('hidden');
+        videoSection?.classList.remove('hidden');
+        photoSection?.classList.add('hidden');
+        separator?.classList.add('hidden');
+      } else if (filter === 'photo') {
+        featuredSection?.classList.add('hidden');
+        videoSection?.classList.add('hidden');
+        photoSection?.classList.remove('hidden');
+        separator?.classList.add('hidden');
+      }
+    });
+  });
+  
+  // Загрузить ещё
+  const loadMoreBtn = document.getElementById('load-more-btn');
+  const loadMoreContainer = document.getElementById('load-more-container');
+  const hiddenItems = document.querySelectorAll('.hidden-item');
+  let loaded = false;
+  
+  loadMoreBtn?.addEventListener('click', () => {
+    if (!loaded) {
+      hiddenItems.forEach(item => {
+        item.classList.add('shown');
+      });
+      loadMoreBtn.textContent = 'Всё загружено ✓';
+      loadMoreBtn.classList.add('text-white/30');
+      loadMoreBtn.classList.remove('hover:text-white');
+      loaded = true;
+    }
+  });
+  
+  // Собираем все видео в массив для навигации
+  const allVideos: { src: string; title: string }[] = [];
+  document.querySelectorAll('.video-card').forEach(card => {
+    const src = card.getAttribute('data-src') || '';
+    const titleEl = card.querySelector('.text-white.font-light');
+    const title = titleEl?.textContent || 'Видео';
+    allVideos.push({ src, title });
+  });
+  
+  // Видео модал
+  const videoCards = document.querySelectorAll('.video-card');
+  const videoModal = document.getElementById('video-modal');
+  const modalVideo = document.getElementById('modal-video') as HTMLVideoElement;
+  const videoModalClose = document.getElementById('video-modal-close');
+  const videoPrev = document.getElementById('video-prev');
+  const videoNext = document.getElementById('video-next');
+  const videoTitle = document.getElementById('video-title');
+  const videoCounter = document.getElementById('video-counter');
+  
+  let currentVideoIndex = 0;
+  
+  function updateVideoNav() {
+    if (videoTitle) videoTitle.textContent = allVideos[currentVideoIndex].title;
+    if (videoCounter) videoCounter.textContent = `${currentVideoIndex + 1} / ${allVideos.length}`;
+  }
+  
+  function showVideo(index: number) {
+    currentVideoIndex = index;
+    if (modalVideo) {
+      modalVideo.src = allVideos[index].src;
+      modalVideo.play();
+    }
+    updateVideoNav();
+    videoModal?.classList.remove('hidden');
+    videoModal?.classList.add('flex');
+  }
+  
+  function closeVideo() {
+    modalVideo?.pause();
+    if (modalVideo) modalVideo.src = '';
+    videoModal?.classList.add('hidden');
+    videoModal?.classList.remove('flex');
+  }
+  
+  function nextVideo() {
+    modalVideo?.pause();
+    currentVideoIndex = (currentVideoIndex + 1) % allVideos.length;
+    if (modalVideo) {
+      modalVideo.src = allVideos[currentVideoIndex].src;
+      modalVideo.play();
+    }
+    updateVideoNav();
+  }
+  
+  function prevVideo() {
+    modalVideo?.pause();
+    currentVideoIndex = (currentVideoIndex - 1 + allVideos.length) % allVideos.length;
+    if (modalVideo) {
+      modalVideo.src = allVideos[currentVideoIndex].src;
+      modalVideo.play();
+    }
+    updateVideoNav();
+  }
+  
+  videoCards.forEach((card, idx) => {
+    card.addEventListener('click', () => showVideo(idx));
+  });
+  
+  videoModalClose?.addEventListener('click', closeVideo);
+  videoPrev?.addEventListener('click', prevVideo);
+  videoNext?.addEventListener('click', nextVideo);
+  
+  videoModal?.addEventListener('click', (e) => {
+    if (e.target === videoModal) closeVideo();
+  });
+  
+  // Lightbox для галереи
+  const galleryCards = document.querySelectorAll('.gallery-card');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightboxCounter = document.getElementById('lightbox-counter');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+  
+  let currentImages: string[] = [];
+  let currentIndex = 0;
+  let currentGalleryTitle = '';
+  
+  function updateLightboxNav() {
+    if (lightboxTitle) lightboxTitle.textContent = currentGalleryTitle;
+    if (lightboxCounter) lightboxCounter.textContent = `${currentIndex + 1} / ${currentImages.length}`;
+  }
+  
+  function showLightbox(images: string[], index: number, title: string) {
+    currentImages = images;
+    currentIndex = index;
+    currentGalleryTitle = title;
+    if (lightboxImg) lightboxImg.src = images[index];
+    updateLightboxNav();
+    lightbox?.classList.remove('hidden');
+    lightbox?.classList.add('flex');
+  }
+  
+  function closeLightbox() {
+    lightbox?.classList.add('hidden');
+    lightbox?.classList.remove('flex');
+  }
+  
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % currentImages.length;
+    if (lightboxImg) lightboxImg.src = currentImages[currentIndex];
+    updateLightboxNav();
+  }
+  
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+    if (lightboxImg) lightboxImg.src = currentImages[currentIndex];
+    updateLightboxNav();
+  }
+  
+  galleryCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const images = JSON.parse(card.getAttribute('data-images') || '[]');
+      const title = card.getAttribute('data-title') || '';
+      showLightbox(images, 0, title);
+    });
+  });
+  
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightboxNext?.addEventListener('click', nextImage);
+  lightboxPrev?.addEventListener('click', prevImage);
+  
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox?.classList.contains('hidden')) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    }
+    if (!videoModal?.classList.contains('hidden')) {
+      if (e.key === 'Escape') closeVideo();
+      if (e.key === 'ArrowRight') nextVideo();
+      if (e.key === 'ArrowLeft') prevVideo();
+    }
+  });
+</script>

@@ -1,0 +1,261 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'ru';
+
+// Демо данные - все события
+const events = [
+  // Скоро - 2026
+  { type: 'concert', title: 'China Tour: Пекин', description: 'Beijing Concert Hall', date: '10 января 2026', time: '19:30', year: 2026, isFuture: true, buttonText: 'Билеты' },
+  { type: 'concert', title: 'China Tour: Шанхай', description: 'Shanghai Symphony Hall', date: '12 января 2026', time: '20:00', year: 2026, isFuture: true, buttonText: 'Билеты' },
+  { type: 'concert', title: 'China Tour: Гуанчжоу', description: 'Guangzhou Opera House', date: '14 января 2026', time: '19:00', year: 2026, isFuture: true, buttonText: 'Билеты' },
+  { type: 'concert', title: 'China Tour: Шэньчжэнь', description: 'Shenzhen Concert Hall', date: '16 января 2026', time: '20:00', year: 2026, isFuture: true, buttonText: 'Билеты' },
+  { type: 'concert', title: 'China Tour: Гонконг', description: 'Hong Kong Cultural Centre', date: '18 января 2026', time: '20:00', year: 2026, isFuture: true, buttonText: 'Билеты' },
+  
+  // 2025
+  { type: 'release', title: 'Noch 3.0', description: 'Третья часть студийного альбома', date: '1 декабря', year: 2025, isFuture: false, buttonText: 'Слушать' },
+  { type: 'blog', title: 'Как мы записывали Noch 3.0', description: 'История создания альбома', date: '25 ноября', year: 2025, isFuture: false, buttonText: 'Читать' },
+  { type: 'news', title: 'Интервью для Афиши', description: 'О планах на 2026 год', date: '20 ноября', year: 2025, isFuture: false, buttonText: 'Читать' },
+  { type: 'concert', title: 'Концерт в Москве', description: 'ДК Рассвет', date: '15 ноября', year: 2025, isFuture: false, buttonText: 'Смотреть' },
+  { type: 'video', title: 'Live at Ogonek 2024', description: 'Полная запись концерта', date: '10 ноября', year: 2025, isFuture: false, buttonText: 'Смотреть' },
+  { type: 'blog', title: 'Поездка в Португалию', description: 'Рассказ о концерте в Лиссабоне', date: '5 ноября', year: 2025, isFuture: false, buttonText: 'Читать' },
+  { type: 'merch', title: 'Новый мерч: футболка «Созвездие»', description: 'Лимитированная серия', date: '1 ноября', year: 2025, isFuture: false, buttonText: 'Купить' },
+  { type: 'project', title: 'Проект «Классика»', description: 'Серия концертов классической музыки', date: '15 октября', year: 2025, isFuture: false, buttonText: 'Подробнее' },
+  
+  // 2024
+  { type: 'release', title: 'Live at Ogonek \'23', description: 'Концертная запись', date: '15 октября', year: 2024, isFuture: false, buttonText: 'Слушать' },
+  { type: 'blog', title: 'Фестиваль Холодок', description: 'Как это было', date: '20 сентября', year: 2024, isFuture: false, buttonText: 'Читать' },
+  { type: 'concert', title: 'Фестиваль Огонёк', description: 'Арт-усадьба Веретьево', date: '1 августа', year: 2024, isFuture: false, buttonText: 'Смотреть' },
+  { type: 'news', title: 'Nomusicians в журнале Rolling Stone', description: 'Интервью о проекте', date: '15 июня', year: 2024, isFuture: false, buttonText: 'Читать' },
+  { type: 'release', title: '5pulse', description: 'Студийный альбом', date: '1 марта', year: 2024, isFuture: false, buttonText: 'Слушать' },
+];
+
+// Группируем по периодам
+const futureEvents = events.filter(e => e.isFuture);
+const events2025 = events.filter(e => !e.isFuture && e.year === 2025);
+const events2024 = events.filter(e => !e.isFuture && e.year === 2024);
+
+// Типы для фильтров
+const filters = [
+  { key: 'all', label: 'Всё' },
+  { key: 'concert', label: 'Концерты' },
+  { key: 'news', label: 'Новости' },
+];
+---
+
+<Layout title="Все события — Nomusicians" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-20">
+    <div class="max-w-4xl mx-auto px-6">
+      
+      <!-- Заголовок -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-light tracking-wide mb-4" style="font-family: var(--font-logo);">
+          Все события
+        </h1>
+        <p class="text-muted">
+          Концерты, релизы и новости
+        </p>
+      </div>
+      
+      <!-- Фильтры -->
+      <div class="flex flex-wrap justify-center items-center gap-x-1 gap-y-2 mb-12" id="filters">
+        {filters.map((filter, index) => (
+          <>
+            <button 
+              class={`text-sm transition-all filter-btn px-2 py-1 bg-transparent border-0 cursor-pointer ${index === 0 ? 'text-white' : 'text-white/40 hover:text-white'}`}
+              data-filter={filter.key}
+            >
+              {filter.label}
+            </button>
+            {index < filters.length - 1 && <span class="text-white/20">·</span>}
+          </>
+        ))}
+      </div>
+      
+      <!-- События -->
+      <div id="events-list">
+        
+        <!-- Скоро -->
+        {futureEvents.length > 0 && (
+          <div class="mb-12 section-group" data-section="future">
+            <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">Скоро</p>
+            
+            <div class="grid gap-4">
+              {futureEvents.map((event) => (
+                <a 
+                  href="#"
+                  class="event-item group flex items-center justify-between py-4 px-6 border border-white/20 hover:border-white/30 hover:bg-white/5 transition-all no-underline"
+                  data-type={event.type}
+                >
+                  <div class="text-left flex-1 min-w-0">
+                    <p class="text-white font-light flex items-center gap-2">
+                      {event.title}
+                      <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                      </svg>
+                    </p>
+                    <p class="text-muted text-sm">{event.description}</p>
+                  </div>
+                  
+                  <div class="flex items-center gap-4 flex-shrink-0">
+                    <div class="text-right">
+                      <p class="text-white text-sm">{event.date}</p>
+                      {event.time && <p class="text-muted text-xs">{event.time}</p>}
+                    </div>
+                    <span class="px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                      {event.buttonText} →
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <!-- 2025 -->
+        {events2025.length > 0 && (
+          <div class="mb-12 section-group" data-section="2025">
+            <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">2025</p>
+            
+            <div class="grid gap-4">
+              {events2025.map((event) => (
+                <a 
+                  href="#"
+                  class="event-item group flex items-center justify-between py-4 px-6 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all no-underline opacity-60 hover:opacity-100"
+                  data-type={event.type}
+                >
+                  <div class="text-left flex-1 min-w-0">
+                    <p class="text-white font-light">{event.title}</p>
+                    <p class="text-muted text-sm">{event.description}</p>
+                  </div>
+                  
+                  <div class="flex items-center gap-4 flex-shrink-0">
+                    <div class="text-right">
+                      <p class="text-white text-sm">{event.date}</p>
+                    </div>
+                    <span class="px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                      {event.buttonText} →
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <!-- 2024 -->
+        {events2024.length > 0 && (
+          <div class="mb-12 section-group" data-section="2024">
+            <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">2024</p>
+            
+            <div class="grid gap-4">
+              {events2024.map((event) => (
+                <a 
+                  href="#"
+                  class="event-item group flex items-center justify-between py-4 px-6 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all no-underline opacity-60 hover:opacity-100"
+                  data-type={event.type}
+                >
+                  <div class="text-left flex-1 min-w-0">
+                    <p class="text-white font-light">{event.title}</p>
+                    <p class="text-muted text-sm">{event.description}</p>
+                  </div>
+                  
+                  <div class="flex items-center gap-4 flex-shrink-0">
+                    <div class="text-right">
+                      <p class="text-white text-sm">{event.date}</p>
+                    </div>
+                    <span class="px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                      {event.buttonText} →
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        
+      </div>
+      
+      <!-- Загрузить ещё -->
+      <div class="text-center mt-12">
+        <a href="#" class="text-muted hover:text-white transition-all text-sm">
+          Загрузить ещё →
+        </a>
+      </div>
+      
+    </div>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  a {
+    text-decoration: none !important;
+  }
+  
+  .filter-btn {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  .event-item.hidden {
+    display: none;
+  }
+  
+  .section-group.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  // Фильтрация событий
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const eventItems = document.querySelectorAll('.event-item');
+  const sectionGroups = document.querySelectorAll('.section-group');
+  
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      
+      // Обновляем активную кнопку
+      filterBtns.forEach(b => {
+        b.classList.remove('text-white');
+        b.classList.add('text-white/40');
+      });
+      btn.classList.remove('text-white/40');
+      btn.classList.add('text-white');
+      
+      // Фильтруем события
+      eventItems.forEach(item => {
+        const type = item.dataset.type;
+        if (filter === 'all') {
+          item.classList.remove('hidden');
+        } else if (filter === 'concert' && type === 'concert') {
+          item.classList.remove('hidden');
+        } else if (filter === 'news' && type !== 'concert') {
+          // "Новости" показывает всё кроме концертов
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+      
+      // Скрываем пустые секции
+      sectionGroups.forEach(section => {
+        const visibleItems = section.querySelectorAll('.event-item:not(.hidden)');
+        if (visibleItems.length === 0) {
+          section.classList.add('hidden');
+        } else {
+          section.classList.remove('hidden');
+        }
+      });
+    });
+  });
+</script>
+

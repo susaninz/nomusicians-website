@@ -116,6 +116,23 @@ export interface SanityTour {
   isActive: boolean;
 }
 
+export interface SanityEvent {
+  _id: string;
+  title: { ru: string; en: string; cn: string };
+  eventType: 'concert' | 'release' | 'news';
+  description?: { ru: string; en: string; cn: string };
+  date: string;
+  time?: string;
+  venue?: string;
+  city?: { ru: string; en: string; cn: string };
+  buttonText?: { ru: string; en: string; cn: string };
+  url?: string;
+  linkedRelease?: SanityRelease;
+  isFuture: boolean;
+  showOnHome: boolean;
+  isActive: boolean;
+}
+
 // Роли команды с названиями
 export const teamRoleNames: Record<string, { ru: string; en: string; cn: string }> = {
   light: { ru: 'Свет', en: 'Lighting', cn: '灯光' },
@@ -179,6 +196,14 @@ export const queries = {
   
   activeTour: `*[_type == "tour" && isActive == true][0]`,
   
+  // События
+  events: `*[_type == "event" && isActive == true] | order(date desc)`,
+  eventsForHome: `*[_type == "event" && isActive == true && showOnHome == true] | order(isFuture desc, date desc)[0...10]`,
+  futureEvents: `*[_type == "event" && isActive == true && isFuture == true] | order(date asc)`,
+  pastEvents: `*[_type == "event" && isActive == true && isFuture == false] | order(date desc)`,
+  eventsByType: (type: string) => 
+    `*[_type == "event" && isActive == true && eventType == "${type}"] | order(date desc)`,
+  
   siteSettings: `*[_type == "siteSettings"][0]`,
 };
 
@@ -237,4 +262,24 @@ export async function getProjectBySlug(slug: string): Promise<SanityProject | nu
 
 export async function getActiveTour(): Promise<SanityTour | null> {
   return client.fetch(queries.activeTour);
+}
+
+export async function getEvents(): Promise<SanityEvent[]> {
+  return client.fetch(queries.events);
+}
+
+export async function getEventsForHome(): Promise<SanityEvent[]> {
+  return client.fetch(queries.eventsForHome);
+}
+
+export async function getFutureEvents(): Promise<SanityEvent[]> {
+  return client.fetch(queries.futureEvents);
+}
+
+export async function getPastEvents(): Promise<SanityEvent[]> {
+  return client.fetch(queries.pastEvents);
+}
+
+export async function getEventsByType(type: string): Promise<SanityEvent[]> {
+  return client.fetch(queries.eventsByType(type));
 }

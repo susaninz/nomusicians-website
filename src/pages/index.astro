@@ -2,27 +2,57 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
-import Concert from '../components/Concert.astro';
 import Footer from '../components/Footer.astro';
-import { getActiveTour, getVideoForHome, urlFor } from '../lib/sanity';
+import { getEventsForHome, getVideoForHome, urlFor, type SanityEvent } from '../lib/sanity';
 
 const lang = 'ru';
 
-// Получаем активный тур из Sanity
-const sanityTour = await getActiveTour();
+// Получаем события для главной из Sanity
+const sanityEvents = await getEventsForHome();
 
-// Преобразуем в формат для компонента
-const tour = sanityTour ? {
-  title: sanityTour.title,
-  description: sanityTour.description?.[lang] || sanityTour.description?.ru || '',
-  events: sanityTour.events?.map(e => ({
-    date: e.date?.[lang] || e.date?.ru || '',
-    time: e.time || '',
-    city: e.city?.[lang] || e.city?.ru || '',
-    venue: e.venue || '',
-    ticketUrl: e.ticketUrl || '#',
-  })) || [],
-} : null;
+// Функция форматирования даты
+function formatDate(dateStr: string, lang: string): string {
+  const date = new Date(dateStr);
+  const months: Record<string, string[]> = {
+    ru: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    cn: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+  };
+  const day = date.getDate();
+  const month = months[lang]?.[date.getMonth()] || months.ru[date.getMonth()];
+  const year = date.getFullYear();
+  
+  // Для текущего года не показываем год
+  const currentYear = new Date().getFullYear();
+  if (year === currentYear) {
+    return `${day} ${month}`;
+  }
+  return `${day} ${month} ${year}`;
+}
+
+// Преобразуем события в формат для отображения
+const events = sanityEvents.map((e: SanityEvent) => {
+  const city = e.city?.[lang] || e.city?.ru || '';
+  const venue = e.venue?.[lang] || e.venue?.ru || '';
+  const description = e.description?.[lang] || e.description?.ru || '';
+  
+  // Для концертов формируем место (Площадка, Город)
+  const location = (e.eventType === 'concert' && (venue || city)) 
+    ? [venue, city].filter(Boolean).join(', ') 
+    : '';
+  
+  return {
+    type: e.eventType,
+    title: e.title?.[lang] || e.title?.ru || '',
+    location,
+    description,
+    date: formatDate(e.date, lang),
+    time: e.time || null,
+    buttonText: e.buttonText?.[lang] || e.buttonText?.ru || 'Подробнее',
+    buttonUrl: e.url || '#',
+    isFuture: e.isFuture,
+  };
+});
 
 // Получаем видео для главной (с галочкой showOnHome)
 const homeVideo = await getVideoForHome();
@@ -50,10 +80,64 @@ const featuredVideo = homeVideo ? {
   <main>
     <Hero lang={lang} />
     
-    {tour && tour.events.length > 0 && (
-      <Concert lang={lang} tour={tour} />
+    <!-- Блок "Актуальное" -->
+    {events.length > 0 && (
+      <section class="bg-surface py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+          <p class="text-muted text-sm tracking-[0.2em] uppercase mb-8 text-center">
+            Актуальное
+          </p>
+          
+          <!-- Карточки событий -->
+          <div class="grid gap-4">
+            {events.map((event) => (
+              <a 
+                href={event.buttonUrl}
+                class={`group flex items-center justify-between py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
+              >
+                <!-- Левая часть: контент -->
+                <div class="text-left flex-1 min-w-0 pr-4">
+                  <p class="text-white font-light flex items-center gap-2">
+                    <span>
+                      {event.title}
+                      {event.location && <span class="text-white/50"> | {event.location}</span>}
+                    </span>
+                    {event.isFuture && (
+                      <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                      </svg>
+                    )}
+                  </p>
+                  {event.description && <p class="text-muted text-sm text-justify">{event.description}</p>}
+                </div>
+                
+                <!-- Правая часть: дата + кнопка -->
+                <div class="flex items-center gap-4 flex-shrink-0 min-w-[260px] justify-end">
+                  <div class="text-right">
+                    <p class="text-white text-sm">{event.date}</p>
+                    {event.time && <p class="text-muted text-xs">{event.time}</p>}
+                  </div>
+                  <span class="px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                    {event.buttonText} →
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+          
+          <!-- Все события -->
+          <div class="mt-10 text-center">
+            <a href="/events" class="text-muted hover:text-white transition-colors text-sm inline-flex items-center gap-2">
+              Все события
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
     )}
-    
+
     <!-- Одно избранное видео -->
     {featuredVideo && (
       <section id="watch" class="py-20 px-6">
@@ -87,3 +171,9 @@ const featuredVideo = homeVideo ? {
     <Footer />
   </main>
 </Layout>
+
+<style>
+  a {
+    text-decoration: none !important;
+  }
+</style>
