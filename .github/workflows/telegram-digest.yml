@@ -1,0 +1,58 @@
+name: Telegram Project Digest
+
+on:
+  schedule:
+    # Каждые 3 часа (9:00, 12:00, 15:00, 18:00, 21:00 по Москве = 6:00, 9:00, 12:00, 15:00, 18:00 UTC)
+    - cron: '0 6,9,12,15,18 * * *'
+  workflow_dispatch: # Ручной запуск для тестирования
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project items and send digest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          # Получаем задачи из проекта
+          ITEMS=$(gh project item-list 1 --owner susaninz --format json 2>/dev/null || echo '{"items":[]}')
+          
+          # Парсим задачи по статусам
+          BACKLOG=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "Backlog")] | length')
+          READY=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "Ready")] | length')
+          IN_PROGRESS=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "In progress")] | length')
+          IN_REVIEW=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "In review")] | length')
+          DONE=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "Done")] | length')
+          
+          # Получаем список задач в работе
+          IN_PROGRESS_LIST=$(echo "$ITEMS" | jq -r '.items[] | select(.status == "In progress") | "• " + .title' | head -5)
+          
+          # Получаем задачи для Ракитина
+          RAKITIN_TASKS=$(echo "$ITEMS" | jq -r '.items[] | select(.title | contains("@rakitin")) | select(.status != "Done") | "• " + .title' | sed 's/\[@rakitin\] //' | head -10)
+          
+          # Формируем сообщение
+          MESSAGE="📊 <b>Статус проекта Nomusicians</b>%0A%0A"
+          MESSAGE+="📋 Backlog: $BACKLOG%0A"
+          MESSAGE+="🎯 Ready: $READY%0A"
+          MESSAGE+="🔄 In Progress: $IN_PROGRESS%0A"
+          MESSAGE+="👀 In Review: $IN_REVIEW%0A"
+          MESSAGE+="✅ Done: $DONE%0A"
+          
+          if [ -n "$IN_PROGRESS_LIST" ]; then
+            MESSAGE+="%0A<b>В работе:</b>%0A$IN_PROGRESS_LIST%0A"
+          fi
+          
+          if [ -n "$RAKITIN_TASKS" ]; then
+            MESSAGE+="%0A<b>Задачи Ракитина:</b>%0A$RAKITIN_TASKS%0A"
+          fi
+          
+          MESSAGE+="%0A🔗 <a href='https://github.com/users/susaninz/projects/1'>Открыть доску</a>"
+          
+          # Отправляем в Телеграм
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d parse_mode="HTML" \
+            -d text="$MESSAGE"
+
