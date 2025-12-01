@@ -1,0 +1,130 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getEventsForHome, type SanityEvent } from '../../lib/sanity';
+
+const lang = 'ru';
+
+const sanityEvents = await getEventsForHome();
+
+function formatDate(dateStr: string, lang: string): string {
+  const date = new Date(dateStr);
+  const months: Record<string, string[]> = {
+    ru: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+  };
+  const day = date.getDate();
+  const month = months[lang]?.[date.getMonth()] || months.ru[date.getMonth()];
+  const year = date.getFullYear();
+  
+  const currentYear = new Date().getFullYear();
+  if (year === currentYear) {
+    return `${day} ${month}`;
+  }
+  return `${day} ${month} ${year}`;
+}
+
+const events = sanityEvents.map((e: SanityEvent) => {
+  const city = e.city?.[lang] || e.city?.ru || '';
+  const venue = e.venue?.[lang] || e.venue?.ru || '';
+  const description = e.description?.[lang] || e.description?.ru || '';
+  
+  const location = (e.eventType === 'concert' && (venue || city)) 
+    ? [venue, city].filter(Boolean).join(', ') 
+    : '';
+  
+  return {
+    type: e.eventType,
+    title: e.title?.[lang] || e.title?.ru || '',
+    location,
+    description,
+    date: formatDate(e.date, lang),
+    time: e.time || null,
+    buttonText: e.buttonText?.[lang] || e.buttonText?.ru || 'Подробнее',
+    buttonUrl: e.url || '#',
+    isFuture: e.isFuture,
+  };
+});
+---
+
+<Layout title="Демо: Кнопка под описанием" lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-20">
+    <div class="fixed top-20 right-4 z-50 bg-purple-500/80 text-white px-3 py-1 text-xs font-medium rounded">
+      РЕШЕНИЕ 3: Кнопка внизу
+    </div>
+
+    <div class="max-w-4xl mx-auto px-6">
+      
+      <section class="mb-16">
+        <div class="mb-8">
+          <h2 class="text-white text-2xl mb-3">Кнопка под описанием</h2>
+          <p class="text-muted text-sm mb-2">Кнопка вынесена в отдельную строку под описанием справа.</p>
+          <p class="text-muted text-sm">Может быть любого размера, не влияет на сетку заголовков.</p>
+        </div>
+        
+        <p class="text-muted text-sm tracking-[0.2em] uppercase mb-8 text-center">
+          Актуальное
+        </p>
+        
+        <div class="space-y-4">
+          {events.map((event) => (
+            <a 
+              href={event.buttonUrl}
+              class={`group block py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
+            >
+              <!-- Верхняя строка: Заголовок + Дата -->
+              <div class="flex items-start justify-between gap-4 mb-2">
+                <p class="text-white font-light flex items-center gap-2 flex-1">
+                  {event.isFuture && (
+                    <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                    </svg>
+                  )}
+                  <span>
+                    {event.title}
+                    {event.location && <span class="text-white/50"> | {event.location}</span>}
+                  </span>
+                </p>
+                <div class="text-right flex-shrink-0">
+                  <p class="text-white text-sm">{event.date}</p>
+                  {event.time && <p class="text-muted text-xs">{event.time}</p>}
+                </div>
+              </div>
+              
+              <!-- Нижняя строка: Описание + Кнопка -->
+              <div class="flex items-end justify-between gap-4">
+                <div class="flex-1">
+                  {event.description && <p class="text-muted text-sm">{event.description}</p>}
+                </div>
+                <span class="px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all flex-shrink-0">
+                  {event.buttonText} →
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+        
+        <div class="mt-10 text-center">
+          <a href="/events" class="text-muted hover:text-white transition-colors text-sm inline-flex items-center gap-2">
+            Все события
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </section>
+
+    </div>
+    
+    <Footer />
+  </main>
+</Layout>
+
+<style>
+  a {
+    text-decoration: none !important;
+  }
+</style>
+

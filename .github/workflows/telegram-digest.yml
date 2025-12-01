@@ -16,21 +16,33 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          # Получаем задачи из проекта и сохраняем в файл (избегаем проблем с escape символами)
-          gh project item-list 1 --owner susaninz --format json > /tmp/items.json 2>/dev/null || echo '{"items":[]}' > /tmp/items.json
+          # Отладка: проверяем доступ к проекту
+          echo "=== Debug: Testing gh project access ==="
+          gh project item-list 1 --owner susaninz --format json > /tmp/items.json 2>&1 || {
+            echo "=== Error getting project items, creating empty JSON ==="
+            echo '{"items":[]}' > /tmp/items.json
+          }
+          
+          # Отладка: показываем содержимое файла
+          echo "=== Debug: items.json content ==="
+          cat /tmp/items.json | head -500
+          echo "=== End of items.json ==="
           
           # Парсим задачи по статусам из файла
-          BACKLOG=$(jq -r '[.items[] | select(.status == "Backlog")] | length' /tmp/items.json)
-          READY=$(jq -r '[.items[] | select(.status == "Ready")] | length' /tmp/items.json)
-          IN_PROGRESS=$(jq -r '[.items[] | select(.status == "In progress")] | length' /tmp/items.json)
-          IN_REVIEW=$(jq -r '[.items[] | select(.status == "In review")] | length' /tmp/items.json)
-          DONE=$(jq -r '[.items[] | select(.status == "Done")] | length' /tmp/items.json)
+          BACKLOG=$(jq -r '[.items[] | select(.status == "Backlog")] | length' /tmp/items.json 2>/dev/null || echo "0")
+          READY=$(jq -r '[.items[] | select(.status == "Ready")] | length' /tmp/items.json 2>/dev/null || echo "0")
+          IN_PROGRESS=$(jq -r '[.items[] | select(.status == "In progress")] | length' /tmp/items.json 2>/dev/null || echo "0")
+          IN_REVIEW=$(jq -r '[.items[] | select(.status == "In review")] | length' /tmp/items.json 2>/dev/null || echo "0")
+          DONE=$(jq -r '[.items[] | select(.status == "Done")] | length' /tmp/items.json 2>/dev/null || echo "0")
+          
+          echo "=== Debug: Counts ==="
+          echo "Backlog: $BACKLOG, Ready: $READY, In Progress: $IN_PROGRESS, In Review: $IN_REVIEW, Done: $DONE"
           
           # Получаем список задач в работе
-          IN_PROGRESS_LIST=$(jq -r '.items[] | select(.status == "In progress") | "• " + .title' /tmp/items.json | head -5)
+          IN_PROGRESS_LIST=$(jq -r '.items[] | select(.status == "In progress") | "• " + .title' /tmp/items.json 2>/dev/null | head -5)
           
           # Получаем задачи для Ракитина
-          RAKITIN_TASKS=$(jq -r '.items[] | select(.title | contains("@rakitin")) | select(.status != "Done") | "• " + .title' /tmp/items.json | sed 's/\[@rakitin\] //' | head -10)
+          RAKITIN_TASKS=$(jq -r '.items[] | select(.title | contains("@rakitin")) | select(.status != "Done") | "• " + .title' /tmp/items.json 2>/dev/null | sed 's/\[@rakitin\] //' | head -10)
           
           # Формируем сообщение
           MESSAGE="📊 <b>Статус проекта Nomusicians</b>%0A%0A"

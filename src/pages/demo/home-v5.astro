@@ -2,181 +2,278 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { getEventsForHome, type SanityEvent } from '../../lib/sanity';
 
 const lang = 'ru';
 
-// Демо данные - 4 события с разными кнопками
-const events = [
-  {
-    title: 'Концерт в Москве',
-    location: 'Blanc, Москва',
-    description: 'Специальная программа с новыми треками',
-    date: '10 января 2026',
-    time: '20:00',
-    buttonText: 'Билеты',
-    isFuture: true,
-  },
-  {
-    title: 'Новый альбом Noch 3.0',
-    location: '',
-    description: 'Третья часть студийного альбома',
-    date: '1 декабря 2025',
-    time: null,
-    buttonText: 'Слушать',
-    isFuture: false,
-  },
-  {
-    title: 'Интервью для Афиши',
-    location: '',
-    description: 'Разговор о планах на 2026 год',
-    date: '20 ноября 2025',
-    time: null,
-    buttonText: 'Читать',
-    isFuture: false,
-  },
-  {
-    title: 'Проект «Классика»',
-    location: '',
-    description: 'Серия концертов классической музыки',
-    date: '15 ноября 2025',
-    time: null,
-    buttonText: 'Подробнее',
-    isFuture: false,
-  },
-];
+// Получаем события для главной из Sanity
+const sanityEvents = await getEventsForHome();
+
+// Функция форматирования даты
+function formatDate(dateStr: string, lang: string): string {
+  const date = new Date(dateStr);
+  const months: Record<string, string[]> = {
+    ru: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    cn: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+  };
+  const day = date.getDate();
+  const month = months[lang]?.[date.getMonth()] || months.ru[date.getMonth()];
+  const year = date.getFullYear();
+  
+  const currentYear = new Date().getFullYear();
+  if (year === currentYear) {
+    return `${day} ${month}`;
+  }
+  return `${day} ${month} ${year}`;
+}
+
+// Преобразуем события в формат для отображения
+const events = sanityEvents.map((e: SanityEvent) => {
+  const city = e.city?.[lang] || e.city?.ru || '';
+  const venue = e.venue?.[lang] || e.venue?.ru || '';
+  const description = e.description?.[lang] || e.description?.ru || '';
+  
+  const location = (e.eventType === 'concert' && (venue || city)) 
+    ? [venue, city].filter(Boolean).join(', ') 
+    : '';
+  
+  return {
+    type: e.eventType,
+    title: e.title?.[lang] || e.title?.ru || '',
+    location,
+    description,
+    date: formatDate(e.date, lang),
+    time: e.time || null,
+    buttonText: e.buttonText?.[lang] || e.buttonText?.ru || 'Подробнее',
+    buttonUrl: e.url || '#',
+    isFuture: e.isFuture,
+  };
+});
 ---
 
-<Layout title="Демо: Варианты выравнивания" lang={lang}>
+<Layout title="Демо: Варианты колокольчика" lang={lang}>
   <Header currentLang={lang} />
   
   <main class="pt-24 pb-20">
     <!-- Демо лейбл -->
     <div class="fixed top-20 right-4 z-50 bg-emerald-500/80 text-white px-3 py-1 text-xs font-medium rounded">
-      DEMO: Варианты выравнивания
+      DEMO: Варианты колокольчика
     </div>
 
     <div class="max-w-4xl mx-auto px-6">
       
-      <!-- ВАРИАНТ 1: Фиксированная ширина кнопки -->
+      <!-- ВАРИАНТ A: Колокольчик в отдельной колонке слева -->
       <section class="mb-16">
         <div class="mb-6">
-          <h2 class="text-white text-xl mb-2">Вариант 1: Фиксированная ширина кнопки</h2>
-          <p class="text-muted text-sm">min-w-[120px] для кнопки — все кнопки одинаковой ширины</p>
+          <h2 class="text-white text-xl mb-2">Вариант A: Колокольчик слева в отдельной колонке</h2>
+          <p class="text-muted text-sm">Колокольчик всегда в одном месте — слева от названия. Сетка стабильна.</p>
         </div>
         
         <div class="grid gap-4">
           {events.map((event) => (
             <a 
-              href="#"
+              href={event.buttonUrl}
               class={`group flex items-center justify-between py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
             >
-              <div class="text-left flex-1 min-w-0 pr-8">
-                <p class="text-white font-light flex items-center gap-2">
-                  <span>
-                    {event.title}
-                    {event.location && <span class="text-white/50"> | {event.location}</span>}
-                  </span>
-                  {event.isFuture && (
-                    <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                    </svg>
-                  )}
-                </p>
-                {event.description && <p class="text-muted text-sm">{event.description}</p>}
+              <!-- Колокольчик слева (фиксированная ширина) -->
+              <div class="w-8 flex-shrink-0">
+                {event.isFuture && (
+                  <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                  </svg>
+                )}
               </div>
               
-              <div class="flex items-center gap-4 flex-shrink-0">
-                <div class="text-right">
-                  <p class="text-white text-sm">{event.date}</p>
-                  {event.time && <p class="text-muted text-xs">{event.time}</p>}
-                </div>
-                <span class="min-w-[120px] text-center px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
-                  {event.buttonText} →
-                </span>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <!-- ВАРИАНТ 2: Кнопка → Дата (порядок изменён) -->
-      <section class="mb-16">
-        <div class="mb-6">
-          <h2 class="text-white text-xl mb-2">Вариант 2: Кнопка → Дата</h2>
-          <p class="text-muted text-sm">Кнопка слева от даты, дата прижата к правому краю</p>
-        </div>
-        
-        <div class="grid gap-4">
-          {events.map((event) => (
-            <a 
-              href="#"
-              class={`group flex items-center justify-between py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
-            >
+              <!-- Текст -->
               <div class="text-left flex-1 min-w-0 pr-8">
-                <p class="text-white font-light flex items-center gap-2">
-                  <span>
-                    {event.title}
-                    {event.location && <span class="text-white/50"> | {event.location}</span>}
-                  </span>
-                  {event.isFuture && (
-                    <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                    </svg>
-                  )}
+                <p class="text-white font-light">
+                  {event.title}
+                  {event.location && <span class="text-white/50"> | {event.location}</span>}
                 </p>
-                {event.description && <p class="text-muted text-sm">{event.description}</p>}
+                {event.description && <p class="text-muted text-sm text-justify">{event.description}</p>}
               </div>
               
+              <!-- Дата + кнопка -->
               <div class="flex items-center gap-4 flex-shrink-0">
-                <span class="px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
-                  {event.buttonText} →
-                </span>
                 <div class="text-right min-w-[100px]">
                   <p class="text-white text-sm">{event.date}</p>
                   {event.time && <p class="text-muted text-xs">{event.time}</p>}
                 </div>
+                <span class="min-w-[110px] text-center px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                  {event.buttonText} →
+                </span>
               </div>
             </a>
           ))}
         </div>
       </section>
 
-      <!-- ВАРИАНТ 3: Дата с фиксированной шириной -->
+      <!-- ВАРИАНТ B: Колокольчик справа рядом с датой -->
       <section class="mb-16">
         <div class="mb-6">
-          <h2 class="text-white text-xl mb-2">Вариант 3: Дата с фиксированной шириной</h2>
-          <p class="text-muted text-sm">min-w-[120px] для блока даты — даты выровнены</p>
+          <h2 class="text-white text-xl mb-2">Вариант B: Колокольчик справа перед датой</h2>
+          <p class="text-muted text-sm">Колокольчик всегда справа, перед датой. Не зависит от длины текста.</p>
         </div>
         
         <div class="grid gap-4">
           {events.map((event) => (
             <a 
-              href="#"
+              href={event.buttonUrl}
               class={`group flex items-center justify-between py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
             >
+              <!-- Текст -->
               <div class="text-left flex-1 min-w-0 pr-8">
-                <p class="text-white font-light flex items-center gap-2">
-                  <span>
-                    {event.title}
-                    {event.location && <span class="text-white/50"> | {event.location}</span>}
-                  </span>
+                <p class="text-white font-light">
+                  {event.title}
+                  {event.location && <span class="text-white/50"> | {event.location}</span>}
+                </p>
+                {event.description && <p class="text-muted text-sm text-justify">{event.description}</p>}
+              </div>
+              
+              <!-- Колокольчик + Дата + кнопка -->
+              <div class="flex items-center gap-4 flex-shrink-0">
+                <!-- Колокольчик (фиксированная ширина) -->
+                <div class="w-6 flex justify-center">
                   {event.isFuture && (
-                    <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                     </svg>
                   )}
-                </p>
-                {event.description && <p class="text-muted text-sm">{event.description}</p>}
-              </div>
-              
-              <div class="flex items-center gap-4 flex-shrink-0">
-                <div class="text-right min-w-[120px]">
+                </div>
+                <div class="text-right min-w-[100px]">
                   <p class="text-white text-sm">{event.date}</p>
                   {event.time && <p class="text-muted text-xs">{event.time}</p>}
                 </div>
-                <span class="px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                <span class="min-w-[110px] text-center px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
                   {event.buttonText} →
                 </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- ВАРИАНТ C: Колокольчик над датой -->
+      <section class="mb-16">
+        <div class="mb-6">
+          <h2 class="text-white text-xl mb-2">Вариант C: Колокольчик над датой</h2>
+          <p class="text-muted text-sm">Колокольчик расположен в отдельной строке над датой справа.</p>
+        </div>
+        
+        <div class="grid gap-4">
+          {events.map((event) => (
+            <a 
+              href={event.buttonUrl}
+              class={`group flex items-center justify-between py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
+            >
+              <!-- Текст -->
+              <div class="text-left flex-1 min-w-0 pr-8">
+                <p class="text-white font-light">
+                  {event.title}
+                  {event.location && <span class="text-white/50"> | {event.location}</span>}
+                </p>
+                {event.description && <p class="text-muted text-sm text-justify">{event.description}</p>}
+              </div>
+              
+              <!-- Дата с колокольчиком над ней + кнопка -->
+              <div class="flex items-center gap-4 flex-shrink-0">
+                <div class="text-right min-w-[100px]">
+                  {event.isFuture && (
+                    <div class="flex justify-end mb-1">
+                      <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                      </svg>
+                    </div>
+                  )}
+                  <p class="text-white text-sm">{event.date}</p>
+                  {event.time && <p class="text-muted text-xs">{event.time}</p>}
+                </div>
+                <span class="min-w-[110px] text-center px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                  {event.buttonText} →
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- ВАРИАНТ D: Без колокольчика, выделение рамкой -->
+      <section class="mb-16">
+        <div class="mb-6">
+          <h2 class="text-white text-xl mb-2">Вариант D: Без колокольчика, яркая рамка для будущих</h2>
+          <p class="text-muted text-sm">Предстоящие события выделены более яркой рамкой и полной opacity.</p>
+        </div>
+        
+        <div class="grid gap-4">
+          {events.map((event) => (
+            <a 
+              href={event.buttonUrl}
+              class={`group flex items-center justify-between py-4 px-6 border ${event.isFuture ? 'border-white/40' : 'border-white/10'} hover:border-white/60 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-50 hover:opacity-100' : ''}`}
+            >
+              <!-- Текст -->
+              <div class="text-left flex-1 min-w-0 pr-8">
+                <p class="text-white font-light">
+                  {event.title}
+                  {event.location && <span class="text-white/50"> | {event.location}</span>}
+                </p>
+                {event.description && <p class="text-muted text-sm text-justify">{event.description}</p>}
+              </div>
+              
+              <!-- Дата + кнопка -->
+              <div class="flex items-center gap-4 flex-shrink-0">
+                <div class="text-right min-w-[100px]">
+                  <p class="text-white text-sm">{event.date}</p>
+                  {event.time && <p class="text-muted text-xs">{event.time}</p>}
+                </div>
+                <span class="min-w-[110px] text-center px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                  {event.buttonText} →
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- ВАРИАНТ E: Колокольчик после кнопки -->
+      <section class="mb-16">
+        <div class="mb-6">
+          <h2 class="text-white text-xl mb-2">Вариант E: Колокольчик справа от кнопки</h2>
+          <p class="text-muted text-sm">Колокольчик в самом конце строки, после кнопки.</p>
+        </div>
+        
+        <div class="grid gap-4">
+          {events.map((event) => (
+            <a 
+              href={event.buttonUrl}
+              class={`group flex items-center justify-between py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
+            >
+              <!-- Текст -->
+              <div class="text-left flex-1 min-w-0 pr-8">
+                <p class="text-white font-light">
+                  {event.title}
+                  {event.location && <span class="text-white/50"> | {event.location}</span>}
+                </p>
+                {event.description && <p class="text-muted text-sm text-justify">{event.description}</p>}
+              </div>
+              
+              <!-- Дата + кнопка + колокольчик -->
+              <div class="flex items-center gap-4 flex-shrink-0">
+                <div class="text-right min-w-[100px]">
+                  <p class="text-white text-sm">{event.date}</p>
+                  {event.time && <p class="text-muted text-xs">{event.time}</p>}
+                </div>
+                <span class="min-w-[110px] text-center px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                  {event.buttonText} →
+                </span>
+                <!-- Колокольчик (фиксированная ширина) -->
+                <div class="w-6 flex justify-center">
+                  {event.isFuture && (
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                    </svg>
+                  )}
+                </div>
               </div>
             </a>
           ))}
@@ -193,50 +290,4 @@ const events = [
   a {
     text-decoration: none !important;
   }
-  
-  .filter-btn {
-    background: transparent !important;
-    border: none !important;
-    outline: none !important;
-    cursor: pointer;
-  }
-  
-  .event-item.hidden {
-    display: none;
-  }
 </style>
-
-<script>
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const eventItems = document.querySelectorAll('.event-item');
-  
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
-      
-      // Обновляем активную кнопку
-      filterBtns.forEach(b => {
-        b.classList.remove('text-white');
-        b.classList.add('text-white/40');
-      });
-      btn.classList.remove('text-white/40');
-      btn.classList.add('text-white');
-      
-      // Фильтруем события
-      eventItems.forEach(item => {
-        const type = item.getAttribute('data-type');
-        if (filter === 'all') {
-          item.classList.remove('hidden');
-        } else if (filter === 'concert' && type === 'concert') {
-          item.classList.remove('hidden');
-        } else if (filter === 'news' && (type === 'news' || type === 'release' || type === 'project' || type === 'video' || type === 'merch')) {
-          // "Новости" показывает всё кроме концертов
-          item.classList.remove('hidden');
-        } else {
-          item.classList.add('hidden');
-        }
-      });
-    });
-  });
-</script>
-

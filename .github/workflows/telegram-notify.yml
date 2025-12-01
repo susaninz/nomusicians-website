@@ -45,3 +45,4 @@ jobs:
             -d parse_mode="HTML" \
             -d text="💬 <b>Новый комментарий</b>%0A%0AК задаче: <b>${{ github.event.issue.title }}</b>%0A%0A${{ github.event.comment.body }}%0A%0A👤 Автор: ${{ github.event.comment.user.login }}%0A🔗 <a href='${{ github.event.comment.html_url }}'>Открыть</a>"
 
+

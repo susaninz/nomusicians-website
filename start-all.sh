@@ -42,3 +42,4 @@ echo ""
 echo "📱 Для теста на телефоне:"
 echo "   $(ifconfig | grep "inet " | grep -v 127.0.0.1 | head -1 | awk '{print "http://"$2":4321"}')"
 
+
