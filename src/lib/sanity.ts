@@ -21,13 +21,7 @@ export function urlFor(source: any) {
 }
 
 // Типы
-export interface SanityVideo {
-  _id: string;
-  title: string;
-  youtubeUrl: string;
-  thumbnail?: any;
-  order: number;
-}
+// SanityVideo удалён — используем SanityVideoAlbum
 
 export interface SanityRelease {
   _id: string;
@@ -87,6 +81,10 @@ export interface SanityProject {
   heroImage?: any;
   subtitle?: { ru: string; en: string; cn: string };
   fullDescription?: { ru: any[]; en: any[]; cn: any[] }; // Portable Text
+  // Новая архитектура: альбомы
+  photoAlbums?: SanityPhotoAlbum[];
+  videoAlbums?: SanityVideoAlbum[];
+  // Устаревшие поля (для обратной совместимости)
   gallery?: Array<{ _key: string; asset: any; caption?: string }>;
   videos?: Array<{ _key: string; title: string; youtubeUrl?: string; localFile?: any }>;
   participants?: Array<{
@@ -98,22 +96,6 @@ export interface SanityProject {
   socials?: Array<{ _key: string; type: string; url?: string; label?: string }>;
   presentationUrl?: string;
   order: number;
-}
-
-export interface SanityTour {
-  _id: string;
-  title: string;
-  description: { ru: string; en: string; cn: string };
-  isTour: boolean;
-  events: Array<{
-    date: { ru: string; en: string; cn: string };
-    time: string;
-    city: { ru: string; en: string; cn: string };
-    venue?: string;
-    ticketUrl?: string;
-  }>;
-  isPast: boolean;
-  isActive: boolean;
 }
 
 export interface SanityEvent {
@@ -133,6 +115,38 @@ export interface SanityEvent {
   isActive: boolean;
 }
 
+export interface SanityPhotoAlbum {
+  _id: string;
+  title: { ru: string; en: string; cn: string };
+  slug: { current: string };
+  description?: { ru: string; en: string; cn: string };
+  date?: string;
+  isFeatured: boolean;
+  photos: Array<{
+    _key: string;
+    asset: any;
+    caption?: { ru: string; en: string; cn: string };
+  }>;
+  showInMedia: boolean;
+}
+
+export interface SanityVideoAlbum {
+  _id: string;
+  title: { ru: string; en: string; cn: string };
+  slug: { current: string };
+  description?: { ru: string; en: string; cn: string };
+  date?: string;
+  isFeatured: boolean;
+  videos: Array<{
+    _key: string;
+    title: { ru: string; en: string; cn: string };
+    url: string;
+    thumbnail?: any;
+    duration?: string;
+  }>;
+  showInMedia: boolean;
+}
+
 // Роли команды с названиями
 export const teamRoleNames: Record<string, { ru: string; en: string; cn: string }> = {
   light: { ru: 'Свет', en: 'Lighting', cn: '灯光' },
@@ -146,9 +160,7 @@ export const teamRoleNames: Record<string, { ru: string; en: string; cn: string 
 
 // Запросы (GROQ)
 export const queries = {
-  videos: `*[_type == "video"] | order(orderRank asc, order asc)`,
-  videoForHome: `*[_type == "video" && showOnHome == true][0]`,
-  videosForWatch: `*[_type == "video" && showOnWatch == true] | order(orderRank asc, order asc)`,
+  // video удалён — используем videoAlbums
   
   releases: `*[_type == "release"] | order(orderRank asc, order asc)`,
   releasesByCategory: (category: string) => 
@@ -183,6 +195,14 @@ export const queries = {
   projectBySlug: (slug: string) => 
     `*[_type == "project" && slug.current == "${slug}"][0]{
       ...,
+      photoAlbums[]->{
+        _id, title, slug, description, date, isFeatured,
+        photos[]{_key, caption, asset->}
+      },
+      videoAlbums[]->{
+        _id, title, slug, description, date, isFeatured,
+        videos[]{_key, title, url, thumbnail, duration}
+      },
       gallery[]{_key, caption, asset->},
       videos[]{_key, title, youtubeUrl, localFile},
       participants[]{
@@ -194,8 +214,6 @@ export const queries = {
       socials[]{_key, type, url, label}
     }`,
   
-  activeTour: `*[_type == "tour" && isActive == true][0]`,
-  
   // События
   events: `*[_type == "event" && isActive == true] | order(date desc)`,
   eventsForHome: `*[_type == "event" && isActive == true && showOnHome == true] | order(isFuture desc, date desc)[0...10]`,
@@ -205,20 +223,34 @@ export const queries = {
     `*[_type == "event" && isActive == true && eventType == "${type}"] | order(date desc)`,
   
   siteSettings: `*[_type == "siteSettings"][0]`,
+  
+  // Фотоальбомы (showInMedia для списка альбомов)
+  // Фильтруем только фото с реальным asset (исключаем пустые записи)
+  photoAlbums: `*[_type == "photoAlbum" && showInMedia == true] | order(date desc) {
+    _id, title, slug, description, date, isFeatured, showInMedia,
+    photos[defined(asset)]{_key, caption, asset->}
+  }`,
+  // Избранные альбомы — показываем независимо от showInMedia
+  // Фильтруем только фото с реальным asset
+  featuredPhotoAlbums: `*[_type == "photoAlbum" && isFeatured == true] | order(date desc) {
+    _id, title, slug, description, date, isFeatured, showInMedia,
+    photos[defined(asset)]{_key, caption, asset->}
+  }`,
+  
+  // Видеоальбомы (showInMedia для списка альбомов)
+  videoAlbums: `*[_type == "videoAlbum" && showInMedia == true] | order(date desc) {
+    _id, title, slug, description, date, isFeatured, showInMedia,
+    videos[]{_key, title, url, thumbnail, duration}
+  }`,
+  // Избранные видеоальбомы — показываем независимо от showInMedia
+  featuredVideoAlbums: `*[_type == "videoAlbum" && isFeatured == true] | order(date desc) {
+    _id, title, slug, description, date, isFeatured, showInMedia,
+    videos[]{_key, title, url, thumbnail, duration}
+  }`,
 };
 
 // Функции для получения данных
-export async function getVideos(): Promise<SanityVideo[]> {
-  return client.fetch(queries.videos);
-}
-
-export async function getVideoForHome(): Promise<SanityVideo | null> {
-  return client.fetch(queries.videoForHome);
-}
-
-export async function getVideosForWatch(): Promise<SanityVideo[]> {
-  return client.fetch(queries.videosForWatch);
-}
+// getVideos, getVideoForHome, getVideosForWatch удалены — используем альбомы
 
 export async function getReleases(): Promise<SanityRelease[]> {
   return client.fetch(queries.releases);
@@ -260,10 +292,6 @@ export async function getProjectBySlug(slug: string): Promise<SanityProject | nu
   return client.fetch(queries.projectBySlug(slug));
 }
 
-export async function getActiveTour(): Promise<SanityTour | null> {
-  return client.fetch(queries.activeTour);
-}
-
 export async function getEvents(): Promise<SanityEvent[]> {
   return client.fetch(queries.events);
 }
@@ -282,4 +310,22 @@ export async function getPastEvents(): Promise<SanityEvent[]> {
 
 export async function getEventsByType(type: string): Promise<SanityEvent[]> {
   return client.fetch(queries.eventsByType(type));
+}
+
+// Фотоальбомы
+export async function getPhotoAlbums(): Promise<SanityPhotoAlbum[]> {
+  return client.fetch(queries.photoAlbums);
+}
+
+export async function getFeaturedPhotoAlbums(): Promise<SanityPhotoAlbum[]> {
+  return client.fetch(queries.featuredPhotoAlbums);
+}
+
+// Видеоальбомы
+export async function getVideoAlbums(): Promise<SanityVideoAlbum[]> {
+  return client.fetch(queries.videoAlbums);
+}
+
+export async function getFeaturedVideoAlbums(): Promise<SanityVideoAlbum[]> {
+  return client.fetch(queries.featuredVideoAlbums);
 }

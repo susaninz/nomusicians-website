@@ -6,7 +6,7 @@ import {schemaTypes} from './schemaTypes'
 import {TranslateAction} from './actions/translateAction'
 
 // Типы документов, которые поддерживают перевод
-const translatableTypes = ['tour', 'project', 'siteSettings', 'event']
+const translatableTypes = ['project', 'siteSettings', 'event', 'photoAlbum', 'videoAlbum']
 
 // Роли команды для создания списков
 const teamRolesList = [
@@ -111,22 +111,28 @@ export default defineConfig({
               S,
               context,
             }),
-            orderableDocumentListDeskItem({
-              type: 'video',
-              id: 'orderable-video',
-              title: '🎬 Видео',
-              icon: () => '🎬',
-              S,
-              context,
-            }),
-            orderableDocumentListDeskItem({
-              type: 'tour',
-              id: 'orderable-tour',
-              title: '🎫 Туры / Концерты',
-              icon: () => '🎫',
-              S,
-              context,
-            }),
+
+            S.divider(),
+
+            // === МЕДИА (альбомы) ===
+            S.listItem()
+              .title('📷 Фотоальбомы')
+              .schemaType('photoAlbum')
+              .child(
+                S.documentTypeList('photoAlbum')
+                  .title('Фотоальбомы')
+              ),
+            S.listItem()
+              .title('🎬 Видеоальбомы')
+              .schemaType('videoAlbum')
+              .child(
+                S.documentTypeList('videoAlbum')
+                  .title('Видеоальбомы')
+              ),
+
+            S.divider(),
+
+            // === СОБЫТИЯ ===
             S.listItem()
               .title('📅 События')
               .schemaType('event')

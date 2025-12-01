@@ -13,7 +13,7 @@ export const translations = {
         'nav.about': 'О нас',
         'nav.releases': 'Релизы',
         'nav.projects': 'Проекты',
-        'nav.watch': 'Видео',
+        'nav.media': 'Медиа',
         'nav.people': 'Люди',
         'nav.contact': 'Контакты',
 
@@ -95,7 +95,17 @@ export const translations = {
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. Все права защищены.',
-        
+
+        // Events
+        'events.featured': 'Актуальное',
+        'events.upcoming': 'Скоро',
+        'events.pageTitle': 'Все события',
+        'events.pageSubtitle': 'Концерты, релизы и новости',
+        'events.allEvents': 'Все события',
+        'events.filterAll': 'Всё',
+        'events.filterConcerts': 'Концерты',
+        'events.filterNews': 'Новости',
+
         // People page
         'people.title': 'Musicians & Nomusicians',
         'people.subtitle': 'Те, кто играет, и те, кто делает музыку возможной',
@@ -106,6 +116,21 @@ export const translations = {
         'people.collaborators': 'Nomusicians',
         'people.collaborators.sub': 'Те, кто делает музыку возможной',
         'people.back': 'Вернуться на главную',
+
+        // Media page
+        'media.title': 'Медиа',
+        'media.subtitle': 'Фото и видео',
+        'media.filterPhoto': 'Фото',
+        'media.filterVideo': 'Видео',
+        'media.featured': 'Избранное',
+        'media.photoAlbums': 'Фотоальбомы',
+        'media.videoAlbums': 'Видеоальбомы',
+        'media.showAll': 'Показать все',
+        'media.collapse': 'Свернуть',
+        'media.watch': 'Смотреть',
+        'media.hide': 'Скрыть',
+        'media.photos': 'фото',
+        'media.videos': 'видео',
     },
 
     en: {
@@ -114,7 +139,7 @@ export const translations = {
         'nav.about': 'About',
         'nav.releases': 'Releases',
         'nav.projects': 'Projects',
-        'nav.watch': 'Watch',
+        'nav.media': 'Media',
         'nav.people': 'People',
         'nav.contact': 'Contact',
 
@@ -196,7 +221,17 @@ export const translations = {
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. All rights reserved.',
-        
+
+        // Events
+        'events.featured': 'Featured',
+        'events.upcoming': 'Upcoming',
+        'events.pageTitle': 'All Events',
+        'events.pageSubtitle': 'Concerts, releases and news',
+        'events.allEvents': 'All events',
+        'events.filterAll': 'All',
+        'events.filterConcerts': 'Concerts',
+        'events.filterNews': 'News',
+
         // People page
         'people.title': 'Musicians & Nomusicians',
         'people.subtitle': 'Those who play, and those who make the music possible',
@@ -207,6 +242,21 @@ export const translations = {
         'people.collaborators': 'Nomusicians',
         'people.collaborators.sub': 'Those who make the music possible',
         'people.back': 'Back to home',
+
+        // Media page
+        'media.title': 'Media',
+        'media.subtitle': 'Photos & Videos',
+        'media.filterPhoto': 'Photos',
+        'media.filterVideo': 'Videos',
+        'media.featured': 'Featured',
+        'media.photoAlbums': 'Photo Albums',
+        'media.videoAlbums': 'Video Albums',
+        'media.showAll': 'Show all',
+        'media.collapse': 'Collapse',
+        'media.watch': 'Watch',
+        'media.hide': 'Hide',
+        'media.photos': 'photos',
+        'media.videos': 'videos',
     },
 
     cn: {
@@ -215,7 +265,7 @@ export const translations = {
         'nav.about': '关于',
         'nav.releases': '专辑',
         'nav.projects': '项目',
-        'nav.watch': '视频',
+        'nav.media': '媒体',
         'nav.people': '人们',
         'nav.contact': '联系',
 
@@ -297,7 +347,17 @@ export const translations = {
 
         // Footer
         'footer.rights': '© 2025 Nomusicians. 保留所有权利。',
-        
+
+        // Events
+        'events.featured': '动态',
+        'events.upcoming': '即将举行',
+        'events.pageTitle': '所有活动',
+        'events.pageSubtitle': '演出、发行和新闻',
+        'events.allEvents': '所有活动',
+        'events.filterAll': '全部',
+        'events.filterConcerts': '演出',
+        'events.filterNews': '新闻',
+
         // People page
         'people.title': 'Musicians & Nomusicians',
         'people.subtitle': '演奏者与幕后推动者',
@@ -308,6 +368,21 @@ export const translations = {
         'people.collaborators': 'Nomusicians',
         'people.collaborators.sub': '让音乐成为可能的人',
         'people.back': '返回首页',
+
+        // Media page
+        'media.title': '媒体',
+        'media.subtitle': '照片和视频',
+        'media.filterPhoto': '照片',
+        'media.filterVideo': '视频',
+        'media.featured': '精选',
+        'media.photoAlbums': '相册',
+        'media.videoAlbums': '视频专辑',
+        'media.showAll': '显示全部',
+        'media.collapse': '收起',
+        'media.watch': '观看',
+        'media.hide': '隐藏',
+        'media.photos': '张照片',
+        'media.videos': '个视频',
     },
 } as const;
 

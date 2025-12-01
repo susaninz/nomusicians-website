@@ -1,0 +1,213 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'ru';
+
+// Mock-данные для альбома "Концерт в Португалии"
+const album = {
+  title: 'Концерт в Португалии',
+  date: 'Ноябрь 2025',
+  description: 'Фотографии с концерта в Лиссабоне. Специальная программа с португальскими музыкантами.',
+  type: 'photo',
+};
+
+// 15 фото — реальные пути из public/
+const photos = [
+  { src: '/hero/VGD_1998.jpg' },
+  { src: '/hero/VGD_2151.jpg' },
+  { src: '/hero/VGD_3073.jpg' },
+  { src: '/hero/VGD_3241.jpg' },
+  { src: '/projects/klassika/ogonek-2024-1.jpg' },
+  { src: '/projects/klassika/ogonek-2024-2.jpg' },
+  { src: '/projects/klassika/holodok-2024-1.jpg' },
+  { src: '/projects/klassika/holodok-2024-2.jpg' },
+  { src: '/projects/klassika/holodok-2024-3.jpg' },
+  { src: '/projects/klassika/gallery/Ogonek 24 - 1.png' },
+  { src: '/projects/klassika/gallery/Ogonek 24 - 2.png' },
+  { src: '/projects/klassika/gallery/Holodok 25 - 1.png' },
+  { src: '/musicians/rakitin-1.jpg' },
+  { src: '/musicians/slezkin.jpg' },
+  { src: '/musicians/kotnov-1.jpg' },
+];
+---
+
+<Layout title={`${album.title} — Медиа`} lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-20">
+    <div class="fixed top-20 right-4 z-50 bg-amber-600/80 text-white px-3 py-1 text-xs font-medium rounded">
+      ДЕМО: Страница альбома
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6">
+      
+      <!-- Навигация назад -->
+      <a href="/demo/media-albums" class="inline-flex items-center gap-2 text-muted hover:text-white transition-colors mb-8">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Все альбомы
+      </a>
+      
+      <!-- Заголовок альбома -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-light tracking-wide mb-2" style="font-family: var(--font-logo);">
+          {album.title}
+        </h1>
+        <p class="text-muted">
+          {album.date} · {photos.length} фото
+        </p>
+        {album.description && (
+          <p class="text-white/60 text-sm mt-4 max-w-2xl">
+            {album.description}
+          </p>
+        )}
+      </div>
+
+
+      <!-- Сетка фото -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="photos-grid">
+        {photos.map((photo, index) => (
+          <div 
+            class="photo-item group relative aspect-square overflow-hidden cursor-pointer"
+            data-index={index}
+            data-src={photo.src}
+          >
+            <img 
+              src={photo.src} 
+              alt={`Фото ${index + 1}`}
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+            />
+            
+            <!-- Оверлей при наведении -->
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+              </svg>
+            </div>
+          </div>
+        ))}
+      </div>
+
+
+    </div>
+  </main>
+  
+  <Footer />
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="fixed inset-0 z-50 bg-black/95 hidden items-center justify-center">
+    <button id="lightbox-close" class="absolute top-6 right-6 w-12 h-12 rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    
+    <button id="lightbox-prev" class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    
+    <button id="lightbox-next" class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+    
+    <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[90vh] object-contain" />
+    
+    <div id="lightbox-counter" class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 px-4 py-2 rounded-full text-white/80 text-sm">
+      1 / 15
+    </div>
+  </div>
+</Layout>
+
+<style>
+  a {
+    text-decoration: none !important;
+  }
+  
+  button {
+    background-color: transparent !important;
+  }
+  
+  #lightbox.active {
+    display: flex;
+  }
+</style>
+
+<script>
+  // Lightbox
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+  const lightboxCounter = document.getElementById('lightbox-counter');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxPrev = document.getElementById('lightbox-prev');
+  const lightboxNext = document.getElementById('lightbox-next');
+  const photoItems = document.querySelectorAll('.photo-item');
+  
+  let currentIndex = 0;
+  const photos = Array.from(photoItems).map(item => ({
+    src: item.dataset.src,
+    index: parseInt(item.dataset.index || '0')
+  }));
+  
+  function openLightbox(index: number) {
+    currentIndex = index;
+    updateLightbox();
+    lightbox?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeLightbox() {
+    lightbox?.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  function updateLightbox() {
+    if (lightboxImg && photos[currentIndex]) {
+      lightboxImg.src = photos[currentIndex].src || '';
+    }
+    if (lightboxCounter) {
+      lightboxCounter.textContent = `${currentIndex + 1} / ${photos.length}`;
+    }
+  }
+  
+  function nextPhoto() {
+    currentIndex = (currentIndex + 1) % photos.length;
+    updateLightbox();
+  }
+  
+  function prevPhoto() {
+    currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+    updateLightbox();
+  }
+  
+  // Открытие по клику на фото
+  photoItems.forEach((item, index) => {
+    item.addEventListener('click', () => openLightbox(index));
+  });
+  
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightboxPrev?.addEventListener('click', prevPhoto);
+  lightboxNext?.addEventListener('click', nextPhoto);
+  
+  // Клавиши
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox?.classList.contains('active')) return;
+    
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') nextPhoto();
+    if (e.key === 'ArrowLeft') prevPhoto();
+  });
+  
+  // Клик по фону закрывает
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+</script>
+

@@ -3,27 +3,23 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getEvents, type SanityEvent } from '../lib/sanity';
+import { t } from '../i18n/translations';
 
 const lang = 'ru';
 
 // Получаем все события из Sanity
 const sanityEvents = await getEvents();
 
-// Функция форматирования даты
-function formatDate(dateStr: string, lang: string, includeYear = false): string {
+// Короткие названия месяцев (не более 3 символов)
+// Всегда выводим год — для единообразия
+function formatDateShort(dateStr: string): string {
   const date = new Date(dateStr);
-  const months: Record<string, string[]> = {
-    ru: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
-    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    cn: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-  };
+  const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
   const day = date.getDate();
-  const month = months[lang]?.[date.getMonth()] || months.ru[date.getMonth()];
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
   
-  if (includeYear) {
-    return `${day} ${month} ${date.getFullYear()}`;
-  }
-  return `${day} ${month}`;
+  return `${day} ${month} ${year}`;
 }
 
 // Преобразуем события
@@ -43,7 +39,7 @@ const events = sanityEvents.map((e: SanityEvent) => {
     location,
     description,
     date: e.date,
-    dateFormatted: formatDate(e.date, lang),
+    dateFormatted: formatDateShort(e.date),
     time: e.time || null,
     year: new Date(e.date).getFullYear(),
     buttonText: e.buttonText?.[lang] || e.buttonText?.ru || 'Подробнее',
@@ -66,11 +62,11 @@ const pastEventsByYear = events
 // Сортируем годы по убыванию
 const years = Object.keys(pastEventsByYear).map(Number).sort((a, b) => b - a);
 
-// Типы для фильтров
+// Типы для фильтров (используем переводы)
 const filters = [
-  { key: 'all', label: 'Всё' },
-  { key: 'concert', label: 'Концерты' },
-  { key: 'news', label: 'Новости' },
+  { key: 'all', label: t(lang, 'events.filterAll') },
+  { key: 'concert', label: t(lang, 'events.filterConcerts') },
+  { key: 'news', label: t(lang, 'events.filterNews') },
 ];
 ---
 
@@ -83,10 +79,10 @@ const filters = [
       <!-- Заголовок -->
       <div class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-light tracking-wide mb-4" style="font-family: var(--font-logo);">
-          Все события
+          {t(lang, 'events.pageTitle')}
         </h1>
         <p class="text-muted">
-          Концерты, релизы и новости
+          {t(lang, 'events.pageSubtitle')}
         </p>
       </div>
       
@@ -111,34 +107,32 @@ const filters = [
         <!-- Скоро -->
         {futureEvents.length > 0 && (
           <div class="mb-12 section-group" data-section="future">
-            <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">Скоро</p>
+            <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">{t(lang, 'events.upcoming')}</p>
             
-            <div class="grid gap-4">
+            <div class="space-y-4">
               {futureEvents.map((event) => (
                 <a 
                   href={event.buttonUrl}
-                  class="event-item group flex items-center justify-between py-4 px-6 border border-white/20 hover:border-white/30 hover:bg-white/5 transition-all no-underline"
+                  class="event-item group flex items-start justify-between py-4 px-6 border border-white/20 hover:border-white/30 hover:bg-white/5 transition-all no-underline"
                   data-type={event.type}
                 >
-                  <div class="text-left flex-1 min-w-0 pr-4">
+                  <div class="text-left flex-1 min-w-0 pr-8">
                     <p class="text-white font-light flex items-center gap-2">
-                      <span>
-                        {event.title}
-                        {event.location && <span class="text-white/50"> | {event.location}</span>}
-                      </span>
-                      <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      <svg class="w-4 h-4 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                       </svg>
+                      {event.title}
+                      {event.location && <span class="text-white/50"> | {event.location}</span>}
                     </p>
                     {event.description && <p class="text-muted text-sm">{event.description}</p>}
                   </div>
                   
-                  <div class="flex items-center gap-4 flex-shrink-0 min-w-[260px] justify-end">
+                  <div class="flex flex-col items-end gap-1 flex-shrink-0 min-w-[100px]">
                     <div class="text-right">
-                      <p class="text-white text-sm">{formatDate(event.date, lang, true)}</p>
+                      <p class="text-white text-sm">{event.dateFormatted}</p>
                       {event.time && <p class="text-muted text-xs">{event.time}</p>}
                     </div>
-                    <span class="px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all ">
+                    <span class="text-white/60 text-xs tracking-wider uppercase whitespace-nowrap group-hover:text-white transition-colors">
                       {event.buttonText} →
                     </span>
                   </div>
@@ -153,14 +147,14 @@ const filters = [
           <div class="mb-12 section-group" data-section={year}>
             <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">{year}</p>
             
-            <div class="grid gap-4">
+            <div class="space-y-4">
               {pastEventsByYear[year].map((event) => (
                 <a 
                   href={event.buttonUrl}
-                  class="event-item group flex items-center justify-between py-4 px-6 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all no-underline opacity-60 hover:opacity-100"
+                  class="event-item group flex items-start justify-between py-4 px-6 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all no-underline opacity-60 hover:opacity-100"
                   data-type={event.type}
                 >
-                  <div class="text-left flex-1 min-w-0 pr-4">
+                  <div class="text-left flex-1 min-w-0 pr-8">
                     <p class="text-white font-light">
                       {event.title}
                       {event.location && <span class="text-white/50"> | {event.location}</span>}
@@ -168,11 +162,11 @@ const filters = [
                     {event.description && <p class="text-muted text-sm">{event.description}</p>}
                   </div>
                   
-                  <div class="flex items-center gap-4 flex-shrink-0 min-w-[260px] justify-end">
+                  <div class="flex flex-col items-end gap-1 flex-shrink-0 min-w-[100px]">
                     <div class="text-right">
                       <p class="text-white text-sm">{event.dateFormatted}</p>
                     </div>
-                    <span class="px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all ">
+                    <span class="text-white/60 text-xs tracking-wider uppercase whitespace-nowrap group-hover:text-white transition-colors">
                       {event.buttonText} →
                     </span>
                   </div>

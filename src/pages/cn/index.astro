@@ -3,25 +3,22 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Hero from '../../components/Hero.astro';
 import Footer from '../../components/Footer.astro';
-import { getEventsForHome, getVideoForHome, urlFor, type SanityEvent } from '../../lib/sanity';
+import { getEventsForHome, getFeaturedVideoAlbums, urlFor, type SanityEvent } from '../../lib/sanity';
+import { t } from '../../i18n/translations';
 
 const lang = 'cn';
 
 // Получаем события для главной из Sanity
 const sanityEvents = await getEventsForHome();
 
-// Функция форматирования даты
-function formatDate(dateStr: string): string {
+// Короткие названия месяцев
+// Всегда выводим год — для единообразия
+function formatDateShort(dateStr: string): string {
   const date = new Date(dateStr);
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
   
-  // Для текущего года не показываем год
-  const currentYear = new Date().getFullYear();
-  if (year === currentYear) {
-    return `${month}月${day}日`;
-  }
   return `${year}年${month}月${day}日`;
 }
 
@@ -41,7 +38,7 @@ const events = sanityEvents.map((e: SanityEvent) => {
     title: e.title?.[lang] || e.title?.cn || e.title?.ru || '',
     location,
     description,
-    date: formatDate(e.date),
+    date: formatDateShort(e.date),
     time: e.time || null,
     buttonText: e.buttonText?.[lang] || e.buttonText?.cn || e.buttonText?.ru || '详情',
     buttonUrl: e.url || '#',
@@ -49,24 +46,33 @@ const events = sanityEvents.map((e: SanityEvent) => {
   };
 });
 
-// Получаем видео для главной (с галочкой showOnHome)
-const homeVideo = await getVideoForHome();
+// Получаем первое видео из избранного видеоальбома
+const featuredVideoAlbums = await getFeaturedVideoAlbums();
+const firstFeaturedVideo = featuredVideoAlbums[0]?.videos?.[0];
 
 // Функция для получения YouTube thumbnail
 function getYoutubeThumbnail(url: string): string {
-  const match = url?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/);
+  const match = url?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&]+)/);
   if (match && match[1]) {
     return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
   }
   return '/og-image.png';
 }
 
-const featuredVideo = homeVideo ? {
-  title: homeVideo.titleCn || homeVideo.titleEn || homeVideo.title,
-  url: homeVideo.youtubeUrl,
-  thumbnail: homeVideo.thumbnail 
-    ? urlFor(homeVideo.thumbnail).width(800).url() 
-    : getYoutubeThumbnail(homeVideo.youtubeUrl),
+// Функция для YouTube watch URL
+function getYouTubeWatchUrl(url: string): string {
+  if (!url) return '#';
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+  if (match) return `https://www.youtube.com/watch?v=${match[1]}`;
+  return url;
+}
+
+const featuredVideo = firstFeaturedVideo ? {
+  title: firstFeaturedVideo.title?.[lang] || firstFeaturedVideo.title?.cn || firstFeaturedVideo.title?.ru || '',
+  url: getYouTubeWatchUrl(firstFeaturedVideo.url),
+  thumbnail: firstFeaturedVideo.thumbnail 
+    ? urlFor(firstFeaturedVideo.thumbnail).width(800).url() 
+    : getYoutubeThumbnail(firstFeaturedVideo.url),
 } : null;
 ---
 
@@ -80,39 +86,37 @@ const featuredVideo = homeVideo ? {
       <section class="bg-surface py-16 px-6">
         <div class="max-w-4xl mx-auto">
           <p class="text-muted text-sm tracking-[0.2em] uppercase mb-8 text-center">
-            动态
+            {t(lang, 'events.featured')}
           </p>
           
-          <!-- Event Cards -->
-          <div class="grid gap-4">
+          <!-- Event Cards (v7-full layout) -->
+          <div class="space-y-4">
             {events.map((event) => (
               <a 
                 href={event.buttonUrl}
-                class={`group flex items-center justify-between py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
+                class={`group flex items-start justify-between py-4 px-6 border ${event.isFuture ? 'border-white/20' : 'border-white/10'} hover:border-white/30 hover:bg-white/5 transition-all no-underline ${!event.isFuture ? 'opacity-60 hover:opacity-100' : ''}`}
               >
-                <!-- Left: content -->
-                <div class="text-left flex-1 min-w-0 pr-4">
+                <!-- Text -->
+                <div class="text-left flex-1 min-w-0 pr-8">
                   <p class="text-white font-light flex items-center gap-2">
-                    <span>
-                      {event.title}
-                      {event.location && <span class="text-white/50"> | {event.location}</span>}
-                    </span>
                     {event.isFuture && (
-                      <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      <svg class="w-4 h-4 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                       </svg>
                     )}
+                    {event.title}
+                    {event.location && <span class="text-white/50"> | {event.location}</span>}
                   </p>
-                  {event.description && <p class="text-muted text-sm text-justify">{event.description}</p>}
+                  {event.description && <p class="text-muted text-sm">{event.description}</p>}
                 </div>
                 
-                <!-- Right: date + button -->
-                <div class="flex items-center gap-4 flex-shrink-0 min-w-[260px] justify-end">
+                <!-- Date + Button (vertical) -->
+                <div class="flex flex-col items-end gap-1 flex-shrink-0 min-w-[100px]">
                   <div class="text-right">
                     <p class="text-white text-sm">{event.date}</p>
                     {event.time && <p class="text-muted text-xs">{event.time}</p>}
                   </div>
-                  <span class="px-3 py-1.5 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                  <span class="text-white/60 text-xs tracking-wider uppercase whitespace-nowrap group-hover:text-white transition-colors">
                     {event.buttonText} →
                   </span>
                 </div>
@@ -123,7 +127,7 @@ const featuredVideo = homeVideo ? {
           <!-- All Events -->
           <div class="mt-10 text-center">
             <a href="/cn/events" class="text-muted hover:text-white transition-colors text-sm inline-flex items-center gap-2">
-              所有活动
+              {t(lang, 'events.allEvents')}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

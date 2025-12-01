@@ -112,42 +112,26 @@ export default defineType({
       ],
       hidden: ({document}) => !document?.hasPage,
     }),
+    // === АЛЬБОМЫ (новая архитектура) ===
     defineField({
-      name: 'gallery',
-      title: 'Галерея',
+      name: 'photoAlbums',
+      title: '📷 Фотоальбомы',
+      description: 'Привяжи существующие фотоальбомы к проекту',
       type: 'array',
       fieldset: 'page',
-      of: [
-        {
-          type: 'image',
-          options: {hotspot: true},
-          fields: [
-            {name: 'caption', title: 'Подпись', type: 'string'},
-          ],
-        },
-      ],
+      of: [{type: 'reference', to: [{type: 'photoAlbum'}]}],
       hidden: ({document}) => !document?.hasPage,
     }),
     defineField({
-      name: 'videos',
-      title: 'Видео',
+      name: 'videoAlbums',
+      title: '🎬 Видеоальбомы',
+      description: 'Привяжи существующие видеоальбомы к проекту',
       type: 'array',
       fieldset: 'page',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            {name: 'title', title: 'Название', type: 'string'},
-            {name: 'youtubeUrl', title: 'YouTube URL', type: 'url'},
-            {name: 'localFile', title: 'Или локальный файл', type: 'file'},
-          ],
-          preview: {
-            select: {title: 'title'},
-          },
-        },
-      ],
+      of: [{type: 'reference', to: [{type: 'videoAlbum'}]}],
       hidden: ({document}) => !document?.hasPage,
     }),
+
     defineField({
       name: 'participants',
       title: 'Участники',

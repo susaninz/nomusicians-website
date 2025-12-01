@@ -14,22 +14,22 @@ const events = [
   { type: 'concert', title: 'China Tour: Шэньчжэнь', description: 'Shenzhen Concert Hall', date: '16 января 2026', time: '20:00', year: 2026, isFuture: true, buttonText: 'Билеты' },
   { type: 'concert', title: 'China Tour: Гонконг', description: 'Hong Kong Cultural Centre', date: '18 января 2026', time: '20:00', year: 2026, isFuture: true, buttonText: 'Билеты' },
   
-  // 2025
-  { type: 'release', title: 'Noch 3.0', description: 'Третья часть студийного альбома', date: '1 декабря', year: 2025, isFuture: false, buttonText: 'Слушать' },
-  { type: 'blog', title: 'Как мы записывали Noch 3.0', description: 'История создания альбома', date: '25 ноября', year: 2025, isFuture: false, buttonText: 'Читать' },
-  { type: 'news', title: 'Интервью для Афиши', description: 'О планах на 2026 год', date: '20 ноября', year: 2025, isFuture: false, buttonText: 'Читать' },
-  { type: 'concert', title: 'Концерт в Москве', description: 'ДК Рассвет', date: '15 ноября', year: 2025, isFuture: false, buttonText: 'Смотреть' },
-  { type: 'video', title: 'Live at Ogonek 2024', description: 'Полная запись концерта', date: '10 ноября', year: 2025, isFuture: false, buttonText: 'Смотреть' },
-  { type: 'blog', title: 'Поездка в Португалию', description: 'Рассказ о концерте в Лиссабоне', date: '5 ноября', year: 2025, isFuture: false, buttonText: 'Читать' },
-  { type: 'merch', title: 'Новый мерч: футболка «Созвездие»', description: 'Лимитированная серия', date: '1 ноября', year: 2025, isFuture: false, buttonText: 'Купить' },
-  { type: 'project', title: 'Проект «Классика»', description: 'Серия концертов классической музыки', date: '15 октября', year: 2025, isFuture: false, buttonText: 'Подробнее' },
+  // 2025 — год всегда в дате для единообразия
+  { type: 'release', title: 'Noch 3.0', description: 'Третья часть студийного альбома', date: '1 декабря 2025', year: 2025, isFuture: false, buttonText: 'Слушать' },
+  { type: 'blog', title: 'Как мы записывали Noch 3.0', description: 'История создания альбома', date: '25 ноября 2025', year: 2025, isFuture: false, buttonText: 'Читать' },
+  { type: 'news', title: 'Интервью для Афиши', description: 'О планах на 2026 год', date: '20 ноября 2025', year: 2025, isFuture: false, buttonText: 'Читать' },
+  { type: 'concert', title: 'Концерт в Москве', description: 'ДК Рассвет', date: '15 ноября 2025', year: 2025, isFuture: false, buttonText: 'Смотреть' },
+  { type: 'video', title: 'Live at Ogonek 2024', description: 'Полная запись концерта', date: '10 ноября 2025', year: 2025, isFuture: false, buttonText: 'Смотреть' },
+  { type: 'blog', title: 'Поездка в Португалию', description: 'Рассказ о концерте в Лиссабоне', date: '5 ноября 2025', year: 2025, isFuture: false, buttonText: 'Читать' },
+  { type: 'merch', title: 'Новый мерч: футболка «Созвездие»', description: 'Лимитированная серия', date: '1 ноября 2025', year: 2025, isFuture: false, buttonText: 'Купить' },
+  { type: 'project', title: 'Проект «Классика»', description: 'Серия концертов классической музыки', date: '15 октября 2025', year: 2025, isFuture: false, buttonText: 'Подробнее' },
   
   // 2024
-  { type: 'release', title: 'Live at Ogonek \'23', description: 'Концертная запись', date: '15 октября', year: 2024, isFuture: false, buttonText: 'Слушать' },
-  { type: 'blog', title: 'Фестиваль Холодок', description: 'Как это было', date: '20 сентября', year: 2024, isFuture: false, buttonText: 'Читать' },
-  { type: 'concert', title: 'Фестиваль Огонёк', description: 'Арт-усадьба Веретьево', date: '1 августа', year: 2024, isFuture: false, buttonText: 'Смотреть' },
-  { type: 'news', title: 'Nomusicians в журнале Rolling Stone', description: 'Интервью о проекте', date: '15 июня', year: 2024, isFuture: false, buttonText: 'Читать' },
-  { type: 'release', title: '5pulse', description: 'Студийный альбом', date: '1 марта', year: 2024, isFuture: false, buttonText: 'Слушать' },
+  { type: 'release', title: 'Live at Ogonek \'23', description: 'Концертная запись', date: '15 октября 2024', year: 2024, isFuture: false, buttonText: 'Слушать' },
+  { type: 'blog', title: 'Фестиваль Холодок', description: 'Как это было', date: '20 сентября 2024', year: 2024, isFuture: false, buttonText: 'Читать' },
+  { type: 'concert', title: 'Фестиваль Огонёк', description: 'Арт-усадьба Веретьево', date: '1 августа 2024', year: 2024, isFuture: false, buttonText: 'Смотреть' },
+  { type: 'news', title: 'Nomusicians в журнале Rolling Stone', description: 'Интервью о проекте', date: '15 июня 2024', year: 2024, isFuture: false, buttonText: 'Читать' },
+  { type: 'release', title: '5pulse', description: 'Студийный альбом', date: '1 марта 2024', year: 2024, isFuture: false, buttonText: 'Слушать' },
 ];
 
 // Группируем по периодам

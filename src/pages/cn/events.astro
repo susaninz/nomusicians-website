@@ -3,23 +3,22 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getEvents, type SanityEvent } from '../../lib/sanity';
+import { t } from '../../i18n/translations';
 
 const lang = 'cn';
 
 // Получаем все события из Sanity
 const sanityEvents = await getEvents();
 
-// Функция форматирования даты
-function formatDate(dateStr: string, lang: string, includeYear = false): string {
+// Короткие названия месяцев
+// Всегда выводим год — для единообразия
+function formatDateShort(dateStr: string): string {
   const date = new Date(dateStr);
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
   
-  if (includeYear) {
-    return `${year}年${month}月${day}日`;
-  }
-  return `${month}月${day}日`;
+  return `${year}年${month}月${day}日`;
 }
 
 // Преобразуем события
@@ -39,7 +38,7 @@ const events = sanityEvents.map((e: SanityEvent) => {
     location,
     description,
     date: e.date,
-    dateFormatted: formatDate(e.date, lang),
+    dateFormatted: formatDateShort(e.date),
     time: e.time || null,
     year: new Date(e.date).getFullYear(),
     buttonText: e.buttonText?.[lang] || e.buttonText?.cn || e.buttonText?.ru || '详情',
@@ -62,11 +61,11 @@ const pastEventsByYear = events
 // Сортируем годы по убыванию
 const years = Object.keys(pastEventsByYear).map(Number).sort((a, b) => b - a);
 
-// Типы для фильтров
+// Типы для фильтров (используем переводы)
 const filters = [
-  { key: 'all', label: '全部' },
-  { key: 'concert', label: '演出' },
-  { key: 'news', label: '新闻' },
+  { key: 'all', label: t(lang, 'events.filterAll') },
+  { key: 'concert', label: t(lang, 'events.filterConcerts') },
+  { key: 'news', label: t(lang, 'events.filterNews') },
 ];
 ---
 
@@ -79,10 +78,10 @@ const filters = [
       <!-- Заголовок -->
       <div class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-light tracking-wide mb-4" style="font-family: var(--font-logo);">
-          所有活动
+          {t(lang, 'events.pageTitle')}
         </h1>
         <p class="text-muted">
-          演出、发行和新闻
+          {t(lang, 'events.pageSubtitle')}
         </p>
       </div>
       
@@ -107,31 +106,32 @@ const filters = [
         <!-- Upcoming -->
         {futureEvents.length > 0 && (
           <div class="mb-12 section-group" data-section="future">
-            <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">即将举行</p>
+            <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">{t(lang, 'events.upcoming')}</p>
             
-            <div class="grid gap-4">
+            <div class="space-y-4">
               {futureEvents.map((event) => (
                 <a 
                   href={event.buttonUrl}
-                  class="event-item group flex items-center justify-between py-4 px-6 border border-white/20 hover:border-white/30 hover:bg-white/5 transition-all no-underline"
+                  class="event-item group flex items-start justify-between py-4 px-6 border border-white/20 hover:border-white/30 hover:bg-white/5 transition-all no-underline"
                   data-type={event.type}
                 >
-                  <div class="text-left flex-1 min-w-0">
+                  <div class="text-left flex-1 min-w-0 pr-8">
                     <p class="text-white font-light flex items-center gap-2">
-                      {event.title}
-                      <svg class="w-5 h-5 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      <svg class="w-4 h-4 text-white flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                       </svg>
+                      {event.title}
+                      {event.location && <span class="text-white/50"> | {event.location}</span>}
                     </p>
-                    <p class="text-muted text-sm">{event.description}</p>
+                    {event.description && <p class="text-muted text-sm">{event.description}</p>}
                   </div>
                   
-                  <div class="flex items-center gap-4 flex-shrink-0">
+                  <div class="flex flex-col items-end gap-1 flex-shrink-0 min-w-[100px]">
                     <div class="text-right">
-                      <p class="text-white text-sm">{formatDate(event.date, lang, true)}</p>
+                      <p class="text-white text-sm">{event.dateFormatted}</p>
                       {event.time && <p class="text-muted text-xs">{event.time}</p>}
                     </div>
-                    <span class="px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                    <span class="text-white/60 text-xs tracking-wider uppercase whitespace-nowrap group-hover:text-white transition-colors">
                       {event.buttonText} →
                     </span>
                   </div>
@@ -146,23 +146,26 @@ const filters = [
           <div class="mb-12 section-group" data-section={year}>
             <p class="text-muted text-sm tracking-[0.2em] uppercase mb-6">{year}</p>
             
-            <div class="grid gap-4">
+            <div class="space-y-4">
               {pastEventsByYear[year].map((event) => (
                 <a 
                   href={event.buttonUrl}
-                  class="event-item group flex items-center justify-between py-4 px-6 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all no-underline opacity-60 hover:opacity-100"
+                  class="event-item group flex items-start justify-between py-4 px-6 border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all no-underline opacity-60 hover:opacity-100"
                   data-type={event.type}
                 >
-                  <div class="text-left flex-1 min-w-0">
-                    <p class="text-white font-light">{event.title}</p>
-                    <p class="text-muted text-sm">{event.description}</p>
+                  <div class="text-left flex-1 min-w-0 pr-8">
+                    <p class="text-white font-light">
+                      {event.title}
+                      {event.location && <span class="text-white/50"> | {event.location}</span>}
+                    </p>
+                    {event.description && <p class="text-muted text-sm">{event.description}</p>}
                   </div>
                   
-                  <div class="flex items-center gap-4 flex-shrink-0">
+                  <div class="flex flex-col items-end gap-1 flex-shrink-0 min-w-[100px]">
                     <div class="text-right">
                       <p class="text-white text-sm">{event.dateFormatted}</p>
                     </div>
-                    <span class="px-4 py-2 border border-white/30 text-white text-xs tracking-wider uppercase whitespace-nowrap group-hover:bg-white group-hover:text-black transition-all">
+                    <span class="text-white/60 text-xs tracking-wider uppercase whitespace-nowrap group-hover:text-white transition-colors">
                       {event.buttonText} →
                     </span>
                   </div>
