@@ -17,7 +17,7 @@ jobs:
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
             -d parse_mode="HTML" \
             -d disable_web_page_preview="true" \
-            -d text="📋 <b>Новая задача</b>%0A%0A<b>${{ github.event.issue.title }}</b>%0A%0A👤 Исполнитель: ${{ github.event.assignee.login }}%0A🔗 <a href='${{ github.event.issue.html_url }}'>Открыть</a>"
+            -d text="📋 <b>Новая задача #${{ github.event.issue.number }}</b>%0A%0A<b>${{ github.event.issue.title }}</b>%0A%0A👤 Исполнитель: ${{ github.event.assignee.login }}%0A🔗 <a href='${{ github.event.issue.html_url }}'>Открыть</a>"
 
       - name: Send Telegram notification on issue closed
         if: github.event_name == 'issues' && github.event.action == 'closed'
@@ -26,7 +26,7 @@ jobs:
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
             -d parse_mode="HTML" \
             -d disable_web_page_preview="true" \
-            -d text="✅ <b>Задача закрыта</b>%0A%0A<b>${{ github.event.issue.title }}</b>%0A%0A👤 Закрыл: ${{ github.event.sender.login }}%0A🔗 <a href='${{ github.event.issue.html_url }}'>Открыть</a>"
+            -d text="✅ <b>Задача закрыта #${{ github.event.issue.number }}</b>%0A%0A<b>${{ github.event.issue.title }}</b>%0A%0A👤 Закрыл: ${{ github.event.sender.login }}%0A🔗 <a href='${{ github.event.issue.html_url }}'>Открыть</a>"
 
       - name: Send Telegram notification on comment
         if: github.event_name == 'issue_comment' && github.event.action == 'created'
