@@ -16,21 +16,21 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          # Получаем задачи из проекта
-          ITEMS=$(gh project item-list 1 --owner susaninz --format json 2>/dev/null || echo '{"items":[]}')
+          # Получаем задачи из проекта и сохраняем в файл (избегаем проблем с escape символами)
+          gh project item-list 1 --owner susaninz --format json > /tmp/items.json 2>/dev/null || echo '{"items":[]}' > /tmp/items.json
           
-          # Парсим задачи по статусам
-          BACKLOG=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "Backlog")] | length')
-          READY=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "Ready")] | length')
-          IN_PROGRESS=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "In progress")] | length')
-          IN_REVIEW=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "In review")] | length')
-          DONE=$(echo "$ITEMS" | jq -r '[.items[] | select(.status == "Done")] | length')
+          # Парсим задачи по статусам из файла
+          BACKLOG=$(jq -r '[.items[] | select(.status == "Backlog")] | length' /tmp/items.json)
+          READY=$(jq -r '[.items[] | select(.status == "Ready")] | length' /tmp/items.json)
+          IN_PROGRESS=$(jq -r '[.items[] | select(.status == "In progress")] | length' /tmp/items.json)
+          IN_REVIEW=$(jq -r '[.items[] | select(.status == "In review")] | length' /tmp/items.json)
+          DONE=$(jq -r '[.items[] | select(.status == "Done")] | length' /tmp/items.json)
           
           # Получаем список задач в работе
-          IN_PROGRESS_LIST=$(echo "$ITEMS" | jq -r '.items[] | select(.status == "In progress") | "• " + .title' | head -5)
+          IN_PROGRESS_LIST=$(jq -r '.items[] | select(.status == "In progress") | "• " + .title' /tmp/items.json | head -5)
           
           # Получаем задачи для Ракитина
-          RAKITIN_TASKS=$(echo "$ITEMS" | jq -r '.items[] | select(.title | contains("@rakitin")) | select(.status != "Done") | "• " + .title' | sed 's/\[@rakitin\] //' | head -10)
+          RAKITIN_TASKS=$(jq -r '.items[] | select(.title | contains("@rakitin")) | select(.status != "Done") | "• " + .title' /tmp/items.json | sed 's/\[@rakitin\] //' | head -10)
           
           # Формируем сообщение
           MESSAGE="📊 <b>Статус проекта Nomusicians</b>%0A%0A"
@@ -55,4 +55,6 @@ jobs:
             -d chat_id="${TELEGRAM_CHAT_ID}" \
             -d parse_mode="HTML" \
             -d text="$MESSAGE"
-
+          
+          # Очищаем временный файл
+          rm -f /tmp/items.json
