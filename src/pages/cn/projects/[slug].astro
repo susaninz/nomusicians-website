@@ -32,13 +32,32 @@ const heroImageUrl = project.heroImage
     ? urlFor(project.image).width(1920).url() 
     : '/og-image.png';
 
-const gallery = project.gallery?.map(item => ({
-  src: urlFor(item.asset).width(800).url(),
-  fullSrc: urlFor(item.asset).width(1920).url(),
-  caption: item.caption || '',
-})) || [];
+// Gallery из фотоальбомов (новая архитектура) или из старого поля gallery
+const gallery = project.photoAlbums?.length > 0
+  ? project.photoAlbums.flatMap(album => 
+      (album.photos || []).filter(p => p.asset).map(item => ({
+        src: item.asset?.url ? `${item.asset.url}?w=800&fit=max&auto=format` : urlFor(item.asset).width(800).url(),
+        fullSrc: item.asset?.url ? `${item.asset.url}?w=1920&fit=max&auto=format` : urlFor(item.asset).width(1920).url(),
+        caption: item.caption?.[lang] || album.title?.[lang] || '',
+      }))
+    )
+  : (project.gallery?.map(item => ({
+      src: urlFor(item.asset).width(800).url(),
+      fullSrc: urlFor(item.asset).width(1920).url(),
+      caption: item.caption || '',
+    })) || []);
 
-const videos = project.videos || [];
+// Videos из видеоальбомов (новая архитектура) или из старого поля videos
+const videos = project.videoAlbums?.length > 0
+  ? project.videoAlbums.flatMap(album => 
+      (album.videos || []).map(v => ({
+        title: v.title?.[lang] || v.title?.ru || '视频',
+        youtubeUrl: v.url,
+        localFile: null,
+      }))
+    )
+  : (project.videos || []);
+
 const socials = project.socials || [];
 ---
 
