@@ -2,8 +2,8 @@ name: Telegram Project Digest
 
 on:
   schedule:
-    # Каждые 3 часа (9:00, 12:00, 15:00, 18:00, 21:00 по Москве = 6:00, 9:00, 12:00, 15:00, 18:00 UTC)
-    - cron: '0 6,9,12,15,18 * * *'
+    # Раз в день в 10:00 по Москве (7:00 UTC)
+    - cron: '0 7 * * *'
   workflow_dispatch: # Ручной запуск для тестирования
 
 jobs:
@@ -54,6 +54,7 @@ jobs:
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d chat_id="${TELEGRAM_CHAT_ID}" \
             -d parse_mode="HTML" \
+            -d disable_web_page_preview="true" \
             -d text="$MESSAGE"
           
           # Очищаем временный файл
