@@ -53,11 +53,11 @@ const firstFeaturedVideo = featuredVideoAlbums[0]?.videos?.[0];
 
 // Функция для получения YouTube thumbnail
 function getYoutubeThumbnail(url: string): string {
-  const match = url?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&]+)/);
+  const match = url?.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
   if (match && match[1]) {
     return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
   }
-  return '/og-image.png';
+  return '/og-image.jpg';
 }
 
 // Функция для YouTube watch URL
