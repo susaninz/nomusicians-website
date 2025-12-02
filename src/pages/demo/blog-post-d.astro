@@ -1,0 +1,354 @@
+---
+/**
+ * Blog Post Demo - Вариант D
+ * Immersive / Story-style
+ * Текст о концерте в Лиссабоне — ноябрь 2025
+ */
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+---
+
+<Layout title="Как мы сыграли Radiohead и своё — в Лиссабоне | Nomusicians">
+  <!-- Header (прозрачный, поверх hero) -->
+  <div id="transparent-header-wrapper">
+    <Header currentLang="ru" />
+  </div>
+  
+  <!-- Fullscreen Hero -->
+  <section class="hero-fullscreen relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+    <img 
+      src="/blog/lisbon-frame-1.jpg" 
+      alt="Концерт в Лиссабоне" 
+      class="absolute inset-0 w-full h-full object-cover scale-105"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-black/50"></div>
+    
+    <!-- Hero content -->
+    <div class="relative z-10 text-center px-6 max-w-4xl">
+      <p class="text-amber-400 text-sm uppercase tracking-widest mb-4 animate-fade-in">Гастроли</p>
+      <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 animate-fade-in-up">
+        Как мы сыграли Radiohead<br/>и своё — в Лиссабоне
+      </h1>
+      <p class="text-xl text-neutral-300 animate-fade-in-up animation-delay-200">15 ноября 2025 • Those Who Dance</p>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <article class="bg-black">
+    
+    <!-- Intro section -->
+    <section class="content-narrow max-w-[720px] mx-auto px-6 py-20">
+      <p class="text-2xl md:text-3xl text-neutral-200 leading-relaxed font-light">
+        Всё началось с Вани Глузмана. Он услышал нас на Elidium — фестивале комьюнити S16 — 
+        когда мы играли импровизационную программу квартетом. После концерта подошёл 
+        и сказал: «Хочу привезти вас в Лиссабон. С Radiohead».
+      </p>
+      
+      <p class="text-lg text-neutral-400 mt-8 leading-relaxed">
+        Radiohead — особенная история для нескольких человек в нашей семье. Сергей 
+        впервые услышал Knives Out много лет назад, и с тех пор эта музыка осталась 
+        частью его внутреннего саундтрека. Алёна и Саша Воронцов выросли на этих альбомах. 
+        Когда мы начали играть вместе, время от времени на репетициях всплывали их песни — 
+        но всерьёз о трибьюте не думали.
+      </p>
+    </section>
+
+    <!-- Fullwidth image -->
+    <figure class="w-full">
+      <img 
+        src="/blog/lisbon-frame-2.jpg" 
+        alt="На сцене" 
+        class="w-full h-[70vh] object-cover"
+        loading="lazy"
+      />
+    </figure>
+
+    <!-- First attempt -->
+    <section class="content-narrow max-w-[720px] mx-auto px-6 py-20">
+      <h2 class="text-3xl font-bold mb-8">Первая попытка</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Первую попытку сделали на Огоньке в 2024-м — бёрнерское мероприятие, где можно 
+        пробовать то, что боишься. Сыграли несколько треков «для своих». После каждого 
+        такого выступления кто-то спрашивал: «А когда полноценный трибьют?»
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed">
+        Импровизация — наш фирменный знак. Мы привыкли выходить без сетлиста, слушать 
+        друг друга и строить музыку в моменте. Но для Radiohead нужна была структура: 
+        аранжировки, репетиции, драматургия. Впервые готовили что-то настолько продуманное. 
+        При этом старались сохранить дух свободы — чтобы это были не кавера, а переосмысление.
+      </p>
+    </section>
+
+    <!-- Fullwidth quote -->
+    <section class="w-full bg-neutral-900 py-24">
+      <blockquote class="max-w-4xl mx-auto px-6 text-center">
+        <p class="text-3xl md:text-4xl font-light italic text-white leading-relaxed">
+          «Импровизация — наш фирменный знак. Но для Radiohead нужна была структура. 
+          Впервые готовили что-то настолько продуманное.»
+        </p>
+      </blockquote>
+    </section>
+
+    <!-- Double concert -->
+    <section class="content-narrow max-w-[720px] mx-auto px-6 py-20">
+      <h2 class="text-3xl font-bold mb-8">Двойной концерт</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Лиссабон стал точкой сборки. Хотелось показать европейской публике и Radiohead 
+        глазами нашей семьи, и собственную музыку — неоклассику и электронику. 
+        Поэтому решили сделать двойной концерт: первый сет — tribute to Radiohead 
+        с расширенным составом, второй — авторская программа.
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        В какой-то момент масштаб события нас самих удивил. Волонтёры делали декор, 
+        два звукорежиссёра — Дима и Тим — отвечали за звук, команда из семи камер 
+        готовилась к съёмке. В зале появились чайная зона, выставка молодых художниц 
+        из Лиссабона, медиа-проект от Ани Ставенской. Всё это строилось параллельно 
+        с репетициями.
+      </p>
+    </section>
+
+    <!-- Photo grid - 3 columns -->
+    <section class="w-full px-4 md:px-8 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <img 
+          src="/blog/lisbon-frame-3.jpg" 
+          alt="Момент концерта 1" 
+          class="w-full aspect-[9/16] object-cover rounded-lg"
+          loading="lazy"
+        />
+        <img 
+          src="/blog/lisbon-frame-4.jpg" 
+          alt="Момент концерта 2" 
+          class="w-full aspect-[9/16] object-cover rounded-lg"
+          loading="lazy"
+        />
+        <img 
+          src="/blog/lisbon-frame-5.jpg" 
+          alt="Момент концерта 3" 
+          class="w-full aspect-[9/16] object-cover rounded-lg"
+          loading="lazy"
+        />
+      </div>
+      <p class="text-sm text-neutral-500 text-center mt-4">Кадры с концерта — из видеозаписи</p>
+    </section>
+
+    <!-- Chaos and magic -->
+    <section class="content-narrow max-w-[720px] mx-auto px-6 py-20">
+      <h2 class="text-3xl font-bold mb-8">Хаос и магия</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Что-то шло не по плану. Декор застрял на таможне — пришлось докупать. 
+        Во время монтажа перебили важный кабель. Саунд-чек делали уже при гостях. 
+        Напряжение было ощутимым.
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        А потом мы вышли на сцену. Включился свет, декор заработал, и стало понятно — 
+        собралось. В зале было около двухсот человек, sold out.
+      </p>
+    </section>
+
+    <!-- Second quote -->
+    <section class="w-full bg-gradient-to-r from-amber-900/30 to-orange-900/30 py-24">
+      <blockquote class="max-w-4xl mx-auto px-6 text-center">
+        <p class="text-3xl md:text-4xl font-light italic text-white leading-relaxed">
+          «После Radiohead переживали: как публика примет нашу музыку? 
+          Но мы просто играли. И потом слышали такие слова, от которых становится тихо внутри.»
+        </p>
+      </blockquote>
+    </section>
+
+    <!-- Second set -->
+    <section class="content-narrow max-w-[720px] mx-auto px-6 py-20">
+      <h2 class="text-3xl font-bold mb-8">Второй сет</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        После Radiohead переживали: как публика примет наш электронно-неоклассический сет? 
+        Одно дело — знакомые всем хиты, другое — музыка, которую здесь ещё не слышали. 
+        Но мы просто играли. И потом слышали от людей такие слова, от которых становится 
+        тихо внутри.
+      </p>
+    </section>
+
+    <!-- Video embed -->
+    <section class="max-w-[1200px] mx-auto px-6 py-12">
+      <div class="aspect-video bg-neutral-900 rounded-xl overflow-hidden shadow-2xl">
+        <video 
+          controls 
+          class="w-full h-full"
+          poster="/blog/lisbon-frame-2.jpg"
+        >
+          <source src="/blog/lisbon-concert-full.mp4" type="video/mp4">
+          Ваш браузер не поддерживает видео
+        </video>
+      </div>
+      <p class="text-sm text-neutral-500 text-center mt-4">
+        Фрагмент концерта — видео из зала
+      </p>
+    </section>
+
+    <!-- After the concert -->
+    <section class="content-narrow max-w-[720px] mx-auto px-6 py-20">
+      <h2 class="text-3xl font-bold mb-8">После концерта</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        На следующий день Серёжа провёл воркшоп — про импровизацию, электронику 
+        и то, как музыка рождается на ходу. Организовала Аня.
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Такой концерт без спонсоров вышел в минус. Нас поддержали друзья — через аукцион 
+        мерча и донаты. Мы им благодарны. Это дало понять, что такие вещи возможны.
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Хотим вернуться. Сделать тур.
+      </p>
+
+      <p class="text-lg text-neutral-400 leading-relaxed">
+        Спасибо, что читаете. Слушайте нас на стримингах.
+      </p>
+    </section>
+
+    <!-- Gallery - 2 columns -->
+    <section class="w-full px-4 md:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <img 
+          src="/blog/lisbon-frame-3.jpg" 
+          alt="Атмосфера 1" 
+          class="w-full aspect-video object-cover rounded-lg"
+          loading="lazy"
+        />
+        <img 
+          src="/blog/lisbon-frame-4.jpg" 
+          alt="Атмосфера 2" 
+          class="w-full aspect-video object-cover rounded-lg"
+          loading="lazy"
+        />
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section class="content-narrow max-w-[720px] mx-auto px-6 py-20">
+      <h2 class="text-3xl font-bold mb-8">Команда</h2>
+      
+      <div class="space-y-3 text-lg text-neutral-300">
+        <p><span class="text-neutral-500">Вокал:</span> Алёна Щербина</p>
+        <p><span class="text-neutral-500">Скрипка, клавиши:</span> Сергей Ракитин</p>
+        <p><span class="text-neutral-500">Труба, электроника:</span> Иван Слёзкин</p>
+        <p><span class="text-neutral-500">Гитара, бас:</span> Александр Воронцов</p>
+        <p><span class="text-neutral-500">Ударные:</span> Максим Котнов</p>
+        <p><span class="text-neutral-500">Скрипка:</span> Максим Щедрин</p>
+        <p><span class="text-neutral-500">Звук:</span> Дима, Тим</p>
+        <p><span class="text-neutral-500">Продюсер:</span> Иван Глузман</p>
+      </div>
+    </section>
+
+    <!-- Back navigation -->
+    <nav class="max-w-[720px] mx-auto px-6 pb-20">
+      <div class="pt-8 border-t border-neutral-800">
+        <a href="/events" class="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group">
+          <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          Назад к событиям
+        </a>
+      </div>
+    </nav>
+
+  </article>
+</Layout>
+
+<style>
+  /* Header прозрачный на hero */
+  #transparent-header-wrapper :global(header) {
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+  
+  /* При скролле header становится с фоном */
+  #transparent-header-wrapper.scrolled :global(header) {
+    background: rgba(10, 10, 10, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+  
+  /* Animations */
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fade-in-up {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 1s ease-out forwards;
+  }
+  
+  .animate-fade-in-up {
+    animation: fade-in-up 1s ease-out forwards;
+  }
+  
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+  
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Hero image subtle zoom on load */
+  .hero-fullscreen img {
+    animation: subtle-zoom 20s ease-out forwards;
+  }
+  
+  @keyframes subtle-zoom {
+    from { transform: scale(1.05); }
+    to { transform: scale(1); }
+  }
+  
+  /* Bounce animation for scroll indicator */
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0) translateX(-50%); }
+    50% { transform: translateY(10px) translateX(-50%); }
+  }
+  
+  .animate-bounce {
+    animation: bounce 2s infinite;
+  }
+</style>
+
+<script>
+  // Добавляем класс при скролле для смены фона header
+  const headerWrapper = document.getElementById('transparent-header-wrapper');
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      headerWrapper?.classList.add('scrolled');
+    } else {
+      headerWrapper?.classList.remove('scrolled');
+    }
+  });
+</script>

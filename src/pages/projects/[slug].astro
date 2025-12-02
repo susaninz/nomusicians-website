@@ -37,31 +37,49 @@ const heroImageUrl = project.heroImage
     ? urlFor(project.image).width(1920).url() 
     : '/og-image.png';
 
-// Gallery из фотоальбомов (новая архитектура) или из старого поля gallery
-const gallery = project.photoAlbums?.length > 0
-  ? project.photoAlbums.flatMap(album => 
-      (album.photos || []).filter(p => p.asset).map(item => ({
-        src: item.asset?.url ? `${item.asset.url}?w=800&fit=max&auto=format` : urlFor(item.asset).width(800).url(),
-        fullSrc: item.asset?.url ? `${item.asset.url}?w=1920&fit=max&auto=format` : urlFor(item.asset).width(1920).url(),
-        caption: item.caption?.[lang] || album.title?.[lang] || '',
-      }))
-    )
-  : (project.gallery?.map(item => ({
+// Фотоальбомы (новая архитектура)
+const photoAlbums = (project.photoAlbums || [])
+  .filter(album => album.photos?.length > 0)
+  .map(album => ({
+    id: album._id,
+    title: album.title?.[lang] || album.title?.ru || 'Фотоальбом',
+    photos: (album.photos || []).filter(p => p.asset).map(item => ({
+      src: item.asset?.url ? `${item.asset.url}?w=800&fit=max&auto=format` : urlFor(item.asset).width(800).url(),
+      fullSrc: item.asset?.url ? `${item.asset.url}?w=1920&fit=max&auto=format` : urlFor(item.asset).width(1920).url(),
+      caption: item.caption?.[lang] || '',
+    })),
+  }));
+
+// Fallback: старое поле gallery как единая галерея
+const legacyGallery = !photoAlbums.length && project.gallery?.length > 0
+  ? project.gallery.map(item => ({
       src: urlFor(item.asset).width(800).url(),
       fullSrc: urlFor(item.asset).width(1920).url(),
       caption: item.caption || '',
-    })) || []);
+    }))
+  : [];
 
-// Videos из видеоальбомов (новая архитектура) или из старого поля videos
-const videos = project.videoAlbums?.length > 0
-  ? project.videoAlbums.flatMap(album => 
-      (album.videos || []).map(v => ({
-        title: v.title?.[lang] || v.title?.ru || 'Видео',
-        youtubeUrl: v.url,
-        localFile: null,
-      }))
-    )
-  : (project.videos || []);
+// Все фото для лайтбокса (плоский массив)
+const allPhotos = photoAlbums.length > 0 
+  ? photoAlbums.flatMap(album => album.photos)
+  : legacyGallery;
+
+// Видеоальбомы (новая архитектура)
+const videoAlbums = (project.videoAlbums || [])
+  .filter(album => album.videos?.length > 0)
+  .map(album => ({
+    id: album._id,
+    title: album.title?.[lang] || album.title?.ru || 'Видеоальбом',
+    videos: (album.videos || []).map(v => ({
+      title: v.title?.[lang] || v.title?.ru || 'Видео',
+      url: v.url,
+    })),
+  }));
+
+// Fallback: старое поле videos
+const legacyVideos = !videoAlbums.length && project.videos?.length > 0
+  ? project.videos
+  : [];
 
 // Socials
 const socials = project.socials || [];
@@ -184,17 +202,46 @@ const socials = project.socials || [];
       </section>
     )}
 
-    <!-- Видео -->
-    {videos.length > 0 && (
+    <!-- Видеоальбомы (новая архитектура) -->
+    {videoAlbums.length > 0 && videoAlbums.map(album => (
+      <section class="py-16 px-6">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-2xl font-light tracking-wide text-center mb-12">{album.title}</h2>
+          
+          <div class:list={[
+            "grid gap-8",
+            album.videos.length === 1 ? "md:grid-cols-1 max-w-2xl mx-auto" : "md:grid-cols-2"
+          ]}>
+            {album.videos.map(video => (
+              <div class="group">
+                <div class="aspect-video bg-surface overflow-hidden relative">
+                  <div class="absolute inset-0 z-10 bg-background/30 group-hover:bg-transparent transition-all duration-500 pointer-events-none"></div>
+                  <iframe
+                    src={video.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/').split('?')[0]}
+                    class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500"
+                    frameborder="0"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+                <p class="text-sm text-muted mt-3 text-center">{video.title}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    ))}
+
+    <!-- Legacy видео (старая архитектура) -->
+    {legacyVideos.length > 0 && (
       <section class="py-16 px-6">
         <div class="max-w-5xl mx-auto">
           <h2 class="text-2xl font-light tracking-wide text-center mb-12">Видео</h2>
           
           <div class:list={[
             "grid gap-8",
-            videos.length === 1 ? "md:grid-cols-1 max-w-2xl mx-auto" : "md:grid-cols-2"
+            legacyVideos.length === 1 ? "md:grid-cols-1 max-w-2xl mx-auto" : "md:grid-cols-2"
           ]}>
-            {videos.map(video => (
+            {legacyVideos.map(video => (
               <div class="group">
                 <div class="aspect-video bg-surface overflow-hidden relative">
                   <div class="absolute inset-0 z-10 bg-background/30 group-hover:bg-transparent transition-all duration-500 pointer-events-none"></div>
@@ -224,8 +271,63 @@ const socials = project.socials || [];
       </section>
     )}
 
-    <!-- Галерея -->
-    {gallery.length > 0 && (
+    <!-- Фотоальбомы (новая архитектура) -->
+    {photoAlbums.length > 0 && photoAlbums.map((album, albumIndex) => {
+      // Глобальный offset для лайтбокса
+      const globalOffset = photoAlbums.slice(0, albumIndex).reduce((sum, a) => sum + a.photos.length, 0);
+      return (
+        <section class="py-16 bg-surface/30">
+          <div class="max-w-6xl mx-auto px-6 mb-8">
+            <h2 class="text-2xl font-light tracking-wide text-center mb-2">{album.title}</h2>
+            <p class="text-muted text-center text-sm">Свайпайте для просмотра →</p>
+          </div>
+          
+          <div class="gallery-scroll overflow-x-auto scrollbar-hide" data-album-scroll={albumIndex}>
+            <div class="flex gap-4 px-6 md:px-12 w-max">
+              {album.photos.map((photo, index) => (
+                <div 
+                  class="flex-shrink-0 w-72 md:w-96 aspect-square overflow-hidden group cursor-pointer"
+                  data-lightbox-trigger
+                  data-index={globalOffset + index}
+                >
+                  <img 
+                    src={photo.src} 
+                    alt={photo.caption}
+                    class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <!-- Индикаторы N8 -->
+          {album.photos.length > 1 && (
+            <div class="flex justify-center items-end gap-5 mt-8 h-10 max-w-full overflow-x-auto px-4" data-album-indicators={albumIndex}>
+              {album.photos.slice(0, 20).map((_, index) => {
+                const heights = [12, 20, 16, 24, 14, 18, 22, 10];
+                const h = heights[index % heights.length];
+                return (
+                  <button 
+                    class="scroll-dot indicator-n8 flex-shrink-0"
+                    data-album={albumIndex}
+                    data-dot-index={index}
+                    style={`--stem-height: ${h}px`}
+                    aria-label={`Фото ${index + 1}`}
+                  ></button>
+                );
+              })}
+              {album.photos.length > 20 && (
+                <span class="text-muted text-xs flex-shrink-0">+{album.photos.length - 20}</span>
+              )}
+            </div>
+          )}
+        </section>
+      );
+    })}
+
+    <!-- Legacy галерея (старая архитектура) -->
+    {legacyGallery.length > 0 && (
       <section class="py-16 bg-surface/30">
         <div class="max-w-6xl mx-auto px-6 mb-8">
           <h2 class="text-2xl font-light tracking-wide text-center mb-2">Галерея</h2>
@@ -234,7 +336,7 @@ const socials = project.socials || [];
         
         <div class="gallery-scroll overflow-x-auto scrollbar-hide">
           <div class="flex gap-4 px-6 md:px-12 w-max">
-            {gallery.map((photo, index) => (
+            {legacyGallery.map((photo, index) => (
               <div 
                 class="flex-shrink-0 w-72 md:w-96 aspect-square overflow-hidden group cursor-pointer"
                 data-lightbox-trigger
@@ -253,7 +355,7 @@ const socials = project.socials || [];
         
         <!-- Индикаторы N8 -->
         <div class="flex justify-center items-end gap-5 mt-8 h-10" id="gallery-indicators">
-          {gallery.map((_, index) => {
+          {legacyGallery.map((_, index) => {
             const heights = [12, 20, 16, 24, 14, 18, 22, 10];
             const h = heights[index % heights.length];
             return (
@@ -268,28 +370,28 @@ const socials = project.socials || [];
         </div>
         
         <!-- Кнопка "Показать все" -->
-        {gallery.length > 6 && (
+        {legacyGallery.length > 6 && (
           <div class="text-center mt-8">
             <button 
               id="show-all-btn"
               class="bg-transparent border-none text-sm text-white/40 hover:text-white transition-colors tracking-wider uppercase cursor-pointer"
             >
-              Показать все ({gallery.length}) ↓
+              Показать все ({legacyGallery.length}) ↓
             </button>
           </div>
         )}
       </section>
     )}
 
-    <!-- Сетка (скрыта по умолчанию) -->
-    {gallery.length > 6 && (
+    <!-- Сетка (скрыта по умолчанию) — только для legacy -->
+    {legacyGallery.length > 6 && (
       <section id="gallery-grid" class="py-16 px-6 hidden">
         <div class="max-w-6xl mx-auto mb-8">
           <h2 class="text-2xl font-light tracking-wide text-center mb-2">Все фото</h2>
         </div>
         
         <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          {gallery.map((photo, index) => (
+          {legacyGallery.map((photo, index) => (
             <div 
               class="aspect-square overflow-hidden group cursor-pointer"
               data-lightbox-trigger-grid
@@ -413,7 +515,7 @@ const socials = project.socials || [];
     </footer>
     
     <!-- Данные галереи для JavaScript -->
-    <script type="application/json" id="gallery-data" set:html={JSON.stringify(gallery.map(g => ({src: g.fullSrc, caption: g.caption})))}></script>
+    <script type="application/json" id="gallery-data" set:html={JSON.stringify(allPhotos.map(g => ({src: g.fullSrc, caption: g.caption})))}></script>
   </main>
 </Layout>
 
@@ -572,38 +674,75 @@ const socials = project.socials || [];
     if (e.key === 'ArrowRight') showNext();
   });
 
-  // Gallery scroll indicators
-  const scrollContainer = document.querySelector('.gallery-scroll');
-  const dots = document.querySelectorAll('.scroll-dot');
-  
-  function updateIndicators(activeIndex: number) {
-    dots.forEach((dot, i) => {
-      if (i === activeIndex) {
-        dot.classList.add('active');
-      } else {
-        dot.classList.remove('active');
-      }
-    });
-  }
-  
-  updateIndicators(0);
-  
-  scrollContainer?.addEventListener('scroll', () => {
-    const scrollLeft = scrollContainer.scrollLeft;
-    const itemWidth = 384 + 16;
-    const activeIndex = Math.round(scrollLeft / itemWidth);
-    updateIndicators(activeIndex);
-  });
-
-  dots.forEach((dot, index) => {
-    dot.addEventListener('click', () => {
+  // Gallery scroll indicators для нескольких альбомов
+  document.querySelectorAll('[data-album-scroll]').forEach((scrollContainer) => {
+    const albumIndex = scrollContainer.getAttribute('data-album-scroll');
+    const dots = document.querySelectorAll(`[data-album="${albumIndex}"]`);
+    
+    function updateIndicators(activeIndex: number) {
+      dots.forEach((dot, i) => {
+        if (i === activeIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+    
+    updateIndicators(0);
+    
+    scrollContainer.addEventListener('scroll', () => {
+      const scrollLeft = scrollContainer.scrollLeft;
       const itemWidth = 384 + 16;
-      scrollContainer?.scrollTo({
-        left: index * itemWidth,
-        behavior: 'smooth'
+      const activeIndex = Math.round(scrollLeft / itemWidth);
+      updateIndicators(activeIndex);
+    });
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        const itemWidth = 384 + 16;
+        scrollContainer.scrollTo({
+          left: index * itemWidth,
+          behavior: 'smooth'
+        });
       });
     });
   });
+  
+  // Legacy gallery scroll indicators
+  const legacyScrollContainer = document.querySelector('.gallery-scroll:not([data-album-scroll])');
+  const legacyDots = document.querySelectorAll('#gallery-indicators .scroll-dot');
+  
+  if (legacyScrollContainer && legacyDots.length > 0) {
+    function updateLegacyIndicators(activeIndex: number) {
+      legacyDots.forEach((dot, i) => {
+        if (i === activeIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+    
+    updateLegacyIndicators(0);
+    
+    legacyScrollContainer.addEventListener('scroll', () => {
+      const scrollLeft = legacyScrollContainer.scrollLeft;
+      const itemWidth = 384 + 16;
+      const activeIndex = Math.round(scrollLeft / itemWidth);
+      updateLegacyIndicators(activeIndex);
+    });
+
+    legacyDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        const itemWidth = 384 + 16;
+        legacyScrollContainer.scrollTo({
+          left: index * itemWidth,
+          behavior: 'smooth'
+        });
+      });
+    });
+  }
 
   // Show/hide grid
   const showAllBtn = document.getElementById('show-all-btn');

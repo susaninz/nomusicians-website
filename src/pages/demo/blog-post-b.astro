@@ -1,0 +1,262 @@
+---
+/**
+ * Blog Post Demo - Вариант B
+ * Полноширинный hero + узкий контент
+ * Текст о концерте в Лиссабоне — ноябрь 2025
+ */
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+---
+
+<Layout title="Как мы сыграли Radiohead и своё — в Лиссабоне | Nomusicians">
+  <!-- Header -->
+  <Header currentLang="ru" />
+  
+  <!-- Hero - fullwidth (под хедером) -->
+  <section class="hero-section relative w-full h-[55vh] min-h-[400px] overflow-hidden mt-16">
+    <img 
+      src="/blog/lisbon-frame-1.jpg" 
+      alt="Концерт в Лиссабоне" 
+      class="absolute inset-0 w-full h-full object-cover"
+      loading="eager"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
+  </section>
+
+  <!-- Content container -->
+  <article class="content-container max-w-[720px] mx-auto px-6 py-12">
+    <!-- Header -->
+    <header class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">
+        Как мы сыграли Radiohead и своё — в Лиссабоне
+      </h1>
+      <div class="flex items-center gap-3 text-sm text-neutral-400 mb-6">
+        <span class="px-3 py-1 bg-neutral-800 rounded-full">Гастроли</span>
+        <span>15 ноября 2025</span>
+        <span>•</span>
+        <span>Those Who Dance, Лиссабон</span>
+      </div>
+      <div class="w-16 h-px bg-neutral-700"></div>
+    </header>
+
+    <!-- Intro -->
+    <section class="prose-section">
+      <p class="text-xl text-neutral-300 leading-relaxed mb-6">
+        Всё началось с Вани Глузмана. Он услышал нас на Elidium — фестивале комьюнити S16 — 
+        когда мы играли импровизационную программу квартетом. После концерта подошёл 
+        и сказал: «Хочу привезти вас в Лиссабон. С Radiohead».
+      </p>
+
+      <p class="text-lg text-neutral-400 leading-relaxed">
+        Radiohead — особенная история для нескольких человек в нашей семье. Сергей 
+        впервые услышал Knives Out много лет назад, и с тех пор эта музыка осталась 
+        частью его внутреннего саундтрека. Алёна и Саша Воронцов выросли на этих альбомах. 
+        Когда мы начали играть вместе, время от времени на репетициях всплывали их песни — 
+        но всерьёз о трибьюте не думали.
+      </p>
+    </section>
+
+    <!-- First photo - breakout (шире текста) -->
+    <figure class="my-12 -mx-6 md:-mx-16 lg:-mx-24">
+      <img 
+        src="/blog/lisbon-frame-2.jpg" 
+        alt="Сцена с визуалами" 
+        class="w-full rounded-lg"
+        loading="lazy"
+      />
+      <figcaption class="text-sm text-neutral-500 mt-3 px-6 md:px-0 text-center">
+        Кадр с концерта — из видеозаписи
+      </figcaption>
+    </figure>
+
+    <!-- First attempt -->
+    <section class="prose-section">
+      <h2 class="text-2xl font-semibold mt-12 mb-6">Первая попытка</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Первую попытку сделали на Огоньке в 2024-м — бёрнерское мероприятие, где можно 
+        пробовать то, что боишься. Сыграли несколько треков «для своих». После каждого 
+        такого выступления кто-то спрашивал: «А когда полноценный трибьют?»
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Импровизация — наш фирменный знак. Мы привыкли выходить без сетлиста, слушать 
+        друг друга и строить музыку в моменте. Но для Radiohead нужна была структура: 
+        аранжировки, репетиции, драматургия. Впервые готовили что-то настолько продуманное. 
+        При этом старались сохранить дух свободы — чтобы это были не кавера, а переосмысление.
+      </p>
+
+      <blockquote class="border-l-2 border-amber-500 pl-6 my-8 text-xl italic text-neutral-300">
+        «Импровизация — наш фирменный знак. Но для Radiohead нужна была структура. 
+        Впервые готовили что-то настолько продуманное.»
+      </blockquote>
+    </section>
+
+    <!-- Double concert -->
+    <section class="prose-section">
+      <h2 class="text-2xl font-semibold mt-12 mb-6">Двойной концерт</h2>
+
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Лиссабон стал точкой сборки. Хотелось показать европейской публике и Radiohead 
+        глазами нашей семьи, и собственную музыку — неоклассику и электронику. 
+        Поэтому решили сделать двойной концерт: первый сет — tribute to Radiohead 
+        с расширенным составом, второй — авторская программа.
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed">
+        В какой-то момент масштаб события нас самих удивил. Волонтёры делали декор, 
+        два звукорежиссёра — Дима и Тим — отвечали за звук, команда из семи камер 
+        готовилась к съёмке. В зале появились чайная зона, выставка молодых художниц 
+        из Лиссабона, медиа-проект от Ани Ставенской. Всё это строилось параллельно 
+        с репетициями.
+      </p>
+    </section>
+
+    <!-- Second photo - breakout -->
+    <figure class="my-12 -mx-6 md:-mx-16 lg:-mx-24">
+      <img 
+        src="/blog/lisbon-frame-3.jpg" 
+        alt="Момент выступления" 
+        class="w-full rounded-lg"
+        loading="lazy"
+      />
+      <figcaption class="text-sm text-neutral-500 mt-3 px-6 md:px-0 text-center">
+        Фото с концерта у нас не осталось — только кадры из видео
+      </figcaption>
+    </figure>
+
+    <!-- Chaos and magic -->
+    <section class="prose-section">
+      <h2 class="text-2xl font-semibold mt-12 mb-6">Хаос и магия</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Что-то шло не по плану. Декор застрял на таможне — пришлось докупать. 
+        Во время монтажа перебили важный кабель. Саунд-чек делали уже при гостях. 
+        Напряжение было ощутимым.
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed">
+        А потом мы вышли на сцену. Включился свет, декор заработал, и стало понятно — 
+        собралось. В зале было около двухсот человек, sold out.
+      </p>
+    </section>
+
+    <!-- Video embed - breakout -->
+    <figure class="my-12 -mx-6 md:-mx-12">
+      <div class="aspect-video bg-neutral-900 rounded-lg overflow-hidden">
+        <video 
+          controls 
+          class="w-full h-full object-cover"
+          poster="/blog/lisbon-frame-1.jpg"
+        >
+          <source src="/blog/lisbon-concert-full.mp4" type="video/mp4">
+          Ваш браузер не поддерживает видео
+        </video>
+      </div>
+      <figcaption class="text-sm text-neutral-500 mt-3 text-center">
+        Фрагмент концерта — видео из зала
+      </figcaption>
+    </figure>
+
+    <!-- Second set -->
+    <section class="prose-section">
+      <h2 class="text-2xl font-semibold mt-12 mb-6">Второй сет</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        После Radiohead переживали: как публика примет наш электронно-неоклассический сет? 
+        Одно дело — знакомые всем хиты, другое — музыка, которую здесь ещё не слышали. 
+        Но мы просто играли. И потом слышали от людей такие слова, от которых становится 
+        тихо внутри.
+      </p>
+
+      <blockquote class="border-l-2 border-amber-500 pl-6 my-8 text-xl italic text-neutral-300">
+        «После Radiohead переживали: как публика примет нашу музыку? 
+        Но мы просто играли. И потом слышали такие слова, от которых становится тихо внутри.»
+      </blockquote>
+    </section>
+
+    <!-- Third photo - breakout -->
+    <figure class="my-12 -mx-6 md:-mx-16 lg:-mx-24">
+      <img 
+        src="/blog/lisbon-frame-4.jpg" 
+        alt="Атмосфера" 
+        class="w-full rounded-lg"
+        loading="lazy"
+      />
+    </figure>
+
+    <!-- After -->
+    <section class="prose-section">
+      <h2 class="text-2xl font-semibold mt-12 mb-6">После концерта</h2>
+      
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        На следующий день Серёжа провёл воркшоп — про импровизацию, электронику 
+        и то, как музыка рождается на ходу. Организовала Аня.
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+        Такой концерт без спонсоров вышел в минус. Нас поддержали друзья — через аукцион 
+        мерча и донаты. Мы им благодарны. Это дало понять, что такие вещи возможны.
+      </p>
+
+      <p class="text-lg text-neutral-300 leading-relaxed">
+        Хотим вернуться. Сделать тур.
+      </p>
+
+      <p class="text-lg text-neutral-400 leading-relaxed mt-8">
+        Спасибо, что читаете. Слушайте нас на стримингах.
+      </p>
+    </section>
+
+    <!-- Team -->
+    <section class="prose-section mt-16 pt-8 border-t border-neutral-800">
+      <h3 class="text-lg font-semibold mb-4 text-neutral-400">Команда</h3>
+      
+      <div class="grid grid-cols-2 gap-2 text-sm text-neutral-400">
+        <p><span class="text-neutral-500">Вокал:</span> Алёна Щербина</p>
+        <p><span class="text-neutral-500">Скрипка, клавиши:</span> Сергей Ракитин</p>
+        <p><span class="text-neutral-500">Труба, электроника:</span> Иван Слёзкин</p>
+        <p><span class="text-neutral-500">Гитара, бас:</span> Александр Воронцов</p>
+        <p><span class="text-neutral-500">Ударные:</span> Максим Котнов</p>
+        <p><span class="text-neutral-500">Скрипка:</span> Максим Щедрин</p>
+        <p><span class="text-neutral-500">Звук:</span> Дима, Тим</p>
+        <p><span class="text-neutral-500">Продюсер:</span> Иван Глузман</p>
+      </div>
+    </section>
+
+    <!-- Back navigation -->
+    <nav class="mt-12 pt-8 border-t border-neutral-800">
+      <a href="/events" class="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Назад к событиям
+      </a>
+    </nav>
+  </article>
+</Layout>
+
+<style>
+  /* Prose section styles */
+  .prose-section h2 {
+    color: #fff;
+  }
+  
+  .prose-section p {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Figure styles */
+  figure {
+    margin: 0;
+  }
+  
+  figure img {
+    display: block;
+  }
+</style>

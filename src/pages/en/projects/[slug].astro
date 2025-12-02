@@ -32,31 +32,49 @@ const heroImageUrl = project.heroImage
     ? urlFor(project.image).width(1920).url() 
     : '/og-image.png';
 
-// Gallery из фотоальбомов (новая архитектура) или из старого поля gallery
-const gallery = project.photoAlbums?.length > 0
-  ? project.photoAlbums.flatMap(album => 
-      (album.photos || []).filter(p => p.asset).map(item => ({
-        src: item.asset?.url ? `${item.asset.url}?w=800&fit=max&auto=format` : urlFor(item.asset).width(800).url(),
-        fullSrc: item.asset?.url ? `${item.asset.url}?w=1920&fit=max&auto=format` : urlFor(item.asset).width(1920).url(),
-        caption: item.caption?.[lang] || album.title?.[lang] || '',
-      }))
-    )
-  : (project.gallery?.map(item => ({
+// Фотоальбомы (новая архитектура)
+const photoAlbums = (project.photoAlbums || [])
+  .filter(album => album.photos?.length > 0)
+  .map(album => ({
+    id: album._id,
+    title: album.title?.[lang] || album.title?.en || album.title?.ru || 'Photo Album',
+    photos: (album.photos || []).filter(p => p.asset).map(item => ({
+      src: item.asset?.url ? `${item.asset.url}?w=800&fit=max&auto=format` : urlFor(item.asset).width(800).url(),
+      fullSrc: item.asset?.url ? `${item.asset.url}?w=1920&fit=max&auto=format` : urlFor(item.asset).width(1920).url(),
+      caption: item.caption?.[lang] || '',
+    })),
+  }));
+
+// Fallback: старое поле gallery
+const legacyGallery = !photoAlbums.length && project.gallery?.length > 0
+  ? project.gallery.map(item => ({
       src: urlFor(item.asset).width(800).url(),
       fullSrc: urlFor(item.asset).width(1920).url(),
       caption: item.caption || '',
-    })) || []);
+    }))
+  : [];
 
-// Videos из видеоальбомов (новая архитектура) или из старого поля videos
-const videos = project.videoAlbums?.length > 0
-  ? project.videoAlbums.flatMap(album => 
-      (album.videos || []).map(v => ({
-        title: v.title?.[lang] || v.title?.ru || 'Video',
-        youtubeUrl: v.url,
-        localFile: null,
-      }))
-    )
-  : (project.videos || []);
+// Все фото для лайтбокса
+const allPhotos = photoAlbums.length > 0 
+  ? photoAlbums.flatMap(album => album.photos)
+  : legacyGallery;
+
+// Видеоальбомы (новая архитектура)
+const videoAlbums = (project.videoAlbums || [])
+  .filter(album => album.videos?.length > 0)
+  .map(album => ({
+    id: album._id,
+    title: album.title?.[lang] || album.title?.en || album.title?.ru || 'Video Album',
+    videos: (album.videos || []).map(v => ({
+      title: v.title?.[lang] || v.title?.en || v.title?.ru || 'Video',
+      url: v.url,
+    })),
+  }));
+
+// Fallback: старое поле videos
+const legacyVideos = !videoAlbums.length && project.videos?.length > 0
+  ? project.videos
+  : [];
 
 const socials = project.socials || [];
 ---
@@ -137,12 +155,33 @@ const socials = project.socials || [];
       </section>
     )}
 
-    {videos.length > 0 && (
+    {/* Видеоальбомы (новая архитектура) */}
+    {videoAlbums.length > 0 && videoAlbums.map(album => (
+      <section class="py-16 px-6">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-2xl font-light tracking-wide text-center mb-12">{album.title}</h2>
+          <div class:list={["grid gap-8", album.videos.length === 1 ? "md:grid-cols-1 max-w-2xl mx-auto" : "md:grid-cols-2"]}>
+            {album.videos.map(video => (
+              <div class="group">
+                <div class="aspect-video bg-surface overflow-hidden relative">
+                  <div class="absolute inset-0 z-10 bg-background/30 group-hover:bg-transparent transition-all duration-500 pointer-events-none"></div>
+                  <iframe src={video.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/').split('?')[0]} class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-500" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <p class="text-sm text-muted mt-3 text-center">{video.title}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    ))}
+
+    {/* Legacy видео */}
+    {legacyVideos.length > 0 && (
       <section class="py-16 px-6">
         <div class="max-w-5xl mx-auto">
           <h2 class="text-2xl font-light tracking-wide text-center mb-12">Video</h2>
-          <div class:list={["grid gap-8", videos.length === 1 ? "md:grid-cols-1 max-w-2xl mx-auto" : "md:grid-cols-2"]}>
-            {videos.map(video => (
+          <div class:list={["grid gap-8", legacyVideos.length === 1 ? "md:grid-cols-1 max-w-2xl mx-auto" : "md:grid-cols-2"]}>
+            {legacyVideos.map(video => (
               <div class="group">
                 <div class="aspect-video bg-surface overflow-hidden relative">
                   <div class="absolute inset-0 z-10 bg-background/30 group-hover:bg-transparent transition-all duration-500 pointer-events-none"></div>
@@ -158,16 +197,38 @@ const socials = project.socials || [];
       </section>
     )}
 
-    {gallery.length > 0 && (
+    {/* Фотоальбомы (новая архитектура) */}
+    {photoAlbums.length > 0 && photoAlbums.map((album, albumIndex) => {
+      const globalOffset = photoAlbums.slice(0, albumIndex).reduce((sum, a) => sum + a.photos.length, 0);
+      return (
+        <section class="py-16 bg-surface/30">
+          <div class="max-w-6xl mx-auto px-6 mb-8">
+            <h2 class="text-2xl font-light tracking-wide text-center mb-2">{album.title}</h2>
+            <p class="text-muted text-center text-sm">Swipe to browse →</p>
+          </div>
+          <div class="gallery-scroll overflow-x-auto scrollbar-hide" data-album-scroll={albumIndex}>
+            <div class="flex gap-4 px-6 md:px-12 w-max">
+              {album.photos.map((photo, index) => (
+                <div class="flex-shrink-0 w-72 md:w-96 aspect-square overflow-hidden group cursor-pointer" data-lightbox-trigger data-index={globalOffset + index}>
+                  <img src={photo.src} alt={photo.caption} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" loading="lazy"/>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })}
+
+    {/* Legacy галерея */}
+    {legacyGallery.length > 0 && (
       <section class="py-16 bg-surface/30">
         <div class="max-w-6xl mx-auto px-6 mb-8">
           <h2 class="text-2xl font-light tracking-wide text-center mb-2">Gallery</h2>
           <p class="text-muted text-center text-sm">Swipe to browse →</p>
         </div>
-        
         <div class="gallery-scroll overflow-x-auto scrollbar-hide">
           <div class="flex gap-4 px-6 md:px-12 w-max">
-            {gallery.map((photo, index) => (
+            {legacyGallery.map((photo, index) => (
               <div class="flex-shrink-0 w-72 md:w-96 aspect-square overflow-hidden group cursor-pointer" data-lightbox-trigger data-index={index}>
                 <img src={photo.src} alt={photo.caption} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" loading="lazy"/>
               </div>
@@ -201,7 +262,7 @@ const socials = project.socials || [];
       <p>© 2025 Nomusicians</p>
     </footer>
     
-    <script type="application/json" id="gallery-data" set:html={JSON.stringify(gallery.map(g => ({src: g.fullSrc, caption: g.caption})))}></script>
+    <script type="application/json" id="gallery-data" set:html={JSON.stringify(allPhotos.map(g => ({src: g.fullSrc, caption: g.caption})))}></script>
   </main>
 </Layout>
 

@@ -1,0 +1,646 @@
+---
+/**
+ * Demo: Project Media Section — новый UI
+ * Issue #24: Фильтры Фото/Видео + развёрнутые альбомы с каруселями
+ * Консистентно со страницей /media
+ */
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+const lang = 'ru';
+
+// Мок-данные проекта (Классика)
+const project = {
+  title: 'Классика',
+  subtitle: 'Музыкально-художественный проект',
+  year: '2024—2025',
+};
+
+// Мок фотоальбомов проекта
+const photoAlbums = [
+  {
+    id: 'ogonek-2024',
+    title: 'Огонёк 2024',
+    description: 'Бёрнерское мероприятие, где мы впервые попробовали программу tribute to Radiohead. Играли «для своих» в камерной атмосфере.',
+    date: 'Декабрь 2024',
+    photos: [
+      { src: '/projects/klassika/ogonek-2024-1.jpg', caption: 'Сцена Огонька' },
+      { src: '/projects/klassika/ogonek-2024-2.jpg', caption: 'Репетиция' },
+      { src: '/projects/klassika/ogonek-2024-3.jpg', caption: 'Выступление' },
+      { src: '/projects/klassika/ogonek-2024-4.jpg', caption: 'Публика' },
+      { src: '/projects/klassika/ogonek-2024-5.jpg', caption: 'Закулисье' },
+    ],
+  },
+  {
+    id: 'holodok-2025',
+    title: 'Холодок 2025',
+    description: 'Зимний концерт с расширенным составом. Электроника, неоклассика и импровизация в одном вечере.',
+    date: 'Январь 2025',
+    photos: [
+      { src: '/projects/klassika/holodok-2024-1.jpg', caption: 'Зал' },
+      { src: '/projects/klassika/holodok-2024-2.jpg', caption: 'Свет' },
+      { src: '/projects/klassika/holodok-2024-3.jpg', caption: 'Музыканты' },
+      { src: '/projects/klassika/holodok-2024-4.jpg', caption: 'Атмосфера' },
+    ],
+  },
+  {
+    id: 'yauza-2025',
+    title: 'Яуза 2025',
+    description: 'Концерт на площадке Yauza Place. Акустическая программа в новом формате.',
+    date: 'Февраль 2025',
+    photos: [
+      { src: '/projects/klassika/yauza-2025-1.jpg', caption: 'Площадка' },
+      { src: '/projects/klassika/yauza-2025-2.jpg', caption: 'Звук' },
+      { src: '/projects/klassika/yauza-2025-3.jpg', caption: 'Зрители' },
+    ],
+  },
+];
+
+// Мок видеоальбомов проекта
+const videoAlbums = [
+  {
+    id: 'live-recordings',
+    title: 'Живые записи',
+    description: 'Видеозаписи с концертов проекта Классика. Многокамерная съёмка, живой звук.',
+    date: '2024—2025',
+    videos: [
+      { 
+        title: 'Tribute to Radiohead — полный концерт', 
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        thumbnail: '/projects/klassika/video-thumb-1.jpg',
+        duration: '45:32'
+      },
+      { 
+        title: 'Pyramid Song (live)', 
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        thumbnail: '/projects/klassika/video-thumb-2.jpg',
+        duration: '6:18'
+      },
+      { 
+        title: 'Daydreaming (live)', 
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        thumbnail: '/projects/klassika/video-thumb-3.jpg',
+        duration: '5:44'
+      },
+    ],
+  },
+  {
+    id: 'backstage',
+    title: 'Закулисье',
+    description: 'Репетиции, подготовка, моменты между концертами.',
+    date: '2024—2025',
+    videos: [
+      { 
+        title: 'Как мы готовили Radiohead', 
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        thumbnail: '/projects/klassika/video-thumb-4.jpg',
+        duration: '12:05'
+      },
+      { 
+        title: 'Саунд-чек Лиссабон', 
+        url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        thumbnail: '/projects/klassika/video-thumb-5.jpg',
+        duration: '3:22'
+      },
+    ],
+  },
+];
+
+// Хелпер для высот индикаторов
+const getIndicatorHeights = (count: number) => {
+  const heights = [8, 14, 10, 16, 9, 12, 15, 7, 11, 13];
+  return Array.from({ length: count }, (_, i) => heights[i % heights.length]);
+};
+
+// Собираем все фото для лайтбокса
+const allPhotos = photoAlbums.flatMap(album => 
+  album.photos.map(p => ({ ...p, albumTitle: album.title }))
+);
+---
+
+<Layout title={`${project.title} — Медиа | Nomusicians`} lang={lang}>
+  <Header currentLang={lang} />
+  
+  <main class="pt-24 pb-20">
+    <!-- Заголовок секции -->
+    <div class="text-center mb-8 px-6">
+      <p class="text-sm text-muted uppercase tracking-widest mb-2">
+        <a href="/projects/klassika" class="hover:text-white transition-colors">← {project.title}</a>
+      </p>
+      <h1 class="text-3xl md:text-4xl font-light tracking-wide mb-4" style="font-family: var(--font-logo);">
+        Медиа
+      </h1>
+      <p class="text-muted mb-8">
+        Фото и видео с концертов проекта
+      </p>
+      
+      <!-- Фильтры как на /media -->
+      <div class="flex justify-center gap-1">
+        <button 
+          id="filter-photo"
+          class="filter-btn active px-6 py-2 text-sm tracking-wider uppercase transition-all"
+        >
+          Фото
+        </button>
+        <button 
+          id="filter-video"
+          class="filter-btn px-6 py-2 text-sm tracking-wider uppercase transition-all"
+        >
+          Видео
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== ФОТО СЕКЦИЯ ==================== -->
+    <div id="photo-section" class="space-y-16">
+      {photoAlbums.map((album, albumIndex) => (
+        <section class="album-section" data-album-id={album.id}>
+          <!-- Заголовок альбома -->
+          <div class="max-w-4xl mx-auto px-6 mb-6">
+            <div class="flex items-baseline justify-between gap-4 mb-2">
+              <h2 class="text-2xl md:text-3xl font-light tracking-wide text-white" style="font-family: var(--font-logo);">
+                {album.title}
+              </h2>
+              <span class="text-sm text-muted whitespace-nowrap">{album.date} · {album.photos.length} фото</span>
+            </div>
+            <p class="text-muted/80 leading-relaxed max-w-2xl">{album.description}</p>
+          </div>
+          
+          <!-- Карусель фото -->
+          <div class="relative">
+            <!-- Стрелки -->
+            <button 
+              class="carousel-arrow carousel-prev absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 text-white/60 hover:text-white hover:bg-black/70 transition-all hidden md:flex items-center justify-center"
+              data-carousel={`photo-carousel-${album.id}`}
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            <button 
+              class="carousel-arrow carousel-next absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 text-white/60 hover:text-white hover:bg-black/70 transition-all hidden md:flex items-center justify-center"
+              data-carousel={`photo-carousel-${album.id}`}
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+            
+            <div class="gallery-scroll overflow-x-auto scrollbar-hide" id={`photo-carousel-${album.id}`}>
+              <div class="flex gap-4 px-6 md:px-12 w-max">
+                {album.photos.map((photo, index) => {
+                  // Вычисляем глобальный индекс для лайтбокса
+                  const globalIndex = photoAlbums.slice(0, albumIndex).reduce((acc, a) => acc + a.photos.length, 0) + index;
+                  return (
+                    <div 
+                      class="flex-shrink-0 w-72 md:w-80 aspect-square overflow-hidden group cursor-pointer"
+                      data-lightbox-trigger
+                      data-index={globalIndex}
+                    >
+                      <img 
+                        src={photo.src} 
+                        alt={photo.caption}
+                        class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        onerror="this.src='/projects/klassika/placeholder.jpg'"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            <!-- Индикаторы -->
+            <div class="flex justify-center items-end mt-6 h-6 w-full px-4">
+              <div class="flex items-end gap-1 max-w-[90vw] overflow-x-auto scrollbar-hide" data-indicators={album.id}>
+                {album.photos.map((_, index) => {
+                  const h = getIndicatorHeights(album.photos.length)[index];
+                  return (
+                    <button 
+                      class="scroll-dot indicator-n8 flex-shrink-0"
+                      data-carousel-id={`photo-carousel-${album.id}`}
+                      data-dot-index={index}
+                      style={`--stem-height: ${h}px`}
+                      aria-label={`Фото ${index + 1}`}
+                    ></button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          
+          {/* Разделитель между альбомами */}
+          {albumIndex < photoAlbums.length - 1 && (
+            <div class="max-w-4xl mx-auto px-6 mt-12">
+              <div class="border-t border-white/10"></div>
+            </div>
+          )}
+        </section>
+      ))}
+      
+      {photoAlbums.length === 0 && (
+        <div class="text-center py-20 text-muted">
+          <p>Фотоальбомы скоро появятся</p>
+        </div>
+      )}
+    </div>
+
+    <!-- ==================== ВИДЕО СЕКЦИЯ ==================== -->
+    <div id="video-section" class="hidden space-y-16">
+      {videoAlbums.map((album, albumIndex) => (
+        <section class="album-section" data-album-id={`video-${album.id}`}>
+          <!-- Заголовок альбома -->
+          <div class="max-w-4xl mx-auto px-6 mb-6">
+            <div class="flex items-baseline justify-between gap-4 mb-2">
+              <h2 class="text-2xl md:text-3xl font-light tracking-wide text-white" style="font-family: var(--font-logo);">
+                {album.title}
+              </h2>
+              <span class="text-sm text-muted whitespace-nowrap">{album.date} · {album.videos.length} видео</span>
+            </div>
+            <p class="text-muted/80 leading-relaxed max-w-2xl">{album.description}</p>
+          </div>
+          
+          <!-- Карусель видео -->
+          <div class="relative">
+            <!-- Стрелки -->
+            <button 
+              class="carousel-arrow carousel-prev absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 text-white/60 hover:text-white hover:bg-black/70 transition-all hidden md:flex items-center justify-center"
+              data-carousel={`video-carousel-${album.id}`}
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            <button 
+              class="carousel-arrow carousel-next absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/50 text-white/60 hover:text-white hover:bg-black/70 transition-all hidden md:flex items-center justify-center"
+              data-carousel={`video-carousel-${album.id}`}
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+            
+            <div class="gallery-scroll overflow-x-auto scrollbar-hide" id={`video-carousel-${album.id}`}>
+              <div class="flex gap-5 px-6 md:px-12 w-max">
+                {album.videos.map((video, index) => (
+                  <div 
+                    class="flex-shrink-0 w-80 md:w-[420px] group cursor-pointer"
+                    data-video-trigger
+                    data-video-src={video.url}
+                  >
+                    <div class="aspect-video overflow-hidden relative mb-3 bg-surface rounded-lg">
+                      <img 
+                        src={video.thumbnail} 
+                        alt={video.title}
+                        class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        onerror="this.src='/projects/klassika/video-placeholder.jpg'"
+                      />
+                      <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-14 h-14 rounded-full bg-black/60 flex items-center justify-center group-hover:bg-white/90 transition-colors">
+                          <svg class="w-7 h-7 text-white group-hover:text-black ml-0.5 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                      </div>
+                      {video.duration && (
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 text-xs text-white rounded">
+                          {video.duration}
+                        </div>
+                      )}
+                    </div>
+                    <p class="text-white text-sm group-hover:text-muted transition-colors">{video.title}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <!-- Индикаторы -->
+            <div class="flex justify-center items-end mt-6 h-6 w-full px-4">
+              <div class="flex items-end gap-1 max-w-[90vw] overflow-x-auto scrollbar-hide" data-indicators={`video-${album.id}`}>
+                {album.videos.map((_, index) => {
+                  const h = getIndicatorHeights(album.videos.length)[index];
+                  return (
+                    <button 
+                      class="scroll-dot indicator-n8 flex-shrink-0"
+                      data-carousel-id={`video-carousel-${album.id}`}
+                      data-dot-index={index}
+                      style={`--stem-height: ${h}px`}
+                      aria-label={`Видео ${index + 1}`}
+                    ></button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          
+          {/* Разделитель между альбомами */}
+          {albumIndex < videoAlbums.length - 1 && (
+            <div class="max-w-4xl mx-auto px-6 mt-12">
+              <div class="border-t border-white/10"></div>
+            </div>
+          )}
+        </section>
+      ))}
+      
+      {videoAlbums.length === 0 && (
+        <div class="text-center py-20 text-muted">
+          <p>Видеоальбомы скоро появятся</p>
+        </div>
+      )}
+    </div>
+
+    <!-- Навигация -->
+    <nav class="max-w-4xl mx-auto px-6 mt-16 pt-8 border-t border-white/10">
+      <a 
+        href="/projects/klassika" 
+        class="inline-flex items-center gap-2 text-muted hover:text-white transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Вернуться к проекту
+      </a>
+    </nav>
+  </main>
+
+  <!-- Lightbox для фото -->
+  <div id="lightbox" class="fixed inset-0 z-50 bg-black/95 hidden items-center justify-center">
+    <button 
+      id="lightbox-close"
+      class="absolute top-6 right-6 w-12 h-12 rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center z-10"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    <button 
+      id="lightbox-prev"
+      class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center z-10"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </button>
+    <button 
+      id="lightbox-next"
+      class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center z-10"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+    <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain" />
+    <div id="lightbox-caption" class="absolute bottom-16 left-1/2 -translate-x-1/2 text-white/60 text-sm"></div>
+    <div id="lightbox-counter" class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 px-4 py-2 rounded-full text-white/80 text-sm">1 / 6</div>
+  </div>
+
+  <!-- Video Modal -->
+  <div id="video-modal" class="fixed inset-0 z-50 bg-black/95 hidden items-center justify-center">
+    <button 
+      id="video-modal-close"
+      class="absolute top-6 right-6 w-12 h-12 rounded-full bg-black/50 text-white/80 hover:text-white hover:bg-black/70 transition-all flex items-center justify-center z-10"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    <div class="w-full max-w-4xl aspect-video">
+      <iframe 
+        id="video-iframe"
+        class="w-full h-full"
+        src=""
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- Данные для JS -->
+  <script type="application/json" id="photos-data" set:html={JSON.stringify(allPhotos)}></script>
+</Layout>
+
+<style>
+  button { background-color: transparent !important; border: none; }
+  
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  
+  #lightbox.active, #video-modal.active { display: flex; }
+  
+  .filter-btn { 
+    color: rgba(255, 255, 255, 0.4); 
+    border-bottom: 2px solid transparent; 
+  }
+  .filter-btn:hover { color: rgba(255, 255, 255, 0.7); }
+  .filter-btn.active { color: white; border-bottom-color: white; }
+  
+  .indicator-n8 { 
+    position: relative; 
+    width: 8px; 
+    cursor: pointer; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: flex-end; 
+    padding: 0; 
+    background: transparent; 
+  }
+  .indicator-n8::before { 
+    content: ''; 
+    display: block; 
+    width: 1px; 
+    height: var(--stem-height, 16px); 
+    background: rgba(255, 255, 255, 0.2); 
+    margin-bottom: 4px; 
+    transition: background 0.3s; 
+  }
+  .indicator-n8::after { 
+    content: ''; 
+    display: block; 
+    width: 8px; 
+    height: 8px; 
+    border-radius: 50%; 
+    background: rgba(255, 255, 255, 0.2); 
+    transition: background 0.3s; 
+  }
+  .indicator-n8.active::before, .indicator-n8:hover::before { background: white; }
+  .indicator-n8.active::after, .indicator-n8:hover::after { background: white; }
+  
+  .carousel-arrow { opacity: 0; transition: opacity 0.3s; }
+  .album-section:hover .carousel-arrow { opacity: 1; }
+</style>
+
+<script>
+  const photos = JSON.parse(document.getElementById('photos-data')?.textContent || '[]');
+  const ITEM_WIDTH_PHOTO = 320 + 16;
+  const ITEM_WIDTH_VIDEO = 420 + 20;
+  
+  // ===== Фильтры =====
+  const filterPhoto = document.getElementById('filter-photo');
+  const filterVideo = document.getElementById('filter-video');
+  const photoSection = document.getElementById('photo-section');
+  const videoSection = document.getElementById('video-section');
+  
+  filterPhoto?.addEventListener('click', () => {
+    filterPhoto.classList.add('active');
+    filterVideo?.classList.remove('active');
+    photoSection?.classList.remove('hidden');
+    videoSection?.classList.add('hidden');
+  });
+  
+  filterVideo?.addEventListener('click', () => {
+    filterVideo.classList.add('active');
+    filterPhoto?.classList.remove('active');
+    videoSection?.classList.remove('hidden');
+    photoSection?.classList.add('hidden');
+  });
+  
+  // ===== Стрелки каруселей =====
+  document.querySelectorAll('.carousel-prev').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const carouselId = btn.getAttribute('data-carousel');
+      const carousel = document.getElementById(carouselId!);
+      const isVideo = carouselId?.includes('video');
+      const itemWidth = isVideo ? ITEM_WIDTH_VIDEO : ITEM_WIDTH_PHOTO;
+      carousel?.scrollBy({ left: -itemWidth, behavior: 'smooth' });
+    });
+  });
+  
+  document.querySelectorAll('.carousel-next').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const carouselId = btn.getAttribute('data-carousel');
+      const carousel = document.getElementById(carouselId!);
+      const isVideo = carouselId?.includes('video');
+      const itemWidth = isVideo ? ITEM_WIDTH_VIDEO : ITEM_WIDTH_PHOTO;
+      carousel?.scrollBy({ left: itemWidth, behavior: 'smooth' });
+    });
+  });
+  
+  // ===== Индикаторы =====
+  function updateIndicators(dots: NodeListOf<Element> | Element[], activeIndex: number) {
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === activeIndex));
+  }
+  
+  function initCarouselIndicators(carouselId: string) {
+    const carousel = document.getElementById(carouselId);
+    const dots = document.querySelectorAll(`[data-carousel-id="${carouselId}"]`);
+    if (!carousel || dots.length === 0) return;
+    
+    const isVideo = carouselId.includes('video');
+    const itemWidth = isVideo ? ITEM_WIDTH_VIDEO : ITEM_WIDTH_PHOTO;
+    
+    updateIndicators(dots, 0);
+    
+    carousel.addEventListener('scroll', () => {
+      const activeIndex = Math.round(carousel.scrollLeft / itemWidth);
+      updateIndicators(dots, Math.min(activeIndex, dots.length - 1));
+    });
+    
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        carousel.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+      });
+    });
+  }
+  
+  // Инициализируем все карусели
+  document.querySelectorAll('.gallery-scroll').forEach(carousel => {
+    initCarouselIndicators(carousel.id);
+  });
+  
+  // ===== Лайтбокс =====
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+  const lightboxCaption = document.getElementById('lightbox-caption');
+  const lightboxCounter = document.getElementById('lightbox-counter');
+  let currentIndex = 0;
+  
+  function openLightbox(index: number) {
+    currentIndex = index;
+    updateLightbox();
+    lightbox?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeLightbox() {
+    lightbox?.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  function updateLightbox() {
+    if (lightboxImg && photos[currentIndex]) {
+      lightboxImg.src = photos[currentIndex].src;
+    }
+    if (lightboxCaption && photos[currentIndex]) {
+      const caption = photos[currentIndex].caption || '';
+      const albumTitle = photos[currentIndex].albumTitle || '';
+      lightboxCaption.textContent = caption ? `${albumTitle}: ${caption}` : albumTitle;
+    }
+    if (lightboxCounter) {
+      lightboxCounter.textContent = `${currentIndex + 1} / ${photos.length}`;
+    }
+  }
+  
+  function nextPhoto() {
+    currentIndex = (currentIndex + 1) % photos.length;
+    updateLightbox();
+  }
+  
+  function prevPhoto() {
+    currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+    updateLightbox();
+  }
+  
+  document.querySelectorAll('[data-lightbox-trigger]').forEach(el => {
+    el.addEventListener('click', () => {
+      const index = parseInt(el.getAttribute('data-index') || '0');
+      openLightbox(index);
+    });
+  });
+  
+  document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
+  document.getElementById('lightbox-prev')?.addEventListener('click', prevPhoto);
+  document.getElementById('lightbox-next')?.addEventListener('click', nextPhoto);
+  lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  
+  // ===== Video Modal =====
+  const videoModal = document.getElementById('video-modal');
+  const videoIframe = document.getElementById('video-iframe') as HTMLIFrameElement;
+  
+  function openVideoModal(src: string) {
+    if (videoIframe) videoIframe.src = src + '?autoplay=1';
+    videoModal?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeVideoModal() {
+    videoModal?.classList.remove('active');
+    if (videoIframe) videoIframe.src = '';
+    document.body.style.overflow = '';
+  }
+  
+  document.querySelectorAll('[data-video-trigger]').forEach(el => {
+    const src = el.getAttribute('data-video-src');
+    if (src) {
+      el.addEventListener('click', () => openVideoModal(src));
+    }
+  });
+  
+  document.getElementById('video-modal-close')?.addEventListener('click', closeVideoModal);
+  videoModal?.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
+  
+  // ===== Keyboard =====
+  document.addEventListener('keydown', (e) => {
+    if (lightbox?.classList.contains('active')) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') nextPhoto();
+      if (e.key === 'ArrowLeft') prevPhoto();
+    }
+    if (e.key === 'Escape' && videoModal?.classList.contains('active')) {
+      closeVideoModal();
+    }
+  });
+</script>
+
